@@ -25,7 +25,7 @@
             }
         });
 
-//this code use to lode forms or pages in our project 
+//this code use to lode forms or pages in our project pages folder 
 
 document.addEventListener('DOMContentLoaded', () => {
     const links = document.querySelectorAll('.nav-link a');
