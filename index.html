@@ -1,105 +1,63 @@
 <!DOCTYPE html>
+<!-- Coding By CodingNepal - www.codingnepalweb.com -->
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
-    <title>Soran-Face</title>
+    <title>Website with Login & Signup Form | CodingNepal</title>
+    <!-- Google Fonts Link For Icons -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0">
+    <link rel="stylesheet" href="/css/index_style.css">
+    <script src="/js/index_script.js" defer></script>
 </head>
 
 <body>
-    <nav class="sidebar close">
-        <header>
-            <div class="image-text">
-                <span class="image">
-                    <img src="./imag/logo.jpg" alt="">
-                </span>
-                <div class="text logo-text">
-                    <span class="name">Soran_Face</span>
-                    <span class="profession">Manegment</span>
-                </div>
+    <header>
+        <nav class="navbar">
+            <span class="hamburger-btn material-symbols-rounded">menu</span>
+            <a href="index.html" class="logo">
+                <img src="imag/Soran_Logo.png" alt="logo">
+                <h2>Soran_Face</h2>
+            </a>
+            <ul class="links">
+                <span class="close-btn material-symbols-rounded">close</span>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About us</a></li>
+                <li><a href="pages/contact_us.html">Contact us</a></li>
+            </ul>
+            <button class="login-btn">LOG IN</button>
+        </nav>
+    </header>
+
+    <div class="blur-bg-overlay"></div>
+    <div class="form-popup">
+        <span class="close-btn material-symbols-rounded">close</span>
+        <div class="form-box login">
+            <div class="form-details">
+                <video autoplay muted loop class="background-video">
+                    <source src="imag/animation.mp4" type="video/mp4">
+                </video>
+                <h2>Welcome Back</h2>
             </div>
-            <i class='bx bx-chevron-right toggle'></i>
-        </header>
-        <div class="menu-bar">
-            <div class="menu">
-                <li class="search-box">
-                    <i class='bx bx-search icon'></i>
-                    <input type="text" placeholder="Search...">
-                </li>
-                <ul class="menu-links">
-                    <li class="nav-link">
-                        <a href="#" data-page="dashboard">
-                            <i class='bx bx-home-alt icon'></i>
-                            <span class="text nav-text">Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-link">
-                        <a href="#" data-page="staff">
-                            <i class='bx bx-user-check icon'></i>
-                            <span class="text nav-text">Staff</span>
-                        </a>
-                    </li>
-                    <li class="nav-link">
-                        <a href="#" data-page="conferences">
-                            <i class='bx bx-conversation icon'></i>
-                            <span class="text nav-text">Conferences</span>
-                        </a>
-                    </li>
-                    <li class="nav-link">
-                        <a href="#" data-page="r-conferences">
-                            <i class='bx bx-registered icon'></i>
-                            <span class="text nav-text">R-Conferences</span>
-                        </a>
-                    </li>
-                    <li class="nav-link">
-                        <a href="#" data-page="test-camera">
-                            <i class='bx bx-video-recording icon'></i>
-                            <span class="text nav-text">Test Camera</span>
-                        </a>
-                    </li>
-                    <li class="nav-link">
-                        <a href="#" data-page="users">
-                            <i class='bx bx-user icon'></i>
-                            <span class="text nav-text">Users</span>
-                        </a>
-                    </li>
-                    <li class="nav-link">
-                        <a href="#" data-page="model-train">
-                            <i class='bx bx-cube-alt icon'></i>
-                            <span class="text nav-text">Model Train</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="bottom-content">
-                <li class="">
-                    <a href="#">
-                        <i class='bx bx-log-out icon'></i>
-                        <span class="text nav-text">Logout</span>
-                    </a>
-                </li>
-                <li class="mode">
-                    <div class="sun-moon">
-                        <i class='bx bx-moon icon moon'></i>
-                        <i class='bx bx-sun icon sun'></i>
+            <div class="form-content">
+                <h2>LOGIN</h2>
+                <form action="#">
+                    <div class="input-field">
+                        <input type="text" required>
+                        <label>Email</label>
                     </div>
-                    <span class="mode-text text">Dark mode</span>
-                    <div class="toggle-switch">
-                        <span class="switch"></span>
+                    <div class="input-field">
+                        <input type="password" required>
+                        <label>Password</label>
                     </div>
-                </li>
+                    <a href="#" class="forgot-pass-link">Forgot password?</a>
+                    <button type="submit">Log In</button>
+                </form>
             </div>
         </div>
-    </nav>
-    <section class="home">
-        <!-- here this ID content will show forms or pages when click so I use this main code for all of them-->
-        <div id="content"></div>
-    </section>
-    <script src="script.js"></script>
+    </div>
 </body>
 
 </html>
