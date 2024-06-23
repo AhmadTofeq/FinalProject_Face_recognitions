@@ -11,9 +11,7 @@
 body {
     height: 100vh;
     width: 100%;
-    background: url("../imag/campus4.jpg") center/cover no-repeat;
-    align-items: center;
-    justify-content: center;
+    background: lightblue;
 }
 
 header {
@@ -343,6 +341,112 @@ form button:hover {
 
     .form-box .form-content {
         padding: 30px 20px;
+    }
+}
+
+.about-us {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    /* Align content to the top */
+    min-height: 100vh;
+    width: 100%;
+    padding: 90px 0;
+    
+}
+
+.images {
+    display: flex;
+    gap: 55px;
+    /* Increase the gap between images */
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    /* Add some margin to the top of the images */
+}
+
+.pic {
+    height: auto ;
+    width: 100%;
+    max-width: 400px;
+    /* Increase the max-width to make the images bigger */
+    border-radius: 12px;
+}
+
+.about {
+    width: 1130px;
+    max-width: 85%;
+    margin: 0 auto;
+    text-align: center;
+    /* Center the text */
+}
+
+.text {
+    width: 100%;
+    max-width: 1100px;
+    /* Increase the max-width of the text */
+    margin-top: 20px;
+}
+
+.text h2 {
+    color: #333;
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.text h5 {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+span {
+    color: #4070f4;
+}
+
+.text p {
+    color: #ffffff;
+    font-size: 18px;
+    line-height: 25px;
+    letter-spacing: 1px;
+}
+
+.data {
+    margin-top: 30px;
+}
+
+.hire {
+    font-size: 18px;
+    background: #4070f4;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    transition: 0.5s;
+}
+
+.hire:hover {
+    opacity: 0.8;
+    color: rgb(198, 217, 223);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .text h2 {
+        font-size: 36px;
+    }
+
+    .images {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .pic {
+        max-width: 100%;
     }
 }
 /*footer css code*/
