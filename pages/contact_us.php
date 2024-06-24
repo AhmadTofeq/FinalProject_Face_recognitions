@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +14,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
   <link rel="stylesheet" href="../css/contact_us_style.css">
   <script src="../js/index_script.js" defer></script>
+  <style>
+        .error-message {
+            color: red;
+            font-family: "Open Sans", sans-serif;
+
+        }
+    </style>
 </head>
 
 <body>
@@ -43,17 +53,18 @@
       </div>
       <div class="form-content">
         <h2>LOGIN</h2>
-        <form action="#">
-          <div class="input-field">
-            <input type="text" required>
-            <label>Email</label>
-          </div>
-          <div class="input-field">
-            <input type="password" required>
-            <label>Password</label>
-          </div>
-          <a href="contact_us.html" class="forgot-pass-link">Forgot password?</a>
-          <button type="submit">Log In</button>
+        <form id="loginForm" action="../php/login.php" method="POST">
+                    <div class="input-field">
+                        <input type="text" name="username" required>
+                        <label>Username</label>
+                    </div>
+                    <div class="input-field">
+                        <input type="password" name="password" required>
+                        <label>Password</label>
+                    </div>
+                    <a href="contact_us.php" class="forgot-pass-link">Forgot password?</a>
+                    <button type="submit">Log In</button>
+                    <p id="errorMessage" class="error-message"><?php echo isset($_SESSION['error']) ? $_SESSION['error'] : ''; ?></p>
         </form>
       </div>
     </div>
@@ -104,5 +115,37 @@
   <footer class="footer">
     © 2023. All Rights Reserved. <a href="mailto:Soran_Face@idq">Soran_Face@idq</a>
   </footer>
+  <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const errorMessage = document.getElementById('errorMessage');
+
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the form from submitting
+
+                const formData = new FormData(loginForm);
+
+                fetch('../php/login.php', {
+                        method: 'POST',
+                        body: formData,
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = 'home.html'; // Redirect to home page
+                        } else {
+                            errorMessage.textContent = data.message; // Display error message
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        errorMessage.textContent = 'An error occurred. Please try again.'; // Display generic error message
+                    });
+            });
+        });
+    </script>
 </body>
 </html>
+<?php
+unset($_SESSION['error']); // Clear the error message after displaying it
+?>

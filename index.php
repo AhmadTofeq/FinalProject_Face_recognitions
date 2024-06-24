@@ -17,6 +17,8 @@ session_start();
     <style>
         .error-message {
             color: red;
+            font-family: "Open Sans", sans-serif;
+
         }
     </style>
 </head>
@@ -60,7 +62,7 @@ session_start();
                         <input type="password" name="password" required>
                         <label>Password</label>
                     </div>
-                    <a href="pages/contact_us.html" class="forgot-pass-link">Forgot password?</a>
+                    <a href="pages/contact_us.php" class="forgot-pass-link">Forgot password?</a>
                     <button type="submit">Log In</button>
                     <p id="errorMessage" class="error-message"><?php echo isset($_SESSION['error']) ? $_SESSION['error'] : ''; ?></p>
                 </form>
