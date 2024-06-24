@@ -5,9 +5,34 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/home_style.css">
+    <link rel="stylesheet" href="../css/home_style.css">
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <title>Soran-Face</title>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('../php/check-session.php', {
+                method: 'GET',
+                credentials: 'same-origin'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Session check failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.authenticated) {
+                        // Redirect to index.php if not authenticated
+                        window.location.href = '../index.php';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking session:', error);
+                    // Handle error if session check fails (optional)
+                });
+        });
+    </script>
 </head>
 
 <body>
@@ -15,18 +40,17 @@
         <header>
             <div class="image-text">
                 <span class="image">
-                    <img src="/imag/soran.png" alt="">
+                    <img src="../imag/soran.png" alt="">
                 </span>
                 <div class="text logo-text">
                     <span class="name">Soran_Face</span>
-                    <span class="profession">Manegment</span>
+                    <span class="profession" id="user-name">Management</span>
                 </div>
             </div>
             <i class='bx bx-chevron-right toggle'></i>
         </header>
         <div class="menu-bar">
             <div class="menu">
-                <!-- Removed search box here -->
                 <ul class="menu-links">
                     <li class="nav-link">
                         <a href="#" data-page="dashboard">
@@ -74,7 +98,7 @@
             </div>
             <div class="bottom-content">
                 <li class="">
-                    <a href="#">
+                    <a href="#" id="logoutBtn">
                         <i class='bx bx-log-out icon'></i>
                         <span class="text nav-text">Logout</span>
                     </a>
@@ -93,10 +117,9 @@
         </div>
     </nav>
     <section class="home">
-        <!-- here this ID content will show forms or pages when click so I use this main code for all of them-->
         <div id="content"></div>
     </section>
-    <script src="/js/home_script.js"></script>
+    <script src="../js/home_script.js"></script>
 </body>
 
 </html>

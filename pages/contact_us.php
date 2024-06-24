@@ -10,22 +10,22 @@
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
   <link rel="stylesheet" href="../css/contact_us_style.css">
-  <script src="/js/index_script.js" defer></script>
+  <script src="../js/index_script.js" defer></script>
 </head>
 
 <body>
   <header>
     <nav class="navbar">
       <span class="hamburger-btn material-symbols-rounded">menu</span>
-      <a href="../index.html" class="logo">
+      <a href="../index.php" class="logo">
         <img src="../imag/Soran_Logo.png" alt="logo">
         <h2>Soran_Face</h2>
       </a>
       <ul class="links">
         <span class="close-btn material-symbols-rounded">close</span>
-        <li><a href="../index.html">Home</a></li>
-        <li><a href="about_us.html">About us</a></li>
-        <li><a href="contact_us.html">Contact us</a></li>
+        <li><a href="../index.php">Home</a></li>
+        <li><a href="about_us.php">About us</a></li>
+        <li><a href="contact_us.php">Contact us</a></li>
       </ul>
       <button class="login-btn">LOG IN</button>
     </nav>
