@@ -16,7 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
-        if (password_verify($password, $user['password'])) {
+        if ($user['state'] == 0) {
+            $response['message'] = 'Your account is inactive.';
+        } elseif (password_verify($password, $user['password'])) {
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
             $response['success'] = true;

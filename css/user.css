@@ -8,35 +8,43 @@ body {
 
 .page-content {
     text-align: center;
-    padding: 20px;
+    padding: 40px;
+    /* Increased padding for better readability */
 }
-
+h2{
+        color: rgb(69, 62, 3);
+}
+p{
+        color: rgb(69, 62, 3);}
 .common-form {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
+    /* Added background color to create a card-like effect */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(7, 7, 7, 0.25);
 }
 
 #register-user-form {
-    background: #fff;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
+    /* Removed box-shadow to avoid duplication */
     max-width: 400px;
     width: 100%;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    /* Increased margin for better spacing */
 }
 
 .form-group label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
-    color: #333;
-}
+    color: rgb(69, 62, 3);}
 
 .form-group input[type="text"],
 .form-group input[type="password"],
@@ -46,6 +54,8 @@ body {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    height: 40px;
+    /* Added height for consistency */
 }
 
 .form-group select {
@@ -64,6 +74,8 @@ body {
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease;
+    height: 40px;
+    /* Added height for consistency */
 }
 
 .submit-btn:hover {

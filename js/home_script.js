@@ -57,7 +57,23 @@ document.addEventListener('DOMContentLoaded', function() {
             checkAuthorization(page);
         });
     });
-
+    function loadPageContent(page) {
+        fetch(`../pages/${page}.html`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Page not found - ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(data => {
+                contentDiv.innerHTML = data; // Set fetched HTML content
+            })
+            .catch(error => {
+                console.error('Error fetching page content:', error);
+                contentDiv.innerHTML = '<p>Page not found.</p>';
+            });
+    }
+    
     function checkAuthorization(page) {
         fetch('../php/check-auth.php', {
             method: 'GET',
@@ -79,22 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error('Error checking authorization:', error));
     }
 
-    function loadPageContent(page) {
-        fetch(`../pages/${page}.html`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Page not found - ${response.status}`);
-                }
-                return response.text();
-            })
-            .then(data => {
-                contentDiv.innerHTML = data; // Set fetched HTML content
-            })
-            .catch(error => {
-                console.error('Error fetching page content:', error);
-                contentDiv.innerHTML = '<p>Page not found.</p>';
-            });
-    }
+   
     const logoutBtn = document.getElementById('logoutBtn');
 
     logoutBtn.addEventListener('click', function(event) {
