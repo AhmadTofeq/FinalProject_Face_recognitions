@@ -16,6 +16,8 @@
     --primary-color-light: #F6F5FF;
     --toggle-color: #DDD;
     --text-color: #707070;
+    --highlight-color: #4173a4;
+    --highlight-hover-color: #326e91;
 
     /* ====== Transition ====== */
     --tran-03: all 0.2s ease;
@@ -42,6 +44,8 @@ body.dark {
     --primary-color-light: #3a3b3c;
     --toggle-color: #fff;
     --text-color: #ccc;
+    --highlight-color: #4173a4;
+    --highlight-hover-color: #326e91;
 }
 
 /* ===== Sidebar ===== */
@@ -303,4 +307,34 @@ body.dark .switch::before {
 
 body.dark .home .text {
     color: var(--text-color);
+}
+/*++++++++++++++++++++++++++++++++++++++++++++++++++ content*/
+/*nav active bar*/
+.menu-bar a {
+    color: white;
+    text-decoration: none;
+    transition: color var(--tran-03);
+}
+
+.menu-bar a:hover {
+    color: var(--primary-color);
+}
+
+.menu-bar .nav-link.active a {
+    color: white;
+    font-weight: bold;
+    background-color: var(--primary-color);
+}
+.act{
+    color: white;
+    font-weight: bold;
+    background-color: var(--primary-color);
+    font-size: 1rem;
+}
+.menu-bar .nav-link.active a i,
+.menu-bar .nav-link.active a span {
+    color: white;
+    font-weight: bold;
+    background-color: var(--primary-color);
+    font-size: 1rem;
 }

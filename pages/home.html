@@ -23,13 +23,11 @@
                 })
                 .then(data => {
                     if (!data.authenticated) {
-                        // Redirect to index.php if not authenticated
                         window.location.href = '../index.php';
                     }
                 })
                 .catch(error => {
                     console.error('Error checking session:', error);
-                    // Handle error if session check fails (optional)
                 });
         });
     </script>
@@ -53,43 +51,43 @@
             <div class="menu">
                 <ul class="menu-links">
                     <li class="nav-link">
-                        <a href="#" data-page="dashboard">
+                        <a href="../pages/home.html" data-page="home" class="act">
                             <i class='bx bx-home-alt icon'></i>
                             <span class="text nav-text">Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="#" data-page="staff">
+                        <a href="../pages/staff.html" data-page="staff">
                             <i class='bx bx-user-check icon'></i>
                             <span class="text nav-text">Staff</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="#" data-page="conferences">
+                        <a href="../pages/conferences.html" data-page="conferences">
                             <i class='bx bx-chalkboard icon'></i>
                             <span class="text nav-text">Conferences</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="#" data-page="r-conferences">
+                        <a href="../pages/r-conferences.html" data-page="r-conferences">
                             <i class='bx bx-registered icon'></i>
                             <span class="text nav-text">R-Conferences</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="#" data-page="test-camera">
+                        <a href="../pages/test-camera.html" data-page="test-camera">
                             <i class='bx bx-video-recording icon'></i>
                             <span class="text nav-text">Test Camera</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="#" data-page="users">
+                        <a href="../pages/users.php" data-page="users">
                             <i class='bx bx-user icon'></i>
                             <span class="text nav-text">Users</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="#" data-page="model-train">
+                        <a href="../pages/model-train.html" data-page="model-train">
                             <i class='bx bx-cube-alt icon'></i>
                             <span class="text nav-text">Model Train</span>
                         </a>
@@ -97,7 +95,7 @@
                 </ul>
             </div>
             <div class="bottom-content">
-                <li class="">
+                <li>
                     <a href="#" id="logoutBtn">
                         <i class='bx bx-log-out icon'></i>
                         <span class="text nav-text">Logout</span>

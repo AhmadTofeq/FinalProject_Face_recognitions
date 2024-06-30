@@ -18,9 +18,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("ssss", $name, $username, $password, $role);
 
     if ($stmt->execute()) {
-        echo "User registered successfully.";
+        header("Location: ../pages/users.php?message=User registered successfully.&type=success");
+        exit();
     } else {
-        echo "Error: " . $stmt->error;
+        header("Location: ../pages/users.php?message=Error: " . $stmt->error . "&type=error");
+        exit();
     }
 
     $stmt->close();

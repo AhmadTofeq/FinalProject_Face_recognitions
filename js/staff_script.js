@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebar.classList.toggle("close");
     });
 
-    // Toggle dark mode
+     // Toggle dark mode
     modeSwitch.addEventListener("click", () => {
         body.classList.toggle("dark");
 
