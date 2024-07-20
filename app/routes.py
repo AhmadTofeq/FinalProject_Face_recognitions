@@ -34,6 +34,11 @@ def login():
 def contact_us():
     return render_template('contact_us.html')
 
+@bp.route('/about_us')
+def about_us():
+    return render_template('about_us.html')
+
+
 @bp.route('/staff', methods=['GET'])
 def staff():
     departments = Department.query.all()
