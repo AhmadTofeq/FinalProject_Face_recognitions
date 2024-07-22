@@ -9,12 +9,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const registerForm = document.querySelector('.register-form');
     const updateBtns = document.querySelectorAll('.update-btn');
 
+    // Toggle register form visibility
     registerBtn.addEventListener('click', () => {
         registerForm.classList.toggle('show');
     });
 
     // Fetch user's name and update the span
-    fetch('../php/get_user_info.php', {
+    fetch('/get_user_info', {
         method: 'GET',
         credentials: 'same-origin'
     })
@@ -80,24 +81,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const logoutBtn = document.getElementById('logoutBtn');
 
     logoutBtn.addEventListener('click', function(event) {
-        event.preventDefault();
+    event.preventDefault();
 
-        fetch('../php/logout.php', {
-            method: 'POST',
-            credentials: 'same-origin'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = '../index.php';
-            } else {
-                console.error('Logout failed:', data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error during logout:', error);
-        });
+    fetch('/logout', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/';
+        } else {
+            console.error('Logout failed:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error during logout:', error);
     });
+});
 
     // Toggle user update form visibility
     updateBtns.forEach(button => {

@@ -422,9 +422,22 @@ th {
 .form-group select {
     appearance: none;
 }
-
-
-.update-btn{
+.btn-delete{
+    padding: 7px 18px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    height: 40px;
+    margin-top: 10px;
+}
+.btn-delete:hover{
+    background-color:rgb(163, 5, 5);
+}
+.update-btn {
     
     padding: 7px 14px;
     background-color: var(--highlight-color);

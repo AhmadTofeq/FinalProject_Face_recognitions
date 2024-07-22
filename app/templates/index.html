@@ -84,7 +84,7 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            window.location.href = "https://www.youtube.com"; // Redirect to home page
+                            window.location.href = "{{ url_for('main.users') }}"; // Redirect to home page
                         } else {
                             errorMessage.textContent = data.message; // Display error message
                         }
