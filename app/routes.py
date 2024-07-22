@@ -170,3 +170,7 @@ def get_user_info():
         if user:
             return jsonify({'username': user.name})
     return jsonify({'username': None})
+
+@bp.route('/home')
+def home():
+    return render_template('home.html')
