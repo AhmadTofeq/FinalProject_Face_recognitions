@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const userNameSpan = document.getElementById('user-name');
 
     // Fetch user's name and update the span
-    fetch('../php/get_user_info.php', {
+    fetch('/get_user_info', {
         method: 'GET',
         credentials: 'same-origin'
     })
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebar.classList.toggle("close");
     });
 
-   // Toggle dark mode
+    // Toggle dark mode
     modeSwitch.addEventListener("click", () => {
         body.classList.toggle("dark");
 
@@ -75,14 +75,14 @@ document.addEventListener('DOMContentLoaded', function() {
     logoutBtn.addEventListener('click', function(event) {
         event.preventDefault();
 
-        fetch('../php/logout.php', {
+        fetch('/logout', {
             method: 'POST',
             credentials: 'same-origin'
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                window.location.href = '../index.php';
+                window.location.href = '/';
             } else {
                 console.error('Logout failed:', data.message);
             }

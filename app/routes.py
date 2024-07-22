@@ -43,53 +43,6 @@ def contact_us():
 def about_us():
     return render_template('about_us.html')
 
-@bp.route('/staff', methods=['GET'])
-def staff():
-    departments = Department.query.all()
-    staff_members = Staff.query.filter_by(state=True).all()
-    return render_template('staff.html', departments=departments, staff_members=staff_members)
-
-@bp.route('/add_staff', methods=['POST'])
-def add_staff():
-    name = request.form.get('name')
-    phone = request.form.get('phone')
-    email = request.form.get('email')
-    gender = request.form.get('gender')
-    department_id = request.form.get('department_id')
-    add_by_user_id = request.form.get('add_by_user_id')
-
-    new_staff = Staff(
-        staff_name=name,
-        phone=phone,
-        email=email,
-        gender=gender,
-        id_department=department_id,
-        add_by_user_id=add_by_user_id
-    )
-    db.session.add(new_staff)
-    db.session.commit()
-    flash('Staff member added successfully', 'success')
-    return redirect(url_for('main.staff'))
-
-@bp.route('/update_staff/<int:id>', methods=['POST'])
-def update_staff(id):
-    staff = Staff.query.get_or_404(id)
-    staff.staff_name = request.form.get('name')
-    staff.phone = request.form.get('phone')
-    staff.email = request.form.get('email')
-    staff.gender = request.form.get('gender')
-    staff.id_department = request.form.get('department_id')
-    db.session.commit()
-    flash('Staff member updated successfully', 'success')
-    return redirect(url_for('main.staff'))
-
-@bp.route('/delete_staff/<int:id>', methods=['POST'])
-def delete_staff(id):
-    staff = Staff.query.get_or_404(id)
-    staff.state = False
-    db.session.commit()
-    flash('Staff member deactivated successfully', 'success')
-    return redirect(url_for('main.staff'))
 
 @bp.route('/check-session', methods=['GET'])
 def check_session():
@@ -174,3 +127,70 @@ def get_user_info():
 @bp.route('/home')
 def home():
     return render_template('home.html')
+
+@bp.route('/conferences')
+def conferences():
+    return render_template('conferences.html')
+
+@bp.route('/r-conferences')
+def r_conferences():
+    return render_template('r-conferences.html')
+
+@bp.route('/test-camera')
+def test_camera():
+    return render_template('test-camera.html')
+
+@bp.route('/model-train')
+def model_train():
+    return render_template('model-train.html')
+
+
+
+#staff part
+@bp.route('/staff', methods=['GET'])
+def staff():
+    departments = Department.query.all()
+    staff_members = Staff.query.filter_by(state=True).all()
+    return render_template('staff.html', departments=departments, staff_members=staff_members)
+
+@bp.route('/add_staff', methods=['POST'])
+def add_staff():
+    name = request.form.get('name')
+    phone = request.form.get('phone')
+    email = request.form.get('email')
+    gender = request.form.get('gender')
+    department_id = request.form.get('department_id')
+    add_by_user_id = request.form.get('add_by_user_id')
+
+    new_staff = Staff(
+        staff_name=name,
+        phone=phone,
+        email=email,
+        gender=gender,
+        id_department=department_id,
+        add_by_user_id=add_by_user_id
+    )
+    db.session.add(new_staff)
+    db.session.commit()
+    flash('Staff member added successfully', 'success')
+    return redirect(url_for('main.staff'))
+
+@bp.route('/update_staff/<int:id>', methods=['POST'])
+def update_staff(id):
+    staff = Staff.query.get_or_404(id)
+    staff.staff_name = request.form.get('name')
+    staff.phone = request.form.get('phone')
+    staff.email = request.form.get('email')
+    staff.gender = request.form.get('gender')
+    staff.id_department = request.form.get('department_id')
+    db.session.commit()
+    flash('Staff member updated successfully', 'success')
+    return redirect(url_for('main.staff'))
+
+@bp.route('/delete_staff/<int:id>', methods=['POST'])
+def delete_staff(id):
+    staff = Staff.query.get_or_404(id)
+    staff.state = False
+    db.session.commit()
+    flash('Staff member deactivated successfully', 'success')
+    return redirect(url_for('main.staff'))

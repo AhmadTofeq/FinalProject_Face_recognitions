@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/conferences_style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/conferences_style.css') }}">
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <title>Soran-Face</title>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            fetch('../php/check-session.php', {
+            fetch('/check-session', {
                 method: 'GET',
                 credentials: 'same-origin'
             })
@@ -23,13 +23,13 @@
                 })
                 .then(data => {
                     if (!data.authenticated) {
-                        window.location.href = '../index.php';
+                        window.location.href = '/';
                     }
                 })
                 .catch(error => {
                     console.error('Error checking session:', error);
                 });
-        });     
+        });
     </script>
 </head>
 
@@ -38,7 +38,7 @@
         <header>
             <div class="image-text">
                 <span class="image">
-                    <img src="../imag/soran.png" alt="">
+                    <img src="{{ url_for('static', filename='imag/soran.png') }}" alt="">
                 </span>
                 <div class="text logo-text">
                     <span class="name">Soran_Face</span>
@@ -51,43 +51,43 @@
             <div class="menu">
                 <ul class="menu-links">
                     <li class="nav-link">
-                        <a href="../pages/home.html" data-page="dashboard">
+                        <a href="{{ url_for('main.home') }}" data-page="home" class="act">
                             <i class='bx bx-home-alt icon'></i>
                             <span class="text nav-text">Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="../pages/staff.html" data-page="staff">
+                        <a href="{{ url_for('main.staff') }}" data-page="staff">
                             <i class='bx bx-user-check icon'></i>
                             <span class="text nav-text">Staff</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="../pages/conferences.html" data-page="conferences">
+                        <a href="{{ url_for('main.conferences') }}" data-page="conferences">
                             <i class='bx bx-chalkboard icon'></i>
                             <span class="text nav-text">Conferences</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="../pages/r-conferences.html" data-page="r-conferences">
+                        <a href="{{ url_for('main.r_conferences') }}" data-page="r-conferences">
                             <i class='bx bx-registered icon'></i>
                             <span class="text nav-text">R-Conferences</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="../pages/test-camera.html" data-page="test-camera">
+                        <a href="{{ url_for('main.test_camera') }}" data-page="test-camera">
                             <i class='bx bx-video-recording icon'></i>
                             <span class="text nav-text">Test Camera</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="../pages/users.php" data-page="users">
+                        <a href="{{ url_for('main.users') }}" data-page="users">
                             <i class='bx bx-user icon'></i>
                             <span class="text nav-text">Users</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="../pages/model-train.html" data-page="model-train">
+                        <a href="{{ url_for('main.model_train') }}" data-page="model-train">
                             <i class='bx bx-cube-alt icon'></i>
                             <span class="text nav-text">Model Train</span>
                         </a>
@@ -115,9 +115,9 @@
         </div>
     </nav>
     <section class="home">
-        <p>soran male zansta</p>
+        <div id="content"></div>
     </section>
-    <script src="../js/conferences_script.js"></script>
+    <script src="../static/js/conferences_script.js"></script>
 </body>
 
 </html>
