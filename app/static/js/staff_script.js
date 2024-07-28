@@ -5,6 +5,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const modeSwitch = body.querySelector(".toggle-switch");
     const modeText = document.querySelector(".mode-text");
     const userNameSpan = document.getElementById('user-name');
+    const registerBtn = document.querySelector('.register-btn');
+    const registerForm = document.querySelector('.register-form');
+    const updateBtns = document.querySelectorAll('.update-btn');
+
+    // Toggle register form visibility
+    registerBtn.addEventListener('click', () => {
+        registerForm.classList.toggle('show');
+    });
 
     // Fetch user's name and update the span
     fetch('/get_user_info', {
@@ -77,7 +85,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         fetch('/logout', {
             method: 'POST',
-            credentials: 'same-origin'
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         })
         .then(response => response.json())
         .then(data => {
@@ -89,6 +100,15 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error during logout:', error);
+        });
+    });
+
+    // Toggle staff update form visibility
+    updateBtns.forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const form = document.querySelector(`.user-form[data-id='${id}']`);
+            form.classList.toggle('hide');
         });
     });
 });

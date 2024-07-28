@@ -333,6 +333,55 @@ body.dark .home .text {
     font-size: 1rem;
 }
 
+body.dark tbody tr,
+body.dark tbody tr td,
+body.dark thead th {
+    color: white;
+}
+
+.page-content {
+    text-align: center;
+    padding: 40px;
+}
+
+h2,
+p {
+    color: var(--text-color);
+}
+
+.below {
+    color: white !important;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+thead {
+    background-color: var(--highlight-color);
+    color: white;
+}
+
+thead th {
+    padding: 10px;
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--primary-color-light);
+}
+
+tbody tr:hover {
+    background-color: var(--toggle-color);
+}
+
+td,
+th {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--toggle-color);
+}
 
 .common-form,
 .register-form {
@@ -342,93 +391,347 @@ body.dark .home .text {
     padding: 20px;
     background-color: var(--sidebar-color);
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
     max-width: 600px;
-    margin: 0 auto;
+    width: 100%;
+}
+.register-form.show {
+    display: block;
+}
+.hide {
+    display: none;
 }
 
-.common-form .form-group,
+.form-group {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--toggle-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    height: 40px;
+}
+
+.form-group select {
+    appearance: none;
+}
+
+.btn-delete {
+    padding: 7px 18px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    height: 40px;
+    margin-top: 10px;
+}
+
+.btn-delete:hover {
+    background-color: rgb(163, 5, 5);
+}
+
+.update-btn {
+    padding: 7px 30px;
+    background-color: var(--highlight-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    height: 40px;
+    margin-top: 10px;
+}
+
+.update-btn:hover {
+    background-color: var(--highlight-hover-color);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--highlight-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    height: 40px;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background-color: var(--highlight-hover-color);
+}
+
+.register-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.register-btn {
+    background-color: var(--highlight-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.register-btn i {
+    font-size: 24px;
+}
+
+.register-form {
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+    background-color: var(--sidebar-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    display: none;
+}
 .register-form .form-group {
     width: 100%;
     margin-bottom: 15px;
 }
 
-.common-form label,
-.register-form label {
-    display: block;
+.register-form .form-group label {
     margin-bottom: 5px;
-    font-weight: 500;
+    color: var(--text-color);
+}
+
+.register-form .form-group input,
+.register-form .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--toggle-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.register-form .submit-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--highlight-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    height: 40px;
+    margin-top: 10px;
+}
+
+.register-form .submit-btn:hover {
+    background-color: var(--highlight-hover-color);
+}
+
+.popup {
+    background-color: var(--highlight-color);
+    color: white;
+    padding: 15px;
+    border-radius: 4px;
+    margin: 20px 0;
+    display: inline-block;
+}
+
+.popup.success {
+    background-color: green;
+}
+
+.popup.error {
+    background-color: red;
+}
+/* General form styles */
+.common-form,
+.register-form,
+.user-form,
+.staff-form {
+    max-width: 300px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: var(--sidebar-color);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.common-form label,
+.register-form label,
+.user-form label,
+.staff-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--text-color);
 }
 
 .common-form input[type="text"],
+.common-form input[type="password"],
 .common-form select,
 .register-form input[type="text"],
-.register-form select {
-    width: 100%;
+.register-form input[type="password"],
+.register-form select,
+.user-form input[type="text"],
+.user-form input[type="password"],
+.user-form select,
+.staff-form input[type="text"],
+.staff-form select {
+    width: calc(100% - 20px);
     padding: 10px;
-    border-radius: 5px;
-    border: 1px solid var(--border-color);
-    font-size: 16px;
+    margin-bottom: 12px;
+    border: 1px solid var(--toggle-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.common-form select,
+.register-form select,
+.user-form select,
+.staff-form select {
+    appearance: none;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6" viewBox="0 0 12 6"><path fill="%23333333" d="M6 6L0 0h12z"/></svg>') no-repeat right 10px center;
+    background-size: 12px;
 }
 
 .common-form button,
-.register-form button {
+.register-form button,
+.user-form button,
+.staff-form button {
+    display: inline-block;
     padding: 10px 20px;
+    margin-right: 10px;
+    background-color: var(--highlight-color);
+    color: #ffffff;
     border: none;
-    border-radius: 5px;
-    background-color: var(--primary-color);
-    color: #fff;
-    font-size: 16px;
+    border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .common-form button:hover,
-.register-form button:hover {
-    background-color: var(--hover-color);
+.register-form button:hover,
+.user-form button:hover,
+.staff-form button:hover {
+    background-color: var(--highlight-hover-color);
+    transform: scale(1.05);
 }
 
-/* Table styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+.common-form button:focus,
+.register-form button:focus,
+.user-form button:focus,
+.staff-form button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+/* Style for the search bar container */
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 21px;
 }
 
-table,
-th,
-td {
-    border: 1px solid var(--border-color);
-}
-
-th,
-td {
+/* Style for the search input field */
+.search-container input[type="text"] {
+    width: 250px;
     padding: 10px;
-    text-align: left;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-right: 10px;
+    transition: border-color 0.3s;
 }
 
-th {
-    background-color: var(--primary-color);
-    color: #fff;
+.search-container input[type="text"]:focus {
+    border-color: #007bff;
+    outline: none;
 }
 
-td {
-    background-color: var(--sidebar-color);
-}
-
-.inline-form {
-    display: inline;
-}
-
-.inline-form button {
-    background-color: var(--primary-color);
-    color: #fff;
+/* Style for the search button */
+.search-container button[type="submit"] {
+    padding: 10px 20px;
     border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 4px;
+    background-color:var(--highlight-color);
+    color: #fff;
+    font-size: 16px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.inline-form button:hover {
-    background-color: var(--hover-color);
+.search-container button[type="submit"]:hover {
+    background-color:var(--highlight-hover-color);
+}
+/* Specific styles for smaller screens */
+@media (max-width: 600px) {
+
+    .search-container {
+            flex-direction: column;
+            align-items: stretch;
+    }
+    
+    .search-container input[type="text"],
+    .search-container button[type="submit"] {
+        width: 100%;
+        margin: 5px 0;
+    }
+    .common-form,
+    .register-form,
+    .user-form,
+    .staff-form {
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    .common-form input[type="text"],
+    .common-form input[type="password"],
+    .common-form select,
+    .register-form input[type="text"],
+    .register-form input[type="password"],
+    .register-form select,
+    .user-form input[type="text"],
+    .user-form input[type="password"],
+    .user-form select,
+    .staff-form input[type="text"],
+    .staff-form select {
+        width: 100%;
+    }
+
+    .common-form button,
+    .register-form button,
+    .user-form button,
+    .staff-form button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
 }

@@ -12,6 +12,9 @@ class Department(db.Model):
     name_department = db.Column(db.String(255), nullable=False)
     id_faculty = db.Column(db.Integer, db.ForeignKey('faculty.id_faculty'))
 
+    # Define the relationship to Staff
+    staff_members = db.relationship('Staff', back_populates='department')
+
 class Staff(db.Model):
     __tablename__ = 'staff'
     id_staff = db.Column(db.Integer, primary_key=True)
@@ -22,6 +25,10 @@ class Staff(db.Model):
     id_department = db.Column(db.Integer, db.ForeignKey('department.id_department'))
     add_by_user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     state = db.Column(db.Boolean, default=True, nullable=False)
+
+    # Define the relationships
+    department = db.relationship('Department', back_populates='staff_members')
+    added_by_user = db.relationship('User')
 
 class User(db.Model):
     __tablename__ = 'users'

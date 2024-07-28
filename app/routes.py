@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
+from sqlalchemy.orm import joinedload
 from app import db
 from app.models import Faculty, Department, Staff, User
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -22,11 +23,12 @@ def login():
         elif check_password_hash(user.password, password):
             session['username'] = user.username
             session['role'] = user.role
+            session['user_id'] = user.id  # Store user id in session
             response = {'success': True, 'message': 'Login successful.', 'redirect': url_for('main.staff')}
         else:
-            response = {'success': False, 'message': 'Invalid password.'}
+            response = {'success': False, 'message': 'Invalid username or password.'}
     else:
-        response = {'success': False, 'message': 'Username not found.'}
+        response = {'success': False, 'message': 'Invalid username or password.'}
 
     return jsonify(response)
 
@@ -49,6 +51,36 @@ def check_session():
     authenticated = 'username' in session
     return jsonify({'authenticated': authenticated})
 
+
+@bp.route('/get_user_info', methods=['GET'])
+def get_user_info():
+    if 'username' in session:
+        user = User.query.filter_by(username=session['username']).first()
+        if user:
+            return jsonify({'username': user.name})
+    return jsonify({'username': None})
+
+@bp.route('/home')
+def home():
+    return render_template('home.html')
+
+@bp.route('/conferences')
+def conferences():
+    return render_template('conferences.html')
+
+@bp.route('/r-conferences')
+def r_conferences():
+    return render_template('r-conferences.html')
+
+@bp.route('/test-camera')
+def test_camera():
+    return render_template('test-camera.html')
+
+@bp.route('/model-train')
+def model_train():
+    return render_template('model-train.html')
+
+#users part
 @bp.route('/users')
 def users():
     if 'role' not in session or session['role'] != 'admin':
@@ -116,81 +148,86 @@ def register_user():
     
     return redirect(url_for('main.users'))
 
-@bp.route('/get_user_info', methods=['GET'])
-def get_user_info():
-    if 'username' in session:
-        user = User.query.filter_by(username=session['username']).first()
-        if user:
-            return jsonify({'username': user.name})
-    return jsonify({'username': None})
-
-@bp.route('/home')
-def home():
-    return render_template('home.html')
-
-@bp.route('/conferences')
-def conferences():
-    return render_template('conferences.html')
-
-@bp.route('/r-conferences')
-def r_conferences():
-    return render_template('r-conferences.html')
-
-@bp.route('/test-camera')
-def test_camera():
-    return render_template('test-camera.html')
-
-@bp.route('/model-train')
-def model_train():
-    return render_template('model-train.html')
-
-
-
 #staff part
-@bp.route('/staff', methods=['GET'])
+@bp.route('/staff')
 def staff():
+    if 'role' not in session or session['role'] != 'admin':
+        return redirect(url_for('main.index'))
+
+    search_query = request.args.get('search')
+    if search_query:
+        staff_members = Staff.query.filter(
+            Staff.state == True,
+            (Staff.staff_name.ilike(f'%{search_query}%')) |
+            (Staff.email.ilike(f'%{search_query}%'))
+        ).all()
+    else:
+        staff_members = Staff.query.filter_by(state=True).all()
+
     departments = Department.query.all()
-    staff_members = Staff.query.filter_by(state=True).all()
-    return render_template('staff.html', departments=departments, staff_members=staff_members)
+    message = session.pop('message', None)
+    message_type = session.pop('message_type', None)
+    return render_template('staff.html', staff_members=staff_members, departments=departments, message=message, message_type=message_type)
 
 @bp.route('/add_staff', methods=['POST'])
 def add_staff():
-    name = request.form.get('name')
-    phone = request.form.get('phone')
-    email = request.form.get('email')
-    gender = request.form.get('gender')
-    department_id = request.form.get('department_id')
-    add_by_user_id = request.form.get('add_by_user_id')
+    if 'role' not in session or session['role'] != 'admin':
+        return redirect(url_for('main.index'))
 
-    new_staff = Staff(
-        staff_name=name,
-        phone=phone,
-        email=email,
-        gender=gender,
-        id_department=department_id,
-        add_by_user_id=add_by_user_id
-    )
+    staff_name = request.form['name']
+    phone = request.form['phone']
+    email = request.form['email']
+    gender = request.form['gender']
+    id_department = request.form['department_id']
+    
+    # Assuming the currently logged-in user's ID is stored in the session
+    add_by_user_id = session['user_id']
+    
+    new_staff = Staff(staff_name=staff_name, phone=phone, email=email, gender=gender, id_department=id_department, add_by_user_id=add_by_user_id, state=True)
+    
     db.session.add(new_staff)
     db.session.commit()
-    flash('Staff member added successfully', 'success')
+    session['message'] = 'Staff added successfully.'
+    session['message_type'] = 'success'
+    
     return redirect(url_for('main.staff'))
 
-@bp.route('/update_staff/<int:id>', methods=['POST'])
-def update_staff(id):
-    staff = Staff.query.get_or_404(id)
-    staff.staff_name = request.form.get('name')
-    staff.phone = request.form.get('phone')
-    staff.email = request.form.get('email')
-    staff.gender = request.form.get('gender')
-    staff.id_department = request.form.get('department_id')
+
+@bp.route('/update_staff', methods=['POST'])
+def update_staff():
+    if 'role' not in session or session['role'] != 'admin':
+        return redirect(url_for('main.index'))
+
+    staff_id = request.form['id_staff']
+    staff = Staff.query.get(staff_id)
+    
+    staff.staff_name = request.form['staff_name']
+    staff.phone = request.form['phone']
+    staff.email = request.form['email']
+    staff.gender = request.form['gender']
+    staff.id_department = request.form['id_department']
+    
     db.session.commit()
-    flash('Staff member updated successfully', 'success')
+    session['message'] = 'Staff updated successfully.'
+    session['message_type'] = 'success'
+    
     return redirect(url_for('main.staff'))
 
-@bp.route('/delete_staff/<int:id>', methods=['POST'])
-def delete_staff(id):
-    staff = Staff.query.get_or_404(id)
-    staff.state = False
-    db.session.commit()
-    flash('Staff member deactivated successfully', 'success')
+@bp.route('/delete_staff', methods=['POST'])
+def delete_staff():
+    if 'role' not in session or session['role'] != 'admin':
+        return redirect(url_for('main.index'))
+
+    staff_id = request.form['id_staff']
+    staff = Staff.query.get(staff_id)
+    
+    if staff:
+        staff.state = False
+        db.session.commit()
+        session['message'] = 'Staff deactivated successfully.'
+        session['message_type'] = 'success'
+    else:
+        session['message'] = 'Staff not found.'
+        session['message_type'] = 'error'
+    
     return redirect(url_for('main.staff'))
