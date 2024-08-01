@@ -113,131 +113,151 @@
             </div>
         </div>
     </nav>
-<section class="home">
-    <div class="page-content">
-        <h2>Staff Management</h2>
-        <p>Manage staff below.</p>
+    <section class="home">
+        <div class="page-content">
+            <h2>Staff Management</h2>
+            <p>Manage staff below.</p>
 
-        {% if message %}
-        <div class="popup {{ message_type }}">
-            <p class="below">{{ message }}</p>
-        </div>
-        {% endif %}
-        <!-- Search Bar -->
-        <div class="search-container">
-            <form method="GET" action="{{ url_for('main.staff') }}">
-                <input type="text" name="search" placeholder="Search by name or email">
-                <button type="submit">Search</button>
-            </form>
-        </div>
+            {% if message %}
+            <div class="popup {{ message_type }}">
+                <p class="below">{{ message }}</p>
+            </div>
+            {% endif %}
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Gender</th>
-                    <th>Department</th>
-                    <th>Added by</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for staff in staff_members %}
-                <tr>
-                    <td>{{ staff.staff_name }}</td>
-                    <td>{{ staff.phone }}</td>
-                    <td>{{ staff.email }}</td>
-                    <td>{{ staff.gender }}</td>
-                    <td>{{ staff.department.name_department }}</td>
-                    <td>{{ staff.added_by_user.name }}</td>
-                    <td>
-                        <button class="update-btn" data-id="{{ staff.id_staff }}">Update</button>
-                        <form action="{{ url_for('main.update_staff') }}" method="post" class="user-form hide"
-                            data-id="{{ staff.id_staff }}">
-                            <input type="hidden" name="id_staff" value="{{ staff.id_staff }}">
-                            <label for="staff_name">Name:</label>
-                            <input type="text" id="staff_name" name="staff_name" value="{{ staff.staff_name }}"
-                                required>
-                            <label for="phone">Phone:</label>
-                            <input type="text" id="phone" name="phone" value="{{ staff.phone }}">
-                            <label for="email">Email:</label>
-                            <input type="text" id="email" name="email" value="{{ staff.email }}">
-                            <label for="gender">Gender:</label>
-                            <select id="gender" name="gender" required>
-                                <option value="Male" {{ 'selected' if staff.gender=='Male' else '' }}>Male</option>
-                                <option value="Female" {{ 'selected' if staff.gender=='Female' else '' }}>Female
-                                </option>
-                                <option value="Other" {{ 'selected' if staff.gender=='Other' else '' }}>Other</option>
-                            </select>
-                            <label for="department_id">Department:</label>
-                            <select id="department_id" name="id_department" required>
-                                {% for department in departments %}
-                                <option value="{{ department.id_department }}" {{ 'selected' if
-                                    staff.id_department==department.id_department else '' }}>
-                                    {{ department.name_department }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                            <button type="submit" name="update" class="btn-update">Update</button>
-                        </form>
-                        <form action="{{ url_for('main.delete_staff') }}" method="post">
-                            <input type="hidden" name="id_staff" value="{{ staff.id_staff }}">
-                            <button type="submit" name="delete" class="btn-delete">Deactivate</button>
-                        </form>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="7">No staff members found.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <!-- Register staff form -->
-        <div class="register-container">
-            <button class="register-btn">
-                <i class='bx bx-plus'></i>
-            </button>
-            <div class="register-form hide">
-                <form id="register-staff-form" action="{{ url_for('main.add_staff') }}" method="post">
-                    <div class="form-group">
-                        <label for="name">Name:</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone:</label>
-                        <input type="text" id="phone" name="phone">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="text" id="email" name="email">
-                    </div>
-                    <div class="form-group">
-                        <label for="gender">Gender:</label>
-                        <select id="gender" name="gender" required>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="department_id">Department:</label>
-                        <select id="department_id" name="department_id" required>
-                            {% for department in departments %}
-                            <option value="{{ department.id_department }}">{{ department.name_department }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <input type="submit" value="Add Staff" class="submit-btn">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <form method="GET" action="{{ url_for('main.staff') }}">
+                    <input type="text" name="search" placeholder="Search by name or email">
+                    <button type="submit">Search</button>
                 </form>
             </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Gender</th>
+                        <th>Department</th>
+                        <th>Added by</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for staff in staff_members %}
+                    <tr>
+                        <td>{{ staff.staff_name }}</td>
+                        <td>{{ staff.phone }}</td>
+                        <td>{{ staff.email }}</td>
+                        <td>{{ staff.gender }}</td>
+                        <td>{{ staff.department.name_department }}</td>
+                        <td>{{ staff.added_by_user.name }}</td>
+                        <td>
+                            <!-- Existing update and delete buttons -->
+                            <button class="update-btn" data-id="{{ staff.id_staff }}">Update</button>
+                            <form action="{{ url_for('main.update_staff') }}" method="post" class="user-form hide" data-id="{{ staff.id_staff }}"
+                                enctype="multipart/form-data">
+                                <input type="hidden" name="id_staff" value="{{ staff.id_staff }}">
+                                <div class="form-group">
+                                    <label for="name-{{ staff.id_staff }}">Name:</label>
+                                    <input type="text" id="name-{{ staff.id_staff }}" name="name" value="{{ staff.staff_name }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone-{{ staff.id_staff }}">Phone:</label>
+                                    <input type="text" id="phone-{{ staff.id_staff }}" name="phone" value="{{ staff.phone }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email-{{ staff.id_staff }}">Email:</label>
+                                    <input type="text" id="email-{{ staff.id_staff }}" name="email" value="{{ staff.email }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gender-{{ staff.id_staff }}">Gender:</label>
+                                    <select id="gender-{{ staff.id_staff }}" name="gender" required>
+                                        <option value="Male" {% if staff.gender=='Male' %}selected{% endif %}>Male</option>
+                                        <option value="Female" {% if staff.gender=='Female' %}selected{% endif %}>Female</option>
+                                        <option value="Other" {% if staff.gender=='Other' %}selected{% endif %}>Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="department_id-{{ staff.id_staff }}">Department:</label>
+                                    <select id="department_id-{{ staff.id_staff }}" name="department_id" required>
+                                        {% for department in departments %}
+                                        <option value="{{ department.id_department }}" {% if staff.department_id==department.id_department
+                                            %}selected{% endif %}>
+                                            {{ department.name_department }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="video-{{ staff.id_staff }}">Update Video:</label>
+                                    <input type="file" id="video-{{ staff.id_staff }}" name="video">
+                                </div>
+                                <input type="submit" value="Update Staff" class="submit-btn">
+                            </form>
+                            
+                            <form action="{{ url_for('main.delete_staff') }}" method="post">
+                                <input type="hidden" name="id_staff" value="{{ staff.id_staff }}">
+                                <button type="submit" name="delete" class="btn-delete">Deactivate</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8">No staff members found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Register staff form -->
+            <div class="register-container">
+                <button class="register-btn">
+                    <i class='bx bx-plus'></i>
+                </button>
+                <div class="register-form hide">
+                    <form id="register-staff-form" action="{{ url_for('main.add_staff') }}" method="post"
+                        enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone:</label>
+                            <input type="text" id="phone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="text" id="email" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender:</label>
+                            <select id="gender" name="gender" required>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="department_id">Department:</label>
+                            <select id="department_id" name="department_id" required>
+                                {% for department in departments %}
+                                <option value="{{ department.id_department }}">{{ department.name_department }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="video">Upload Video:</label>
+                            <input type="file" id="video" name="video" required>
+                        </div>
+                        <input type="submit" value="Add Staff" class="submit-btn">
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
-</section>
-    
+    </section>
+  
 <script src="{{ url_for('static', filename='js/staff_script.js') }}"></script>
 
 </body>

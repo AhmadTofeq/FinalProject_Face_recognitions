@@ -1,8 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify ,current_app
 from sqlalchemy.orm import joinedload
 from app import db
 from app.models import Faculty, Department, Staff, User
 from werkzeug.security import generate_password_hash, check_password_hash
+import os
+from werkzeug.utils import secure_filename
+from app.video_processing import process_video
+import logging
 
 bp = Blueprint('main', __name__)
 
@@ -148,7 +152,6 @@ def register_user():
     
     return redirect(url_for('main.users'))
 
-#staff part
 @bp.route('/staff')
 def staff():
     if 'role' not in session or session['role'] != 'admin':
@@ -169,6 +172,26 @@ def staff():
     message_type = session.pop('message_type', None)
     return render_template('staff.html', staff_members=staff_members, departments=departments, message=message, message_type=message_type)
 
+@bp.route('/delete_staff', methods=['POST'])
+def delete_staff():
+    if 'role' not in session or session['role'] != 'admin':
+        return redirect(url_for('main.index'))
+
+    staff_id = request.form['id_staff']
+    staff = Staff.query.get(staff_id)
+
+    if not staff:
+        session['message'] = 'Staff not found.'
+        session['message_type'] = 'error'
+        return redirect(url_for('main.staff'))
+
+    staff.state = False
+    db.session.commit()
+
+    session['message'] = 'Staff deactivated successfully.'
+    session['message_type'] = 'success'
+    return redirect(url_for('main.staff'))
+
 @bp.route('/add_staff', methods=['POST'])
 def add_staff():
     if 'role' not in session or session['role'] != 'admin':
@@ -183,51 +206,66 @@ def add_staff():
     # Assuming the currently logged-in user's ID is stored in the session
     add_by_user_id = session['user_id']
     
-    new_staff = Staff(staff_name=staff_name, phone=phone, email=email, gender=gender, id_department=id_department, add_by_user_id=add_by_user_id, state=True)
+    new_staff = Staff(
+        staff_name=staff_name,
+        phone=phone,
+        email=email,
+        gender=gender,
+        id_department=id_department,
+        add_by_user_id=add_by_user_id,
+        state=True
+    )
     
     db.session.add(new_staff)
     db.session.commit()
+
+    if 'video' in request.files:
+        video = request.files['video']
+        # Process the video to extract images
+        process_video(video, email)
+    
     session['message'] = 'Staff added successfully.'
     session['message_type'] = 'success'
     
     return redirect(url_for('main.staff'))
 
-
 @bp.route('/update_staff', methods=['POST'])
 def update_staff():
-    if 'role' not in session or session['role'] != 'admin':
-        return redirect(url_for('main.index'))
+    try:
+        if 'role' not in session or session['role'] != 'admin':
+            return redirect(url_for('main.index'))
 
-    staff_id = request.form['id_staff']
-    staff = Staff.query.get(staff_id)
-    
-    staff.staff_name = request.form['staff_name']
-    staff.phone = request.form['phone']
-    staff.email = request.form['email']
-    staff.gender = request.form['gender']
-    staff.id_department = request.form['id_department']
-    
-    db.session.commit()
-    session['message'] = 'Staff updated successfully.'
-    session['message_type'] = 'success'
-    
-    return redirect(url_for('main.staff'))
+        logging.debug(f"Form data: {request.form}")
+        logging.debug(f"Files: {request.files}")
 
-@bp.route('/delete_staff', methods=['POST'])
-def delete_staff():
-    if 'role' not in session or session['role'] != 'admin':
-        return redirect(url_for('main.index'))
+        staff_id = request.form['id_staff']
+        staff = Staff.query.get(staff_id)
+        
+        if not staff:
+            session['message'] = 'Staff not found.'
+            session['message_type'] = 'error'
+            return redirect(url_for('main.staff'))
 
-    staff_id = request.form['id_staff']
-    staff = Staff.query.get(staff_id)
-    
-    if staff:
-        staff.state = False
+        staff.staff_name = request.form['name']
+        staff.phone = request.form['phone']
+        staff.email = request.form['email']
+        staff.gender = request.form['gender']
+        staff.id_department = request.form['department_id']
+        
         db.session.commit()
-        session['message'] = 'Staff deactivated successfully.'
+
+        if 'video' in request.files:
+            video = request.files['video']
+            # Process the video to extract images
+            process_video(video, staff.email)
+        
+        session['message'] = 'Staff updated successfully.'
         session['message_type'] = 'success'
-    else:
-        session['message'] = 'Staff not found.'
+        
+        return redirect(url_for('main.staff'))
+
+    except Exception as e:
+        logging.error(f"Error updating staff: {str(e)}")
+        session['message'] = f'Error updating staff: {str(e)}'
         session['message_type'] = 'error'
-    
-    return redirect(url_for('main.staff'))
+        return redirect(url_for('main.staff'))
