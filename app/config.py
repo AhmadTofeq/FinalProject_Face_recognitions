@@ -12,3 +12,12 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'mysql+pymysql://root:@localhost/soran_face'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
+    # Security enhancements
+    SESSION_COOKIE_SECURE = True  # Ensure cookies are only sent over HTTPS
+    SESSION_COOKIE_HTTPONLY = True  # Prevent client-side scripts from accessing the session cookie
+    SESSION_COOKIE_SAMESITE = 'Lax'  # Mitigate CSRF attacks
+
+    # CSRF protection (requires Flask-WTF)
+    WTF_CSRF_ENABLED = True
+    WTF_CSRF_SECRET_KEY = os.environ.get('WTF_CSRF_SECRET_KEY') or 'another-secure-random-string'
