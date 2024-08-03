@@ -8,7 +8,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const registerBtn = document.querySelector('.register-btn');
     const registerForm = document.querySelector('.register-form');
     const updateBtns = document.querySelectorAll('.update-btn');
+    const deleteButtons = document.querySelectorAll('.btn-delete');
+    const dialog = document.querySelector('.dialog');
+    const cancelBtn = dialog.querySelector('.cancel');
+    const confirmDeleteBtn = dialog.querySelector('.delete');
 
+    let currentForm = null; // Variable to keep track of the current form to be deleted
     // Toggle register form visibility
     registerBtn.addEventListener('click', () => {
         registerForm.classList.toggle('show');
@@ -89,4 +94,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Show confirmation dialog before deleting a user
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            currentForm = this.closest('form'); // Store the current form to be deleted
+            dialog.classList.add('show'); // Show the confirmation dialog
+        });
+    });
+
+    // Handle cancel button in the dialog
+    cancelBtn.addEventListener('click', function() {
+        dialog.classList.remove('show'); // Hide the confirmation dialog
+        currentForm = null; // Reset the current form
+    });
+
+    // Handle confirm delete button in the dialog
+    confirmDeleteBtn.addEventListener('click', function() {
+        if (currentForm) {
+            currentForm.submit(); // Submit the stored form
+        }
+        dialog.classList.remove('show'); // Hide the confirmation dialog
+    });
 });

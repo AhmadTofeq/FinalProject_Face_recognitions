@@ -8,6 +8,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const registerBtn = document.querySelector('.register-btn');
     const registerForm = document.querySelector('.register-form');
     const updateBtns = document.querySelectorAll('.update-btn');
+    const deleteButtons = document.querySelectorAll('.btn-delete');
+    const dialog = document.querySelector('.dialog');
+    const cancelBtn = dialog.querySelector('.cancel');
+    const confirmDeleteBtn = dialog.querySelector('.delete');
+
+    let currentForm = null; // Variable to keep track of the current form to be deleted
 
     // Toggle register form visibility
     if (registerBtn) {
@@ -71,31 +77,35 @@ document.addEventListener('DOMContentLoaded', function() {
         modeText.innerText = "Dark mode";
     }
 
-    // Set active navigation link based on current page
-    const links = document.querySelectorAll('.nav-link a');
-    const currentPage = window.location.pathname.split('/').pop().split('.')[0]; // Get current page name
-
-    links.forEach(link => {
-        const page = link.getAttribute('data-page');
-        if (page === currentPage) {
-            link.parentElement.classList.add('active');
-        } else {
-            link.parentElement.classList.remove('active');
-        }
-    });
-
-
-    // Toggle staff update form visibility
+    // Show update form when Update button is clicked
     updateBtns.forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            const form = document.querySelector(`.user-form[data-id='${id}']`);
-            if (form) {
-                form.classList.toggle('hide');
-            } else {
-                console.error(`Form with data-id ${id} not found.`);
-            }
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute('data-id');
+            const form = document.querySelector(`.user-form[data-id="${id}"]`);
+            form.classList.toggle('hide');
         });
     });
-    
+
+   // Show confirmation dialog before deleting a user
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            currentForm = this.closest('form'); // Store the current form to be deleted
+            dialog.classList.add('show'); // Show the confirmation dialog
+        });
+    });
+
+    // Handle cancel button in the dialog
+    cancelBtn.addEventListener('click', function() {
+        dialog.classList.remove('show'); // Hide the confirmation dialog
+        currentForm = null; // Reset the current form
+    });
+
+    // Handle confirm delete button in the dialog
+    confirmDeleteBtn.addEventListener('click', function() {
+        if (currentForm) {
+            currentForm.submit(); // Submit the stored form
+        }
+        dialog.classList.remove('show'); // Hide the confirmation dialog
+    });
 });

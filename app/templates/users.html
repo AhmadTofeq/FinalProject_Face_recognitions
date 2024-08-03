@@ -205,6 +205,13 @@
             </div>
         </div>
     </section>
+    <div id="deleteUserDialog" class="dialog hide">
+    <div class="icon">&#10007;</div>
+    <div class="message">Are you sure?</div>
+    <div class="message">You will not be able to recover this User!</div>
+    <button class="cancel">Cancel</button>
+    <button class="delete">Delete!</button>
+    </div>
     {% include 'dialog.html' %}
     <script src="{{ url_for('static', filename='js/users_script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dialog.js') }}"></script>
