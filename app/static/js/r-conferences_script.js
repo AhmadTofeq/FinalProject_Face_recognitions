@@ -70,25 +70,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    logoutBtn.addEventListener('click', function(event) {
-        event.preventDefault();
-
-        fetch('/logout', {
-            method: 'POST',
-            credentials: 'same-origin'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = '/';
-            } else {
-                console.error('Logout failed:', data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error during logout:', error);
-        });
-    });
 });

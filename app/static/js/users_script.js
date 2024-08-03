@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebar.classList.toggle("close");
     });
 
-   // Toggle dark mode
+    // Toggle dark mode
     modeSwitch.addEventListener("click", () => {
         body.classList.toggle("dark");
 
@@ -78,30 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    logoutBtn.addEventListener('click', function(event) {
-    event.preventDefault();
-
-    fetch('/logout', {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.href = '/';
-        } else {
-            console.error('Logout failed:', data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error during logout:', error);
-    });
-});
+    
 
     // Toggle user update form visibility
     updateBtns.forEach(button => {
@@ -111,4 +88,5 @@ document.addEventListener('DOMContentLoaded', function() {
             form.classList.toggle('hide');
         });
     });
+
 });

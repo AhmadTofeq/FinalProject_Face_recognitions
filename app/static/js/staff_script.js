@@ -84,32 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(event) {
-            event.preventDefault();
-
-            fetch('/logout', {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = '/';
-                } else {
-                    console.error('Logout failed:', data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error during logout:', error);
-            });
-        });
-    }
 
     // Toggle staff update form visibility
     updateBtns.forEach(button => {
@@ -123,4 +97,5 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
 });

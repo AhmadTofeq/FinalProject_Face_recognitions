@@ -1,0 +1,54 @@
+/* static/css/dialog.css */
+.dialog {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--body-color);
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    z-index: 1000;
+    color: var(--text-color);
+}
+
+.dialog .icon {
+    font-size: 3em;
+    color: rgb(207, 22, 22);
+    margin-bottom: 15px;
+}
+
+.dialog .message {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.dialog button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dialog button:hover {
+    opacity: 0.8;
+}
+
+.dialog .cancel {
+    background-color: #ccc;
+    color: #333;
+}
+
+.dialog .delete {
+    background-color: rgb(207, 22, 22);
+    color: white;
+}
+
+.dialog.show {
+    display: block;
+}

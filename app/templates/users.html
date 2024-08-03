@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dialog.css') }}">
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <title>Users</title>
     <script>
@@ -117,13 +118,13 @@
         <div class="page-content">
             <h2>Users</h2>
             <p>Manage users below.</p>
-
+    
             {% if message %}
             <div class="popup {{ message_type }}">
                 <p class="below">{{ message }}</p>
             </div>
             {% endif %}
-
+    
             <table>
                 <thead>
                     <tr>
@@ -172,7 +173,6 @@
                     {% endfor %}
                 </tbody>
             </table>
-
             <!-- Register user form -->
             <div class="register-container">
                 <button class="register-btn">
@@ -205,7 +205,8 @@
             </div>
         </div>
     </section>
+    {% include 'dialog.html' %}
     <script src="{{ url_for('static', filename='js/users_script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dialog.js') }}"></script>
 </body>
-
 </html>

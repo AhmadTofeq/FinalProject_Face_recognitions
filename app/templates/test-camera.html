@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/test-camera_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dialog.css') }}">
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <title>Soran-Face</title>
 
@@ -117,7 +118,9 @@
     <section class="home">
         <div id="content"></div>
     </section>
+    {% include 'dialog.html' %}
     <script src="../static/js/test-camera_script.js"></script>
+    <script src="{{ url_for('static', filename='js/dialog.js') }}"></script>
 </body>
 
 </html>

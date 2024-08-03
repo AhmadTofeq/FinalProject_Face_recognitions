@@ -432,7 +432,7 @@ th {
 
 .btn-delete {
     padding: 7px 18px;
-    background-color: red;
+    background-color: rgb(207, 22, 22);
     color: white;
     border: none;
     border-radius: 4px;
@@ -571,7 +571,7 @@ th {
 }
 
 .popup.error {
-    background-color: red;
+    background-color: rgb(207, 22, 22);
 }
 /* General form styles */
 .common-form,
@@ -735,4 +735,63 @@ th {
         width: 100%;
         margin-bottom: 10px;
     }
+}
+/*show delete pop up */
+.dialog {
+    display: none;
+    position: fixed;
+    /* Position it relative to the viewport */
+    top: 50%;
+    /* Center it vertically */
+    left: 50%;
+    /* Center it horizontally */
+    transform: translate(-50%, -50%);
+    /* Offset it by its own dimensions */
+    background-color: var(--body-color);
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    z-index: 1000;
+    /* Ensure it is on top of other elements */
+    color: var(--text-color);
+}
+
+.dialog .icon {
+    font-size: 3em;
+    color: rgb(207, 22, 22);
+    margin-bottom: 15px;
+}
+
+.dialog .message {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.dialog button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dialog button:hover {
+    opacity: 0.8;
+}
+
+.dialog .cancel {
+    background-color: #ccc;
+    color: #333;
+}
+
+.dialog .delete {
+    background-color: rgb(207, 22, 22);
+    color: white;
+}
+
+.dialog.show {
+    display: block;
 }
