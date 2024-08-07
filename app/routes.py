@@ -5,7 +5,7 @@ from app.models import Faculty, Department, Staff, User
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from werkzeug.utils import secure_filename
-from app.video_processing import process_video
+from app.video_processing import StaffProcessor
 import logging
 
 bp = Blueprint('main', __name__)
@@ -222,9 +222,11 @@ def add_staff():
 
     if 'video' in request.files:
         video = request.files['video']
+        video_path = f"app/videos/{new_staff.id_staff}.mp4"
+        video.save(video_path)
         # Process the video to extract images
-        process_video(video, email)
-    
+        StaffProcessor().insert_staff(video_path, new_staff.staff_name, new_staff.id_staff)   
+
     session['message'] = 'Staff added successfully.'
     session['message_type'] = 'success'
     
@@ -264,14 +266,11 @@ def update_staff():
         if (current_name != staff.staff_name or 
             current_email != staff.email or 
             'video' in request.files):
-
-            if 'video' in request.files:
-                video = request.files['video']
-                # Process the video to extract images
-                process_video(video, staff.email)
-            else:
-                # In case only name or email was updated, you might want to handle
-                pass
+            video = request.files['video']
+            video_path = f"app/videos/{staff.id}.mp4"
+            video.save(video_path)
+            # Process the video to extract images
+            StaffProcessor().updated_staff(video_path, staff.staff_name, staff.id_staff)
 
         session['message'] = 'Staff updated successfully.'
         session['message_type'] = 'success'

@@ -1,70 +1,82 @@
 import cv2
 import os
 import time
-from cvzone.FaceDetectionModule import FaceDetector
+import numpy as np
 from flask import current_app
+from app.back_end_process.Pyhton_files.class_.Detection_face import FaceDetection as mymodel
+from app.back_end_process.Pyhton_files.class_.ModelRecognitionAndDtection import ModelRecognitionAndDtection1 as emmbeding
+from app.back_end_process.Pyhton_files.class_.paths import paths1
 
-def process_video(video, email):
-    # Create directory for the staff member
-    image_dir = os.path.join(current_app.root_path, 'videos', email)
-    os.makedirs(image_dir, exist_ok=True)
+class StaffProcessor:
 
-    # Save the uploaded video temporarily
-    temp_video_path = os.path.join(image_dir, "temp_video.mp4")
-    video.save(temp_video_path)
+    def __init__(self):
+        pass
 
-    cap = cv2.VideoCapture(temp_video_path)
-    if not cap.isOpened():
-        print(f"Error: Could not open video {temp_video_path}")
-        return
+    def insert_staff(self, video_path, name, id):
+        # Create directory for the staff member
+        #     image_dir = os.path.join(r"F:\final_project\Ui\FinalProject_Face_recognitions", 'videos1', name)
+        #     os.makedirs(image_dir, exist_ok=True)
+        #
+        #     # Save the uploaded video temporarily
+        #     temp_video_path = os.path.join(image_dir, "temp_video.mp4")
+        #     video_path.save(temp_video_path)
+        model = mymodel().take_a_sample_from_vidio(video_path, name, id)
+        emmbeding(model).embading_all_images_Using_face_net_to_one_persone()
+        emmbeding(paths1.images_path).classfication_images_using_SVM()
+        # Remove the temporary video file
+        # os.remove(temp_video_path)
 
-    detector = FaceDetector(minDetectionCon=0.3, modelSelection=1)
-    frame_count = 0
-    saved_images_count = 0
+    def updated_staff(self, video, name, id):
+        if video == "":
+            # if you want just update name staff
+            # step one update image where id is equal to this id
+            id = str(id)
+            video_name = id + "@" + name
+            # if not os.path.exists(paths1.images_path):
+            #    return
+            for i in os.listdir(paths1.images_path):
+                # print(i)
+                if i.split("@")[0] == id:
+                    for image in os.listdir(os.path.join(paths1.images_path, i)):
+                        old_file_name = os.path.join(paths1.images_path, i, image)
+                        new_file_name = os.path.join(paths1.images_path, i, (video_name + "." + image.split(".")[1] + ".png"))
+                        os.rename(old_file_name, new_file_name)
+                    else:
+                        old_file_name = os.path.join(paths1.images_path, i)
+                        new_file_name = os.path.join(paths1.images_path, i.split("@")[0] + "@" + name)
+                        os.rename(old_file_name, new_file_name)
 
-    # Time tracking for saving images every 0.5 seconds
-    last_save_time = time.time()
+            # change label video in model embedding
+            with np.load(paths1.embading_model, mmap_mode='r+') as data:
+                arr_0 = data["arr_0"]
+                arr_1 = data["arr_1"].copy()
+            new_label = []
+            for i, label in enumerate(arr_1):
+                if label.split("@")[0] == id:
+                    # print(label.split("@")[0] + "@" + name)
+                    new_label.append(label.split("@")[0] + "@" + name)
+                else:
+                    new_label.append(label)
+            np.savez_compressed(paths1.embading_model, arr_0, new_label)
 
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            print("Error: Could not read frame.")
-            break
+            emmbeding(paths1.images_path).classfication_images_using_SVM()
+            # update their label according to id
+            pass
+        else:
+            for i in os.listdir(paths1.images_path):
+                if i.split("@")[0] == id:
+                    os.remove(os.path.join(paths1.images_path, i))
+            with np.load(paths1.embading_model, mmap_mode='r+') as data:
+                arr_0 = data["arr_0"]
+                arr_1 = data["arr_1"].copy()
+                new_x = []
+                new_label = []
+            for i, label in enumerate(arr_1):
+                if label.split("@")[0] != id:
+                    new_x.append(arr_0[i])
+                    new_label.append(arr_1[i])
 
-        faces, bboxes = detector.findFaces(frame, draw=False)
-        current_time = time.time()
-
-        if len(faces) > 0 and (current_time - last_save_time >= 0.5):
-            for bbox in bboxes:
-                x, y, w, h = bbox['bbox']
-                # Ensure the bounding box is within the image bounds
-                x = max(0, x)
-                y = max(0, y)
-                w = min(w, frame.shape[1] - x)
-                h = min(h, frame.shape[0] - y)
-
-                face_img = frame[y:y+h, x:x+w]
-
-                if face_img.size == 0:
-                    print("Warning: Detected face image is empty, skipping...")
-                    continue
-
-                face_filename = f"{email}_{frame_count}.jpg"
-                face_path = os.path.join(image_dir, face_filename)
-                cv2.imwrite(face_path, face_img)
-                print(f"Saved: {face_path}")
-
-                frame_count += 1
-                saved_images_count += 1
-
-            last_save_time = current_time
-
-        # Stop if more than 3 images are saved
-        if saved_images_count > 3:
-            break
-
-    cap.release()
-    cv2.destroyAllWindows()
-
-    # Remove the temporary video file
-    os.remove(temp_video_path)
+            np.savez_compressed(paths1.embading_model, new_x, new_label)
+            # Create directory for the staff member
+            # --now start to add new video
+            self.insert_staff(video, name, id)
