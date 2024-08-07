@@ -74,3 +74,26 @@ class StaffProcessor:
 
             np.savez_compressed(paths1.embading_model, new_x, new_label)
             self.insert_staff(video, name, id_staff)
+
+    def delete_images_and_labels(self, staff_id):
+        staff_id = str(staff_id)
+
+        # Delete images
+        for i in os.listdir(paths1.images_path):
+            if i.split("@")[0] == staff_id:
+                shutil.rmtree(os.path.join(paths1.images_path, i))
+                break
+
+        # Remove labels from the embedding model
+        with np.load(paths1.embading_model, mmap_mode='r+') as data:
+            arr_0 = data["arr_0"]
+            arr_1 = data["arr_1"].copy()
+            new_x = []
+            new_label = []
+            for i, label in enumerate(arr_1):
+                if label.split("@")[0] != staff_id:
+                    new_x.append(arr_0[i])
+                    new_label.append(arr_1[i])
+
+        np.savez_compressed(paths1.embading_model, new_x, new_label)
+        emmbeding(paths1.images_path).classfication_images_using_SVM()

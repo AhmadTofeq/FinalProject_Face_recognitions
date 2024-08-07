@@ -185,13 +185,17 @@ def delete_staff():
         session['message_type'] = 'error'
         return redirect(url_for('main.staff'))
 
+    # Deactivate the staff member
     staff.state = False
     db.session.commit()
-    #delete images too
-    #delete_images_too(staff.id)
-    session['message'] = 'Staff deactivated successfully.'
+
+    # Delete images and labels
+    StaffProcessor().delete_images_and_labels(staff_id)
+
+    session['message'] = 'Staff deactivated successfully and all related data deleted.'
     session['message_type'] = 'success'
     return redirect(url_for('main.staff'))
+
 
 @bp.route('/add_staff', methods=['POST'])
 def add_staff():
