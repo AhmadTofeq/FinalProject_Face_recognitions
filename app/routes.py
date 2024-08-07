@@ -187,7 +187,8 @@ def delete_staff():
 
     staff.state = False
     db.session.commit()
-
+    #delete images too
+    #delete_images_too(staff.id)
     session['message'] = 'Staff deactivated successfully.'
     session['message_type'] = 'success'
     return redirect(url_for('main.staff'))
@@ -240,25 +241,38 @@ def update_staff():
 
         staff_id = request.form['id_staff']
         staff = Staff.query.get(staff_id)
-        
+
         if not staff:
             session['message'] = 'Staff not found.'
             session['message_type'] = 'error'
             return redirect(url_for('main.staff'))
 
+        # Retrieve current values
+        current_name = staff.staff_name
+        current_email = staff.email
+
+        # Update values
         staff.staff_name = request.form['name']
         staff.phone = request.form['phone']
         staff.email = request.form['email']
         staff.gender = request.form['gender']
         staff.id_department = request.form['department_id']
-        
+
         db.session.commit()
 
-        if 'video' in request.files:
-            video = request.files['video']
-            # Process the video to extract images
-            process_video(video, staff.email)
-        
+        # Check if we need to call process_video
+        if (current_name != staff.staff_name or 
+            current_email != staff.email or 
+            'video' in request.files):
+
+            if 'video' in request.files:
+                video = request.files['video']
+                # Process the video to extract images
+                process_video(video, staff.email)
+            else:
+                # In case only name or email was updated, you might want to handle
+                pass
+
         session['message'] = 'Staff updated successfully.'
         session['message_type'] = 'success'
         
