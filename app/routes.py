@@ -231,7 +231,6 @@ def add_staff():
     session['message_type'] = 'success'
     
     return redirect(url_for('main.staff'))
-
 @bp.route('/update_staff', methods=['POST'])
 def update_staff():
     try:
@@ -265,10 +264,15 @@ def update_staff():
         # Check if we need to call process_video
         if (current_name != staff.staff_name or 
             current_email != staff.email or 
-            'video' in request.files):
-            video = request.files['video']
-            video_path = f"app/videos/{staff.id}.mp4"
-            video.save(video_path)
+            'video' in request.files and request.files['video'].filename != ''):
+            
+            if 'video' in request.files and request.files['video'].filename != '':
+                video = request.files['video']
+                video_path = f"app/videos/{staff.id_staff}.mp4"
+                video.save(video_path)
+            else:
+                video_path = ""
+
             # Process the video to extract images
             StaffProcessor().updated_staff(video_path, staff.staff_name, staff.id_staff)
 
