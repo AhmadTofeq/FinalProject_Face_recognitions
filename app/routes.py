@@ -167,10 +167,12 @@ def staff():
     else:
         staff_members = Staff.query.filter_by(state=True).all()
 
+    faculties = Faculty.query.all()
     departments = Department.query.all()
     message = session.pop('message', None)
     message_type = session.pop('message_type', None)
-    return render_template('staff.html', staff_members=staff_members, departments=departments, message=message, message_type=message_type)
+    return render_template('staff.html', staff_members=staff_members, faculties=faculties, departments=departments, message=message, message_type=message_type)
+
 
 @bp.route('/delete_staff', methods=['POST'])
 def delete_staff():
@@ -229,7 +231,9 @@ def add_staff():
         video_path = f"app/videos/{new_staff.id_staff}.mp4"
         video.save(video_path)
         # Process the video to extract images
-        StaffProcessor().insert_staff(video_path, new_staff.staff_name, new_staff.id_staff)   
+        StaffProcessor().insert_staff(video_path, new_staff.staff_name, new_staff.id_staff)  
+        if os.path. exists(video_path): 
+            os.remove(video_path)
 
     session['message'] = 'Staff added successfully.'
     session['message_type'] = 'success'
@@ -279,6 +283,8 @@ def update_staff():
 
             # Process the video to extract images
             StaffProcessor().updated_staff(video_path, staff.staff_name, staff.id_staff)
+            if os.path. exists(video_path): 
+                os.remove(video_path)
 
         session['message'] = 'Staff updated successfully.'
         session['message_type'] = 'success'

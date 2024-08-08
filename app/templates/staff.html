@@ -155,37 +155,56 @@
                         <td>{{ staff.department.name_department }}</td>
                         <td>{{ staff.added_by_user.name }}</td>
                         <td>
-                            <!-- Existing update and delete buttons -->
                             <button class="update-btn" data-id="{{ staff.id_staff }}">Update</button>
-                            <form action="{{ url_for('main.update_staff') }}" method="post" class="user-form hide" data-id="{{ staff.id_staff }}"
-                                enctype="multipart/form-data">
+                            <form action="{{ url_for('main.update_staff') }}" method="post" class="user-form hide"
+                                data-id="{{ staff.id_staff }}" enctype="multipart/form-data">
                                 <input type="hidden" name="id_staff" value="{{ staff.id_staff }}">
                                 <div class="form-group">
                                     <label for="name-{{ staff.id_staff }}">Name:</label>
-                                    <input type="text" id="name-{{ staff.id_staff }}" name="name" value="{{ staff.staff_name }}" required>
+                                    <input type="text" id="name-{{ staff.id_staff }}" name="name"
+                                        value="{{ staff.staff_name }}" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="phone-{{ staff.id_staff }}">Phone:</label>
-                                    <input type="text" id="phone-{{ staff.id_staff }}" name="phone" value="{{ staff.phone }}">
+                                    <input type="text" id="phone-{{ staff.id_staff }}" name="phone"
+                                        value="{{ staff.phone }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="email-{{ staff.id_staff }}">Email:</label>
-                                    <input type="text" id="email-{{ staff.id_staff }}" name="email" value="{{ staff.email }}">
+                                    <input type="text" id="email-{{ staff.id_staff }}" name="email"
+                                        value="{{ staff.email }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="gender-{{ staff.id_staff }}">Gender:</label>
                                     <select id="gender-{{ staff.id_staff }}" name="gender" required>
                                         <option value="Male" {% if staff.gender=='Male' %}selected{% endif %}>Male</option>
-                                        <option value="Female" {% if staff.gender=='Female' %}selected{% endif %}>Female</option>
-                                        <option value="Other" {% if staff.gender=='Other' %}selected{% endif %}>Other</option>
+                                        <option value="Female" {% if staff.gender=='Female' %}selected{% endif %}>Female
+                                        </option>
+                                        <option value="Other" {% if staff.gender=='Other' %}selected{% endif %}>Other
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="faculty_id-{{ staff.id_staff }}">Faculty:</label>
+                                    <select id="faculty_id-{{ staff.id_staff }}" class="faculty-select"
+                                        data-department-select="department_id-{{ staff.id_staff }}" name="faculty_id"
+                                        required>
+                                        {% for faculty in faculties %}
+                                        <option value="{{ faculty.id_faculty }}" {% if
+                                            staff.department.id_faculty==faculty.id_faculty %}selected{% endif %}>
+                                            {{ faculty.name_faculty }}
+                                        </option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="department_id-{{ staff.id_staff }}">Department:</label>
-                                    <select id="department_id-{{ staff.id_staff }}" name="department_id" required>
+                                    <select id="department_id-{{ staff.id_staff }}" class="department-select"
+                                        name="department_id" required>
                                         {% for department in departments %}
-                                        <option value="{{ department.id_department }}" {% if staff.department_id==department.id_department
-                                            %}selected{% endif %}>
+                                        <option value="{{ department.id_department }}" {% if
+                                            staff.id_department==department.id_department %}selected{% endif %}
+                                            data-faculty-id="{{ department.id_faculty }}">
                                             {{ department.name_department }}
                                         </option>
                                         {% endfor %}
@@ -197,7 +216,7 @@
                                 </div>
                                 <input type="submit" value="Update Staff" class="submit-btn">
                             </form>
-                            
+
                             <form action="{{ url_for('main.delete_staff') }}" method="post">
                                 <input type="hidden" name="id_staff" value="{{ staff.id_staff }}">
                                 <button type="submit" name="delete" class="btn-delete">Deactivate</button>
@@ -241,10 +260,20 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="faculty_id">Faculty:</label>
+                            <select id="faculty_id" class="faculty-select" data-department-select="department_id"
+                                name="faculty_id" required>
+                                {% for faculty in faculties %}
+                                <option value="{{ faculty.id_faculty }}">{{ faculty.name_faculty }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="department_id">Department:</label>
-                            <select id="department_id" name="department_id" required>
+                            <select id="department_id" class="department-select" name="department_id" required>
                                 {% for department in departments %}
-                                <option value="{{ department.id_department }}">{{ department.name_department }}</option>
+                                <option value="{{ department.id_department }}"
+                                    data-faculty-id="{{ department.id_faculty }}">{{ department.name_department }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -263,7 +292,7 @@
         <div class="message">Are you sure?</div>
         <div class="message">You will not be able to recover this Staff member!</div>
         <button class="cancel">Cancel</button>
-        <button class="delete">Delete!</button>
+        <button class="delete">Deactivate!</button>
     </div>
     {% include 'dialog.html' %}
     <script src="{{ url_for('static', filename='js/staff_script.js') }}"></script>

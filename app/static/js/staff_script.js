@@ -108,4 +108,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         dialog.classList.remove('show'); // Hide the confirmation dialog
     });
+
+    function filterDepartments(facultySelect, departmentSelect) {
+        const selectedFaculty = facultySelect.value;
+        const departmentOptions = departmentSelect.querySelectorAll('option');
+        departmentOptions.forEach(option => {
+            option.style.display = option.getAttribute('data-faculty-id') == selectedFaculty ? 'block' : 'none';
+        });
+        if (departmentSelect.querySelector('option[style="display: block;"]')) {
+            departmentSelect.value = departmentSelect.querySelector('option[style="display: block;"]').value;
+        } else {
+            departmentSelect.value = '';
+        }
+    }
+
+    document.querySelectorAll('.faculty-select').forEach(facultySelect => {
+        const departmentSelectId = facultySelect.getAttribute('data-department-select');
+        const departmentSelect = document.getElementById(departmentSelectId);
+
+        facultySelect.addEventListener('change', () => {
+            filterDepartments(facultySelect, departmentSelect);
+        });
+
+        filterDepartments(facultySelect, departmentSelect);
+    });
 });
