@@ -5,7 +5,7 @@ from app.models import Faculty, Department, Staff, User
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from werkzeug.utils import secure_filename
-from app.video_processing import StaffProcessor
+from back_end_process.Pyhton_files.video_processing import StaffProcessor
 import logging
 
 bp = Blueprint('main', __name__)

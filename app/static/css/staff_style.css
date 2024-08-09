@@ -413,6 +413,7 @@ th {
     margin-bottom: 5px;
     font-weight: bold;
     color: var(--text-color);
+    margin-top: 4px;
 }
 
 .form-group input[type="text"],
@@ -475,7 +476,7 @@ th {
     font-size: 16px;
     transition: background-color 0.3s ease;
     height: 40px;
-    margin-top: 10px;
+    margin-top: 2px;
 }
 
 .submit-btn:hover {
@@ -525,8 +526,9 @@ th {
 }
 
 .register-form .form-group label {
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     color: var(--text-color);
+    margin-top: 2px;
 }
 
 .register-form .form-group input,
@@ -594,6 +596,7 @@ th {
     margin-bottom: 8px;
     font-weight: bold;
     color: var(--text-color);
+    margin-top: 2px;
 }
 
 .common-form input[type="text"],
@@ -609,11 +612,12 @@ th {
 .staff-form select {
     width: calc(100% - 20px);
     padding: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 2px;
     border: 1px solid var(--toggle-color);
     border-radius: 4px;
     box-sizing: border-box;
     font-size: 14px;
+    margin-top: 2px;
 }
 
 .common-form select,
