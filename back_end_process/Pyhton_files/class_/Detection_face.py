@@ -6,7 +6,7 @@ from mtcnn.mtcnn import MTCNN
 import cv2
 import os
 import time
-from app.back_end_process.Pyhton_files.class_.paths import paths1
+from back_end_process.Pyhton_files.class_.paths import paths1
 class FaceDetection:
     def __init__(self):
         self.detetion_model = FaceDetector(minDetectionCon=0.75, modelSelection=1)

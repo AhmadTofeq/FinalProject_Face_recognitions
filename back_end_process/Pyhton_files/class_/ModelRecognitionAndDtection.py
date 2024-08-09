@@ -6,7 +6,7 @@ from keras_facenet import FaceNet
 from sklearn.preprocessing import LabelEncoder
 import cv2
 import os
-from app.back_end_process.Pyhton_files.class_.paths import paths1
+from back_end_process.Pyhton_files.class_.paths import paths1
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 class ModelRecognitionAndDtection1:
     def __init__(self,_path_data_images):
@@ -56,7 +56,7 @@ class ModelRecognitionAndDtection1:
         lable=self.emmbeading_model['arr_1']
         y_lable=lable.tolist()+y_lable
         x_image=image_future.tolist()+x_image
-        np.savez_compressed(r'D:\xampp\htdocs\project\app\back_end_process\Moldels\embbading_all_image_faceNet.npz', x_image, y_lable)
+        np.savez_compressed(paths1.embading_model, x_image, y_lable)
         print("done................................................")
 
     def embading_all_images_Using_face_net_to_all_images(self):
@@ -94,7 +94,7 @@ class ModelRecognitionAndDtection1:
         # print("Predect_ tast data :", y_pred)
         # print("actual_  tast data :", y_lable_encode)
 
-        with open(r'D:\xampp\htdocs\project\app\back_end_process\Moldels\model_SVM.pkl', 'wb') as f:
+        with open(paths1.SVM_model, 'wb') as f:
             pickle.dump(grid_search.best_estimator_, f)
 # if __name__=="__main__":
 #     mod =ModelRecognitionAndDtection1(r"F:\final_project\Ui\FinalProject_Face_recognitions\Colect_Data\all_images\ahmad1212@testttttt")

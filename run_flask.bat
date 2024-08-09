@@ -1,6 +1,6 @@
 @echo off
 REM Activate the virtual environment
-call D:\venv\Scripts\activate
+call D:\xampp\htdocs\project\venv\Scripts\activate
 
 REM Set Flask environment variables
 set FLASK_APP=run.py

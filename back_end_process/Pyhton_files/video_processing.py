@@ -3,9 +3,9 @@ import os
 import time
 import numpy as np
 from flask import current_app
-from app.back_end_process.Pyhton_files.class_.Detection_face import FaceDetection as mymodel
-from app.back_end_process.Pyhton_files.class_.ModelRecognitionAndDtection import ModelRecognitionAndDtection1 as emmbeding
-from app.back_end_process.Pyhton_files.class_.paths import paths1
+from back_end_process.Pyhton_files.class_.Detection_face import FaceDetection as mymodel
+from back_end_process.Pyhton_files.class_.ModelRecognitionAndDtection import ModelRecognitionAndDtection1 as emmbeding
+from back_end_process.Pyhton_files.class_.paths import paths1
 import shutil
 class StaffProcessor:
 
