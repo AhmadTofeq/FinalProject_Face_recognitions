@@ -5,7 +5,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const modeSwitch = body.querySelector(".toggle-switch");
     const modeText = document.querySelector(".mode-text");
     const userNameSpan = document.getElementById('user-name');
+    const searchBar = document.getElementById('search-bar');
+    const staffButtonsContainer = document.getElementById('staff-container');
+    const staffButtons = staffButtonsContainer.getElementsByClassName('btn-staff');
 
+    searchBar.addEventListener('input', function () {
+        const query = searchBar.value.toLowerCase();
+
+        Array.from(staffButtons).forEach(button => {
+            const id = button.getAttribute('data-id').toLowerCase();
+            const name = button.getAttribute('data-name').toLowerCase();
+
+            if (id.includes(query) || name.includes(query)) {
+                button.style.display = '';
+            } else {
+                button.style.display = 'none';
+            }
+        });
+    });
     // Fetch user's name and update the span
     fetch('/get_user_info', {
         method: 'GET',

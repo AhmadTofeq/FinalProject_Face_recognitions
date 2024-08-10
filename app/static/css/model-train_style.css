@@ -20,7 +20,7 @@
     --text-color: #707070;
     --highlight-color: #4173a4;
     --highlight-hover-color: #326e91;
-
+    --twobutton:#373B44;
     /* ====== Transition ====== */
     --tran-03: all 0.2s ease;
     --tran-03: all 0.3s ease;
@@ -48,6 +48,7 @@ body.dark {
     --text-color: #ccc;
     --highlight-color: #4173a4;
     --highlight-hover-color: #326e91;
+    --twobutton: #bac4da;
 }
 
 .sidebar {
@@ -331,4 +332,165 @@ body.dark .home .text {
     font-weight: bold;
     background-color: var(--primary-color);
     font-size: 1rem;
+}
+
+/*Buttons CSS*/
+/* Adapted Button Styles */
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 39px;
+    /* Adjust spacing as needed */
+}
+
+/* Button Styles */
+.button-container button {
+    --b: 3px;
+    /* Border thickness */
+    --s: .18em;
+    /* Size of the corner */
+    --c: #BD5532;
+
+    padding: 0.7em 0.9em;
+    /* Increased padding */
+    color: var(--c);
+    --_p: var(--s);
+    background:
+        conic-gradient(from 90deg at var(--b) var(--b), #0000 90deg, var(--c) 0) var(--_p) var(--_p)/calc(100% - var(--b) - 2*var(--_p)) calc(100% - var(--b) - 2*var(--_p));
+    transition: .3s linear, color 0s, background-color 0s;
+    outline: var(--b) solid #0000;
+    outline-offset: .2em;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    font-size: 1.7rem;
+    /* Matches page font size */
+    cursor: pointer;
+    border: none;
+    margin: .1em;
+    width: 400px;
+    /* Matches page width */
+    height: auto;
+    text-align: center;
+    line-height: 1.2;
+    word-wrap: break-word;
+}
+
+/* Specific Button Styles */
+.button-container button.btn-1,
+.button-container button.btn-3 {
+    --c: var(--twobutton);/* Border thickness *//* Border thickness *//* Border thickness *//* Border thickness *//* Border thickness */
+    --b: 3px;
+    /* Border thickness */
+    --s: .19em;
+    /* Corner size */
+}
+
+.button-container button:hover,
+.button-container button:focus-visible {
+    --_p: 0px;
+    outline-color: var(--c);
+    outline-offset: .07em;
+}
+
+.button-container button:active {
+    background: var(--c);
+    color: #fff;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .button-container button {
+        font-size: 1.5rem;
+        /* Adjust font size for smaller screens */
+        width: 100%;
+        /* Full width on small screens */
+        padding: 0.75em;
+        /* Adjust padding */
+    }
+}
+/*the popup css*/
+.popup {
+    padding: 10px;
+    border-radius: 4px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.popup.success {
+    background-color: green;
+    color: white;
+    font-size: large;
+}
+
+.popup.error {
+    background-color: #f44336;
+    color: white;
+    font-size: large;
+}
+/* Staff container */
+.staff-buttons-container {
+    margin: 80px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    text-align: center;
+    align-items: center;
+    border: #326e91 solid 1.5px;
+    border-radius: 12px;
+    padding: 10px;
+    max-height: 500px;
+    /* Adjust the height as needed */
+    overflow-y: auto;
+    /* Add vertical scrollbar if needed */
+}
+
+/* Staff button */
+.btn-staff {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    flex: 1 1 calc(33.333% - 20px);
+    /* Responsive button width */
+    box-sizing: border-box;
+}
+
+.btn-staff:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .btn-staff {
+        flex: 1 1 calc(50% - 20px);
+        /* Adjust width for tablets */
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-staff {
+        flex: 1 1 calc(100% - 20px);
+        /* Adjust width for mobile phones */
+    }
+}
+
+/* Search bar */
+.search-container {
+    margin: 20px;
+    text-align: center;
+}
+
+#search-bar {
+    width: 100%;
+    max-width: 300px;
+    /* Adjust the width as needed */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
 }

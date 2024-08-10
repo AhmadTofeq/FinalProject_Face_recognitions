@@ -7,7 +7,7 @@ import os
 from werkzeug.utils import secure_filename
 from back_end_process.Pyhton_files.video_processing import StaffProcessor
 import logging
-
+#from back_end_process.Pyhton_files.model_train import model_train
 bp = Blueprint('main', __name__)
 
 @bp.route('/')
@@ -71,18 +71,13 @@ def home():
 @bp.route('/conferences')
 def conferences():
     return render_template('conferences.html')
-
-@bp.route('/r-conferences')
-def r_conferences():
-    return render_template('r-conferences.html')
-
+#test camera part
 @bp.route('/test-camera')
 def test_camera():
     return render_template('test-camera.html')
-
-@bp.route('/model-train')
-def model_train():
-    return render_template('model-train.html')
+@bp.route('/r-conferences')
+def r_conferences():
+    return render_template('r-conferences.html')
 
 #users part
 @bp.route('/users')
@@ -296,3 +291,54 @@ def update_staff():
         session['message'] = f'Error updating staff: {str(e)}'
         session['message_type'] = 'error'
         return redirect(url_for('main.staff'))
+
+#model train part
+@bp.route('/model-train')
+def model_train():
+    message = session.pop('message', None)
+    message_type = session.pop('message_type', None)
+    
+    # Query to get all staff members
+    staff_members = Staff.query.filter_by(state=True).all()
+    
+    return render_template('model_train.html', message=message, message_type=message_type, staff_members=staff_members)
+
+
+@bp.route('/model-feature-extraction', methods=['POST'])
+def model_feature_extraction():
+    try:
+        # Thr logic for feature extraction
+        if 1==1:
+            session['message'] = 'Model feature extraction completed successfully.'
+            session['message_type'] = 'success'
+    except Exception as e:
+        session['message'] = f'Error: {str(e)}'
+        session['message_type'] = 'error'
+
+    return redirect(url_for('main.model_train'))
+
+@bp.route('/model-classification', methods=['POST'])
+def model_classification():
+    try:
+        # The logic for model classification
+         if 1==1:
+            session['message'] = 'Model classification completed successfully.'
+            session['message_type'] = 'success'
+    except Exception as e:
+        session['message'] = f'Error: {str(e)}'
+        session['message_type'] = 'error'
+
+    return redirect(url_for('main.model_train'))
+
+@bp.route('/delete-model-data', methods=['POST'])
+def delete_model_data():
+    try:
+        # The logic for deleting model data
+        if 1==1:
+            session['message'] = 'Model data deleted successfully.'
+            session['message_type'] = 'success'
+    except Exception as e:
+        session['message'] = f'Error: {str(e)}'
+        session['message_type'] = 'error'
+
+    return redirect(url_for('main.model_train'))

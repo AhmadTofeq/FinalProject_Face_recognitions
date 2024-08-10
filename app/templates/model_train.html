@@ -116,7 +116,40 @@
         </div>
     </nav>
     <section class="home">
-        <div id="content"></div>
+        <div id="content">
+            {% if message %}
+            <div class="popup {{ message_type }}">
+                <p class="below">{{ message }}</p>
+            </div>
+            {% endif %}
+    
+            <div class="button-container">
+                <form action="{{ url_for('main.model_feature_extraction') }}" method="POST">
+                    <button type="submit" class="btn btn-1">Model feature extraction</button>
+                </form>
+                <form action="{{ url_for('main.model_classification') }}" method="POST">
+                    <button type="submit" class="btn btn-2">Model classification</button>
+                </form>
+                <form action="{{ url_for('main.delete_model_data') }}" method="POST">
+                    <button type="submit" class="btn btn-3">Delete model data</button>
+                </form>
+            </div>
+    
+            <!-- Search bar -->
+            <div class="search-container">
+                <input type="text" id="search-bar" placeholder="Search by ID or name..." />
+            </div>
+    
+            <!-- Staff buttons container -->
+            <div class="staff-buttons-container" id="staff-container">
+                {% for staff in staff_members %}
+                <button type="button" class="btn btn-staff" data-id="{{ staff.id_staff }}"
+                    data-name="{{ staff.staff_name }}">
+                    {{ staff.id_staff }} - {{ staff.staff_name }}
+                </button>
+                {% endfor %}
+            </div>
+        </div>
     </section>
     {% include 'dialog.html' %}
     <script src="../static/js/model-train_script.js"></script>
