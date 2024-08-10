@@ -7,7 +7,6 @@ import os
 from werkzeug.utils import secure_filename
 from back_end_process.Pyhton_files.video_processing import StaffProcessor
 import logging
-#from back_end_process.Pyhton_files.model_train import model_train
 bp = Blueprint('main', __name__)
 
 @bp.route('/')
@@ -293,12 +292,17 @@ def update_staff():
         return redirect(url_for('main.staff'))
 
 #model train part
+import subprocess
+from back_end_process.Pyhton_files.class_.model_training import model_trainning
+model_trainning_instance = model_trainning()
+
+# Model train part
 @bp.route('/model-train')
 def model_train():
     message = session.pop('message', None)
     message_type = session.pop('message_type', None)
     
-    # Query to get all staff members who state is True
+    # Query to get all staff members whose state is True
     staff_members = Staff.query.filter_by(state=True).all()
     
     return render_template('model_train.html', message=message, message_type=message_type, staff_members=staff_members)
@@ -307,10 +311,12 @@ def model_train():
 @bp.route('/model-feature-extraction', methods=['POST'])
 def model_feature_extraction():
     try:
-        # Thr logic for feature extraction
-        if 1==1:
+        # Use the logic for feature extraction
+        if model_trainning_instance.model_trainin_Face_net():
             session['message'] = 'Model feature extraction completed successfully.'
             session['message_type'] = 'success'
+        else:
+            raise Exception('Failed to extract model features.')
     except Exception as e:
         session['message'] = f'Error: {str(e)}'
         session['message_type'] = 'error'
@@ -320,8 +326,8 @@ def model_feature_extraction():
 @bp.route('/model-classification', methods=['POST'])
 def model_classification():
     try:
-        # The logic for model classification
-         if 1==1:
+        # Use the logic for model classification
+        if model_trainning_instance.model_classification():
             session['message'] = 'Model classification completed successfully.'
             session['message_type'] = 'success'
     except Exception as e:
@@ -333,28 +339,38 @@ def model_classification():
 @bp.route('/delete-model-data', methods=['POST'])
 def delete_model_data():
     try:
-        # The logic for deleting model data
-        if 1==1:
+        # Use the logic for deleting model data
+        if model_trainning_instance.clean_Facce_net_model():
             session['message'] = 'Model data deleted successfully.'
             session['message_type'] = 'success'
+        else:
+            raise Exception('Failed to delete model data.')
     except Exception as e:
         session['message'] = f'Error: {str(e)}'
         session['message_type'] = 'error'
 
     return redirect(url_for('main.model_train'))
+
 #for the box inside the model page
 @bp.route('/handle_button_click', methods=['POST'])
 def handle_button_click():
     staff_id = request.form.get('staff_id')
     staff_name = request.form.get('staff_name')
 
-    # Perform your desired action with staff_id and staff_name
-    print(f"Button clicked for staff: {staff_name} (ID: {staff_id})")
+    # Get the directory path for the staff ID
+    directory_path = model_trainning_instance.get_directory_images_by_id(staff_id)
 
-    # Optionally, set a success message in the session
-    # you can remove this part if use think is unnasesery it use to popup the grenn massege at top 
-    session['message'] = f'Action completed for {staff_name}'
-    session['message_type'] = 'success'
+    if directory_path != "Null":
+        # Open Windows Explorer to the directory path
+        try:
+            subprocess.Popen(f'explorer "{directory_path}"')
+            session['message'] = f'Opened directory for {staff_name}'
+            session['message_type'] = 'success'
+        except Exception as e:
+            session['message'] = f'Error opening directory: {str(e)}'
+            session['message_type'] = 'error'
+    else:
+        session['message'] = f'No directory found for {staff_name}'
+        session['message_type'] = 'error'
 
-    
     return redirect(url_for('main.model_train'))

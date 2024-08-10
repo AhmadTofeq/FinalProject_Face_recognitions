@@ -148,7 +148,8 @@
                     <form action="{{ url_for('main.handle_button_click') }}" method="POST">
                         <input type="hidden" name="staff_id" value="{{ staff.id_staff }}">
                         <input type="hidden" name="staff_name" value="{{ staff.staff_name }}">
-                        <button type="submit" class="btn btn-staff">
+                        <button type="submit" class="btn btn-staff" data-id="{{ staff.id_staff }}"
+                            data-name="{{ staff.staff_name }}">
                             {{ staff.id_staff }} - {{ staff.staff_name }}
                         </button>
                     </form>
@@ -157,6 +158,13 @@
             </div>
         </div>
     </section>
+    <div id="deleteStaffDialog" class="dialog hide">
+        <div class="icon">&#10007;</div>
+        <div class="message">Are you sure?</div>
+        <div class="message">This action can affect the model</div>
+        <button class="cancel">Cancel</button>
+        <button class="delete">Confirm!</button>
+    </div>
     {% include 'dialog.html' %}
     <script src="../static/js/model-train_script.js"></script>
     <script src="{{ url_for('static', filename='js/dialog.js') }}"></script>

@@ -23,6 +23,41 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Select the delete model button
+    const deleteModelButton = document.querySelector('.btn.btn-3');
+    // Select the dialog and the cancel/confirm buttons
+    const dialog = document.getElementById('deleteStaffDialog');
+    const cancelBtn = dialog.querySelector('.cancel');
+    const confirmDeleteBtn = dialog.querySelector('.delete');
+
+    let currentForm = null; // Store the current form to be deleted
+
+    // Show confirmation dialog before deleting model data
+    deleteModelButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        currentForm = this.closest('form'); // Store the current form to be deleted
+        dialog.classList.remove('hide'); // Show the confirmation dialog
+        dialog.classList.add('show'); // Add show class for visibility
+    });
+
+    // Handle cancel button in the dialog
+    cancelBtn.addEventListener('click', function() {
+        dialog.classList.remove('show'); // Hide the confirmation dialog
+        dialog.classList.add('hide'); // Add hide class for visibility
+        currentForm = null; // Reset the current form
+    });
+
+    // Handle confirm delete button in the dialog
+    confirmDeleteBtn.addEventListener('click', function() {
+        if (currentForm) {
+            currentForm.submit(); // Submit the stored form
+        }
+        dialog.classList.remove('show'); // Hide the confirmation dialog
+        dialog.classList.add('hide'); // Add hide class for visibility
+    });
+
+
     // Fetch user's name and update the span
     fetch('/get_user_info', {
         method: 'GET',
