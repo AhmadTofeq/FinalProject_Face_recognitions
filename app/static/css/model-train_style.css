@@ -403,7 +403,7 @@ body.dark .home .text {
 /* Responsive Design */
 @media (max-width: 600px) {
     .button-container button {
-        font-size: 1.5rem;
+        font-size: 1rem;
         /* Adjust font size for smaller screens */
         width: 100%;
         /* Full width on small screens */
@@ -432,7 +432,7 @@ body.dark .home .text {
 }
 /* Staff container */
 .staff-buttons-container {
-    margin: 80px;
+    margin: 4px 50px;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -481,7 +481,8 @@ body.dark .home .text {
 
 /* Search bar */
 .search-container {
-    margin: 20px;
+    margin-top: 60px ;
+    margin-right: 1050px;
     text-align: center;
 }
 
