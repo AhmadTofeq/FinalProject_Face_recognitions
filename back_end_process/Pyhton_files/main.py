@@ -2,11 +2,11 @@
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import cvzone
-from Pyhton_files.class_.ModelRecognitionAndDtection import ModelRecognitionAndDtection1 as mymodel
+from back_end_process.Pyhton_files.class_.ModelRecognitionAndDtection import ModelRecognitionAndDtection1 as mymodel
 from class_.Detection_face import FaceDetection
 import cv2
 import time
-from Pyhton_files.class_.paths import paths1
+from back_end_process.Pyhton_files.class_.paths import paths1
 model = mymodel(paths1.images_path)
 def myModel1(frame):
     threshold=0.8
