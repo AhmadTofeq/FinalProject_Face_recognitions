@@ -135,19 +135,25 @@
                 </form>
             </div>
     
-            <!-- Search bar -->
-            <div class="search-container">
-                <input type="text" id="search-bar" placeholder="Search by ID or name..." />
-            </div>
-    
-            <!-- Staff buttons container -->
-            <div class="staff-buttons-container" id="staff-container">
-                {% for staff in staff_members %}
-                <button type="button" class="btn btn-staff" data-id="{{ staff.id_staff }}"
-                    data-name="{{ staff.staff_name }}">
-                    {{ staff.id_staff }} - {{ staff.staff_name }}
-                </button>
-                {% endfor %}
+            <!-- Wrapper container to center search bar and staff buttons -->
+            <div class="wrapper">
+                <!-- Search bar -->
+                <div class="search-container">
+                    <input type="text" id="search-bar" placeholder="Search by ID or name..." />
+                </div>
+            
+                <!-- Staff buttons container -->
+                <div class="staff-buttons-container" id="staff-container">
+                    {% for staff in staff_members %}
+                    <form action="{{ url_for('main.handle_button_click') }}" method="POST">
+                        <input type="hidden" name="staff_id" value="{{ staff.id_staff }}">
+                        <input type="hidden" name="staff_name" value="{{ staff.staff_name }}">
+                        <button type="submit" class="btn btn-staff">
+                            {{ staff.id_staff }} - {{ staff.staff_name }}
+                        </button>
+                    </form>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </section>

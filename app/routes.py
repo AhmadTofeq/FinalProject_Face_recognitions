@@ -298,7 +298,7 @@ def model_train():
     message = session.pop('message', None)
     message_type = session.pop('message_type', None)
     
-    # Query to get all staff members
+    # Query to get all staff members who state is True
     staff_members = Staff.query.filter_by(state=True).all()
     
     return render_template('model_train.html', message=message, message_type=message_type, staff_members=staff_members)
@@ -341,4 +341,20 @@ def delete_model_data():
         session['message'] = f'Error: {str(e)}'
         session['message_type'] = 'error'
 
+    return redirect(url_for('main.model_train'))
+#for the box inside the model page
+@bp.route('/handle_button_click', methods=['POST'])
+def handle_button_click():
+    staff_id = request.form.get('staff_id')
+    staff_name = request.form.get('staff_name')
+
+    # Perform your desired action with staff_id and staff_name
+    print(f"Button clicked for staff: {staff_name} (ID: {staff_id})")
+
+    # Optionally, set a success message in the session
+    # you can remove this part if use think is unnasesery it use to popup the grenn massege at top 
+    session['message'] = f'Action completed for {staff_name}'
+    session['message_type'] = 'success'
+
+    
     return redirect(url_for('main.model_train'))

@@ -429,10 +429,35 @@ body.dark .home .text {
     background-color: #f44336;
     color: white;
     font-size: large;
+}/* Global Styles */
+/* Global Styles */
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
-/* Staff container */
+
+/* Search Bar Styles */
+
+.search-container {
+    width: 100%;
+    max-width: 300px;
+    margin: 60px 0 16px 60px;
+}
+
+#search-bar {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Staff Buttons Styles */
+
 .staff-buttons-container {
-    margin: 4px 50px;
+    margin: 4px 55px;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -442,12 +467,9 @@ body.dark .home .text {
     border-radius: 12px;
     padding: 10px;
     max-height: 500px;
-    /* Adjust the height as needed */
     overflow-y: auto;
-    /* Add vertical scrollbar if needed */
 }
 
-/* Staff button */
 .btn-staff {
     background-color: #007bff;
     color: white;
@@ -456,42 +478,32 @@ body.dark .home .text {
     border-radius: 4px;
     cursor: pointer;
     flex: 1 1 calc(33.333% - 20px);
-    /* Responsive button width */
     box-sizing: border-box;
 }
 
 .btn-staff:hover {
     background-color: #0056b3;
+    cursor: pointer;
 }
 
 /* Responsive Design */
+
 @media (max-width: 768px) {
     .btn-staff {
         flex: 1 1 calc(50% - 20px);
-        /* Adjust width for tablets */
+    }
+
+    .search-container {
+        margin-left: 20px;
     }
 }
 
 @media (max-width: 480px) {
     .btn-staff {
         flex: 1 1 calc(100% - 20px);
-        /* Adjust width for mobile phones */
     }
-}
 
-/* Search bar */
-.search-container {
-    margin-top: 60px ;
-    margin-right: 1050px;
-    text-align: center;
-}
-
-#search-bar {
-    width: 100%;
-    max-width: 300px;
-    /* Adjust the width as needed */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
+    .search-container {
+        margin-left: 10px;
+    }
 }
