@@ -69,5 +69,52 @@ document.addEventListener('DOMContentLoaded', function() {
             link.parentElement.classList.remove('active');
         }
     });
+    
+
+    async function getCameras() {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            return devices.filter(device => device.kind === 'videoinput');
+        }
+
+        async function startCamera(videoElement, deviceId) {
+            if (navigator.mediaDevices.getUserMedia) {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        deviceId: deviceId ? { exact: deviceId } : undefined
+                    }
+                });
+                videoElement.srcObject = stream;
+            } else {
+                alert('getUserMedia not supported on your browser!');
+            }
+        }
+
+        async function init() {
+            const cameras = await getCameras();
+            const selectCamera1 = document.getElementById('select-camera1');
+            const selectCamera2 = document.getElementById('select-camera2');
+
+            cameras.forEach((camera, index) => {
+                const option1 = document.createElement('option');
+                const option2 = document.createElement('option');
+                option1.value = camera.deviceId;
+                option2.value = camera.deviceId;
+                option1.text = camera.label || `Camera ${index + 1}`;
+                option2.text = camera.label || `Camera ${index + 1}`;
+                selectCamera1.appendChild(option1);
+                selectCamera2.appendChild(option2);
+            });
+
+            // Start with the first available camera
+            if (cameras.length > 0) {
+                startCamera(document.getElementById('video1'), selectCamera1.value);
+                startCamera(document.getElementById('video2'), selectCamera2.value);
+            }
+
+            selectCamera1.onchange = () => startCamera(document.getElementById('video1'), selectCamera1.value);
+            selectCamera2.onchange = () => startCamera(document.getElementById('video2'), selectCamera2.value);
+        }
+
+        window.onload = init;
 
 });

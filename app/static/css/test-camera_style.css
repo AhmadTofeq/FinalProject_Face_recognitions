@@ -332,3 +332,48 @@ body.dark .home .text {
     background-color: var(--primary-color);
     font-size: 1rem;
 }
+/*Test camera boxess*/
+.container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
+.camera-box {
+    width: 45%;
+    border: 2px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    background-color:var(--primary-color-light);
+}
+video {
+    width: 100%;
+    height: auto;
+}
+.select-box {
+    margin-top: 10px;
+    color: var(--text-color);
+}
+.select-box select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 100%;
+    color: var(--toggle-color);
+    background-color: var(--primary-color);
+}
+#content {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+.select-container {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 20px;
+}

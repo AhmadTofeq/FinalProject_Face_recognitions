@@ -116,7 +116,24 @@
         </div>
     </nav>
     <section class="home">
-        <div id="content"></div>
+        <div id="content">
+            <div class="container">
+                <div class="camera-box" id="camera1">
+                    <video id="video1" autoplay></video>
+                    <div class="select-box">
+                        <label for="select-camera1">Select Camera 1:</label>
+                        <select id="select-camera1"></select>
+                    </div>
+                </div>
+                <div class="camera-box" id="camera2">
+                    <video id="video2" autoplay></video>
+                    <div class="select-box">
+                        <label for="select-camera2">Select Camera 2:</label>
+                        <select id="select-camera2"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
     {% include 'dialog.html' %}
     <script src="../static/js/test-camera_script.js"></script>

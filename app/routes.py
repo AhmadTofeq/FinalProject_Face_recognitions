@@ -70,10 +70,7 @@ def home():
 @bp.route('/conferences')
 def conferences():
     return render_template('conferences.html')
-#test camera part
-@bp.route('/test-camera')
-def test_camera():
-    return render_template('test-camera.html')
+
 @bp.route('/r-conferences')
 def r_conferences():
     return render_template('r-conferences.html')
@@ -374,3 +371,8 @@ def handle_button_click():
         session['message_type'] = 'error'
 
     return redirect(url_for('main.model_train'))
+
+#test camera part
+@bp.route('/test-camera')
+def test_camera():
+    return render_template('test_camera.html')
