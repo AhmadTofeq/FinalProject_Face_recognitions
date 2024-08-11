@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify ,current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify, current_app
 from sqlalchemy.orm import joinedload
+from sqlalchemy import text  # Add this import
 from app import db
 from app.models import Faculty, Department, Staff, User
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -7,6 +8,7 @@ import os
 from werkzeug.utils import secure_filename
 from back_end_process.Pyhton_files.video_processing import StaffProcessor
 import logging
+
 bp = Blueprint('main', __name__)
 
 @bp.route('/')
@@ -40,20 +42,10 @@ def logout():
     session.clear()
     return jsonify({'success': True, 'message': 'Logout successful'})
 
-@bp.route('/contact_us')
-def contact_us():
-    return render_template('contact_us.html')
-
-@bp.route('/about_us')
-def about_us():
-    return render_template('about_us.html')
-
-
 @bp.route('/check-session', methods=['GET'])
 def check_session():
     authenticated = 'username' in session
     return jsonify({'authenticated': authenticated})
-
 
 @bp.route('/get_user_info', methods=['GET'])
 def get_user_info():
@@ -62,6 +54,14 @@ def get_user_info():
         if user:
             return jsonify({'username': user.name})
     return jsonify({'username': None})
+
+@bp.route('/contact_us')
+def contact_us():
+    return render_template('contact_us.html')
+
+@bp.route('/about_us')
+def about_us():
+    return render_template('about_us.html')
 
 @bp.route('/home')
 def home():
@@ -75,13 +75,15 @@ def conferences():
 def r_conferences():
     return render_template('r-conferences.html')
 
-#users part
 @bp.route('/users')
 def users():
     if 'role' not in session or session['role'] != 'admin':
         return redirect(url_for('main.index'))
 
-    users = User.query.filter_by(state=True).all()
+    # Call the stored procedure using text()
+    result = db.session.execute(text("CALL GetActiveUsers()"))
+    users = result.fetchall()
+    
     message = session.pop('message', None)
     message_type = session.pop('message_type', None)
     return render_template('users.html', users=users, message=message, message_type=message_type)
@@ -90,17 +92,30 @@ def users():
 def update_user():
     if 'role' not in session or session['role'] != 'admin':
         return redirect(url_for('main.index'))
-    user_id = request.form['id']
-    user = User.query.get(user_id)
     
-    user.name = request.form['name']
-    user.username = request.form['username']
+    user_id = request.form['id']
+    name = request.form['name']
+    username = request.form['username']
     password = request.form['password']
-    if password:
-        user.password = generate_password_hash(password)
-    user.role = request.form['role']
+    role = request.form['role']
+    
+    # Hash the password if provided
+    hashed_password = generate_password_hash(password) if password else None
+
+    # Call the stored procedure using text()
+    if hashed_password:
+        db.session.execute(
+            text("CALL UpdateUser(:id, :name, :username, :password, :role)"),
+            {'id': user_id, 'name': name, 'username': username, 'password': hashed_password, 'role': role}
+        )
+    else:
+        db.session.execute(
+            text("CALL UpdateUser(:id, :name, :username, NULL, :role)"),
+            {'id': user_id, 'name': name, 'username': username, 'role': role}
+        )
 
     db.session.commit()
+
     session['message'] = 'User updated successfully.'
     session['message_type'] = 'success'
     
@@ -112,30 +127,40 @@ def delete_user():
         return redirect(url_for('main.index'))
 
     user_id = request.form['id']
-    user = User.query.get(user_id)
-    
-    if user:
-        user.state = False
-        db.session.commit()
+
+    # Call the stored procedure to delete the user
+    result = db.session.execute(
+        text("CALL DeleteUser(:id)"),
+        {'id': user_id}
+    )
+
+    # Check the result to ensure the user was deleted
+    if result.rowcount > 0:
         session['message'] = 'User deleted successfully.'
         session['message_type'] = 'success'
     else:
         session['message'] = 'User not found.'
         session['message_type'] = 'error'
     
+    db.session.commit()
+
     return redirect(url_for('main.users'))
 
 @bp.route('/register_user', methods=['POST'])
 def register_user():
     if 'role' not in session or session['role'] != 'admin':
         return redirect(url_for('main.index'))
+
     name = request.form['name']
     username = request.form['username']
     password = generate_password_hash(request.form['password'])
     role = request.form['role']
 
-    new_user = User(name=name, username=username, password=password, role=role)
-    db.session.add(new_user)
+    # Call the stored procedure to register the user
+    db.session.execute(
+        text("CALL RegisterUser(:name, :username, :password, :role)"),
+        {'name': name, 'username': username, 'password': password, 'role': role}
+    )
     db.session.commit()
 
     session['message'] = 'User registered successfully.'
@@ -143,6 +168,7 @@ def register_user():
     
     return redirect(url_for('main.users'))
 
+#Staff part
 @bp.route('/staff')
 def staff():
     if 'role' not in session or session['role'] != 'admin':
