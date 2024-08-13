@@ -71,9 +71,6 @@ def home():
 def conferences():
     return render_template('conferences.html')
 
-@bp.route('/r-conferences')
-def r_conferences():
-    return render_template('r-conferences.html')
 
 @bp.route('/users')
 def users():
@@ -422,3 +419,24 @@ def handle_button_click():
 @bp.route('/test-camera')
 def test_camera():
     return render_template('test_camera.html')
+
+#registration conference part
+@bp.route('/r-conferences')
+def r_conferences():
+    staff_members = Staff.query.filter_by(state=True).all()
+    return render_template('r_conferences.html', staff_members=staff_members)
+
+@bp.route('/register_presentation', methods=['POST'])
+def register_presentation():
+    # Logic to register a new conference
+    pass
+
+@bp.route('/update_presentation', methods=['POST'])
+def update_presentation():
+    # Logic to update an existing conference
+    pass
+
+@bp.route('/delete_presentation', methods=['POST'])
+def delete_presentation():
+    # Logic to delete a conference
+    pass

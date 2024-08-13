@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/r-conferences_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dialog.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <title>Soran-Face</title>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/check-session', {
+                method: 'GET',
+                credentials: 'same-origin'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Session check failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.authenticated) {
+                        window.location.href = '/';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking session:', error);
+                });
+        });
+    </script>
+</head>
+
+<body>
+    <nav class="sidebar close">
+        <header>
+            <div class="image-text">
+                <span class="image">
+                    <img src="{{ url_for('static', filename='imag/soran.png') }}" alt="">
+                </span>
+                <div class="text logo-text">
+                    <span class="name">Soran_Face</span>
+                    <span class="profession" id="user-name">Management</span>
+                </div>
+            </div>
+            <i class='bx bx-chevron-right toggle'></i>
+        </header>
+        <div class="menu-bar">
+            <div class="menu">
+                <ul class="menu-links">
+                    <li class="nav-link">
+                        <a href="{{ url_for('main.home') }}" data-page="home" class="act">
+                            <i class='bx bx-home-alt icon'></i>
+                            <span class="text nav-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="{{ url_for('main.staff') }}" data-page="staff">
+                            <i class='bx bx-user-check icon'></i>
+                            <span class="text nav-text">Staff</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="{{ url_for('main.conferences') }}" data-page="conferences">
+                            <i class='bx bx-chalkboard icon'></i>
+                            <span class="text nav-text">Conferences</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="{{ url_for('main.r_conferences') }}" data-page="r-conferences">
+                            <i class='bx bx-registered icon'></i>
+                            <span class="text nav-text">R-Conferences</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="{{ url_for('main.test_camera') }}" data-page="test-camera">
+                            <i class='bx bx-video-recording icon'></i>
+                            <span class="text nav-text">Test Camera</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="{{ url_for('main.users') }}" data-page="users">
+                            <i class='bx bx-user icon'></i>
+                            <span class="text nav-text">Users</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="{{ url_for('main.model_train') }}" data-page="model-train">
+                            <i class='bx bx-cube-alt icon'></i>
+                            <span class="text nav-text">Model Train</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="bottom-content">
+                <li>
+                    <a href="#" id="logoutBtn">
+                        <i class='bx bx-log-out icon'></i>
+                        <span class="text nav-text">Logout</span>
+                    </a>
+                </li>
+                <li class="mode">
+                    <div class="sun-moon">
+                        <i class='bx bx-moon icon moon'></i>
+                        <i class='bx bx-sun icon sun'></i>
+                    </div>
+                    <span class="mode-text text">Dark mode</span>
+                    <div class="toggle-switch">
+                        <span class="switch"></span>
+                    </div>
+                </li>
+            </div>
+        </div>
+    </nav>
+    <section class="home">
+        <div class="page-content">
+            <h2>Conference Registration</h2>
+            <p>Manage conference registrations below.</p>
+    
+            {% if message %}
+            <div class="popup {{ message_type }}">
+                <p class="below">{{ message }}</p>
+            </div>
+            {% endif %}
+    
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Date & Time</th>
+                        <th>Duration</th>
+                        <th>Hall</th>
+                        <th>Presenter Points</th>
+                        <th>Attendance Points</th>
+                        <th>Max Late Time</th>
+                        <th>Presenter</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for conference in conferences %}
+                    <tr>
+                        <td>{{ conference.id_presentation }}</td>
+                        <td>{{ conference.title_pres }}</td>
+                        <td>{{ conference.date_time }}</td>
+                        <td>{{ conference.duration }}</td>
+                        <td>{{ conference.hall }}</td>
+                        <td>{{ conference.point_presenter }}</td>
+                        <td>{{ conference.point_attendance }}</td>
+                        <td>{{ conference.max_late }}</td>
+                        <td>
+                            <select name="presenter" id="presenter-{{ conference.id_presentation }}">
+                                {% for staff in staff_members %}
+                                <option value="{{ staff.id }}">{{ staff.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <button class="update-btn" data-id="{{ conference.id_presentation }}">Update</button>
+                            <form action="{{ url_for('main.update_presentation') }}" method="post"
+                                class="conference-form hide" data-id="{{ conference.id_presentation }}">
+                                <input type="hidden" name="id_presentation" value="{{ conference.id_presentation }}">
+                                <label for="title_pres">Title:</label>
+                                <input type="text" id="title_pres" name="title_pres" value="{{ conference.title_pres }}" required>
+                                <label for="date_time">Date & Time:</label>
+                                <input type="datetime-local" id="date_time" name="date_time" value="{{ conference.date_time }}" required>
+                                <label for="duration">Duration:</label>
+                                <input type="text" id="duration" name="duration" value="{{ conference.duration }}" required>
+                                <label for="hall">Hall:</label>
+                                <input type="text" id="hall" name="hall" value="{{ conference.hall }}" required>
+                                <label for="point_presenter">Point Presenter:</label>
+                                <input type="number" id="point_presenter" name="point_presenter" value="{{ conference.point_presenter }}" required>
+                                <label for="point_attendance">Point Attendance:</label>
+                                <input type="number" id="point_attendance" name="point_attendance" value="{{ conference.point_attendance }}" required>
+                                <label for="max_late">Max Late:</label>
+                                <input type="number" id="max_late" name="max_late" value="{{ conference.max_late }}" required>
+                                <label for="presenter">Presenter:</label>
+                                <select id="presenter" name="presenter[]" multiple required>
+                                    {% for staff in staff_members %}
+                                    <option value="{{ staff.id }}" {% if staff.id in conference.presenters %}selected{% endif %}>{{ staff.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>                               
+                                <button type="submit" name="update" class="btn-update">Update</button>
+                            </form>
+                            <form action="{{ url_for('main.delete_presentation') }}" method="post">
+                                <input type="hidden" name="id_presentation" value="{{ conference.id_presentation }}">
+                                <button type="submit" name="delete" class="btn-delete">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="10">No conferences found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    
+            <!-- Register conference form -->
+            <div class="register-container">
+                <button class="register-btn">
+                    <i class='bx bx-plus'></i>
+                </button>
+                <div class="register-form hide">
+                    <form id="register-conference-form" action="{{ url_for('main.register_presentation') }}" method="post">
+                        <div class="form-group">
+                            <label for="title_pres">Title:</label>
+                            <input type="text" id="title_pres" name="title_pres" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="date_time">Date & Time:</label>
+                            <input type="datetime-local" id="date_time" name="date_time" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="duration">Duration:</label>
+                            <input type="text" id="duration" name="duration" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hall">Hall:</label>
+                            <input type="text" id="hall" name="hall" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="point_presenter">Point Presenter:</label>
+                            <input type="number" id="point_presenter" name="point_presenter" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="point_attendance">Point Attendance:</label>
+                            <input type="number" id="point_attendance" name="point_attendance" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="max_late">Max Late:</label>
+                            <input type="number" id="max_late" name="max_late" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="presenter">Presenter:</label>
+                            <select id="presenter" name="presenter[]" multiple required class="select2">
+                                {% for staff in staff_members %}
+                                <option value="{{ staff.id_staff }}">{{ staff.staff_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <input type="submit" value="Register" class="submit-btn">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include 'dialog.html' %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="../static/js/r-conferences_script.js"></script>
+    <script src="{{ url_for('static', filename='js/dialog.js') }}"></script>
+</body>
+
+</html>

@@ -332,3 +332,413 @@ body.dark .home .text {
     background-color: var(--primary-color);
     font-size: 1rem;
 }
+/*Body code*/
+body.dark tbody tr,
+body.dark tbody tr td,
+body.dark thead th {
+    color: white;
+}
+
+.page-content {
+    text-align: center;
+    padding: 40px;
+}
+
+h2,
+p {
+    color: var(--text-color);
+}
+
+.below {
+    color: white !important;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+thead {
+    background-color: var(--highlight-color);
+    color: white;
+}
+
+thead th {
+    padding: 10px;
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--primary-color-light);
+}
+
+tbody tr:hover {
+    background-color: var(--toggle-color);
+}
+
+td,
+th {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--toggle-color);
+}
+
+.common-form,
+.register-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: var(--sidebar-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 600px;
+    width: 100%;
+}
+
+.hide {
+    display: none;
+}
+
+.form-group {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 1px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="number"],
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--toggle-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    height: 30px;
+}
+
+.form-group select {
+    appearance: none;
+}
+
+.btn-delete {
+    padding: 7px 18px;
+    background-color: rgb(207, 22, 22);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    height: 40px;
+    margin-top: 10px;
+}
+
+.btn-delete:hover {
+    background-color: rgb(163, 5, 5);
+}
+
+.update-btn {
+
+    padding: 7px 14px;
+    background-color: var(--highlight-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    height: 40px;
+    margin-top: 10px;
+}
+
+.update-btn:hover {
+    background-color: var(--highlight-hover-color);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--highlight-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    height: 35px;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background-color: var(--highlight-hover-color);
+}
+
+.register-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.register-btn {
+    background-color: var(--highlight-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.register-btn i {
+    font-size: 24px;
+}
+
+.register-form {
+    position: absolute;
+    bottom: 35px;
+    right: 0;
+    background-color: var(--sidebar-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    display: none;
+}
+
+.register-form.show {
+    display: block;
+}
+
+.popup {
+    padding: 10px;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.popup.success {
+    background-color: green;
+    color: white;
+    font-size: large;
+}
+
+.popup.error {
+    background-color: #f44336;
+    color: white;
+    font-size: large;
+}
+
+.user-form {
+    max-width: 300px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: var(--sidebar-color);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-form label {
+    display: block;
+    margin-bottom: 2px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.user-form input[type="text"],
+.user-form input[type="password"],
+.user-form input[type="number"],
+.user-form select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 6px;
+    border: 1px solid var(--toggle-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.user-form select {
+    appearance: none;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6" viewBox="0 0 12 6"><path fill="%23333333" d="M6 6L0 0h12z"/></svg>') no-repeat right 10px center;
+    background-size: 12px;
+}
+
+.user-form button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: var(--highlight-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.user-form button:hover {
+    background-color: var(--highlight-hover-color);
+    transform: scale(1.05);
+}
+
+.user-form button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 600px) {
+    .user-form {
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    .user-form input[type="text"],
+    .user-form input[type="password"],
+    .user-form select {
+        width: 100%;
+    }
+
+    .user-form button {
+        display: block;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .common-form,
+    .register-form {
+        padding: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .submit-btn {
+        padding: 12px;
+        font-size: 14px;
+    }
+}
+
+/*show delete pop up */
+.dialog {
+    display: none;
+    position: fixed;
+    /* Position it relative to the viewport */
+    top: 50%;
+    /* Center it vertically */
+    left: 50%;
+    /* Center it horizontally */
+    transform: translate(-50%, -50%);
+    /* Offset it by its own dimensions */
+    background-color: var(--body-color);
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    z-index: 1000;
+    /* Ensure it is on top of other elements */
+    color: var(--text-color);
+}
+
+.dialog .icon {
+    font-size: 3em;
+    color: rgb(207, 22, 22);
+    margin-bottom: 15px;
+}
+
+.dialog .message {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.dialog button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dialog button:hover {
+    opacity: 0.8;
+}
+
+.dialog .cancel {
+    background-color: #ccc;
+    color: #333;
+}
+
+.dialog .delete {
+    background-color: rgb(207, 22, 22);
+    color: rgb(70, 58, 145);
+}
+
+.dialog.show {
+    display: block;
+}
+
+/*select 2 code*/
+/* Style for Select2 dropdown */
+.select2-container {
+    width: 100% !important;
+    /* Ensure the dropdown takes full width */
+}
+
+.select2-selection--multiple {
+    border: 1px solid #859cb4;
+    border-radius: 4px;
+    padding: 5px;
+    min-height: 38px;
+    box-shadow: none;
+    outline: none;
+}
+
+.select2-selection__rendered {
+    line-height: 28px;
+}
+
+.select2-selection__choice {
+    background-color: #007bff;
+    color: rgb(28, 78, 122);
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    padding: 3px 5px;
+    margin: 2px;
+}
+
+.select2-selection__choice__remove {
+    color: rgb(229, 56, 56);
+    margin-left: 5px;
+}
+
+.select2-selection__choice__remove:hover {
+    color: #ff0000;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: rgb(27, 15, 108);
+}
