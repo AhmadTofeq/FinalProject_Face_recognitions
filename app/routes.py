@@ -197,15 +197,12 @@ def delete_staff():
         return redirect(url_for('main.index'))
 
     staff_id = request.form['id_staff']
-    staff = Staff.query.get(staff_id)
 
-    if not staff:
-        session['message'] = 'Staff not found.'
-        session['message_type'] = 'error'
-        return redirect(url_for('main.staff'))
-
-    # Deactivate the staff member
-    staff.state = False
+    # Call the stored procedure to deactivate the staff member
+    result = db.session.execute(
+        text("CALL sp_delete_staff(:staffId)"),
+        {'staffId': staff_id}
+    )
     db.session.commit()
 
     # Delete images and labels
@@ -214,7 +211,6 @@ def delete_staff():
     session['message'] = 'Staff deactivated successfully and all related data deleted.'
     session['message_type'] = 'success'
     return redirect(url_for('main.staff'))
-
 
 @bp.route('/add_staff', methods=['POST'])
 def add_staff():
@@ -226,39 +222,57 @@ def add_staff():
     email = request.form['email']
     gender = request.form['gender']
     id_department = request.form['department_id']
-    
-    # Assuming the currently logged-in user's ID is stored in the session
     add_by_user_id = session['user_id']
-    
-    new_staff = Staff(
-        staff_name=staff_name,
-        phone=phone,
-        email=email,
-        gender=gender,
-        id_department=id_department,
-        add_by_user_id=add_by_user_id,
-        state=True
-    )
-    
-    db.session.add(new_staff)
-    db.session.commit()
 
-    if 'video' in request.files:
-        video = request.files['video']
-        video_path = f"app/videos/{new_staff.id_staff}.mp4"
-        video.save(video_path)
-        # Process the video to extract images
-        StaffProcessor().insert_staff(video_path, new_staff.staff_name, new_staff.id_staff)  
-        if os.path. exists(video_path): 
-            os.remove(video_path)
+    try:
+        # Call the stored procedure to add a new staff member
+        db.session.execute(
+            text("CALL sp_add_staff(:staffName, :phone, :email, :gender, :departmentId, :addedByUserId, @newStaffId)"),
+            {
+                'staffName': staff_name,
+                'phone': phone,
+                'email': email,
+                'gender': gender,
+                'departmentId': id_department,
+                'addedByUserId': add_by_user_id
+            }
+        )
 
-    session['message'] = 'Staff added successfully.'
-    session['message_type'] = 'success'
+        # Commit the transaction to save the new staff member
+        db.session.commit()
+
+        # Fetch the new staff ID
+        new_staff_id = db.session.execute(text("SELECT @newStaffId")).scalar()
+
+        if new_staff_id is None:
+            raise ValueError("Failed to retrieve the new staff ID.")
+
+        # Process the video if provided
+        if 'video' in request.files and request.files['video'].filename != '':
+            video = request.files['video']
+            video_path = f"app/videos/{new_staff_id}.mp4"
+            video.save(video_path)
+
+            # Process the video to extract images
+            StaffProcessor().insert_staff(video_path, staff_name, new_staff_id)  
+            if os.path.exists(video_path): 
+                os.remove(video_path)
+
+        session['message'] = 'Staff added successfully.'
+        session['message_type'] = 'success'
     
+    except Exception as e:
+        logging.error(f"Error adding staff: {str(e)}")
+        db.session.rollback()  # Roll back the transaction on error
+        session['message'] = f'Error adding staff: {str(e)}'
+        session['message_type'] = 'error'
+
     return redirect(url_for('main.staff'))
+
 @bp.route('/update_staff', methods=['POST'])
 def update_staff():
     try:
+        # Ensure the user is an admin
         if 'role' not in session or session['role'] != 'admin':
             return redirect(url_for('main.index'))
 
@@ -277,30 +291,35 @@ def update_staff():
         current_name = staff.staff_name
         current_email = staff.email
 
-        # Update values
-        staff.staff_name = request.form['name']
-        staff.phone = request.form['phone']
-        staff.email = request.form['email']
-        staff.gender = request.form['gender']
-        staff.id_department = request.form['department_id']
-
+        # Update staff member using stored procedure
+        db.session.execute(
+            text("CALL sp_update_staff(:staffId, :staffName, :phone, :email, :gender, :departmentId)"),
+            {
+                'staffId': staff_id,
+                'staffName': request.form['name'],
+                'phone': request.form['phone'],
+                'email': request.form['email'],
+                'gender': request.form['gender'],
+                'departmentId': request.form['department_id']
+            }
+        )
         db.session.commit()
 
-        # Check if we need to call process_video
-        if (current_name != staff.staff_name or 
-            current_email != staff.email or 
+        # Check if video processing is needed
+        if (current_name != request.form['name'] or 
+            current_email != request.form['email'] or 
             'video' in request.files and request.files['video'].filename != ''):
             
             if 'video' in request.files and request.files['video'].filename != '':
                 video = request.files['video']
-                video_path = f"app/videos/{staff.id_staff}.mp4"
+                video_path = f"app/videos/{staff_id}.mp4"
                 video.save(video_path)
             else:
                 video_path = ""
 
             # Process the video to extract images
-            StaffProcessor().updated_staff(video_path, staff.staff_name, staff.id_staff)
-            if os.path. exists(video_path): 
+            StaffProcessor().updated_staff(video_path, request.form['name'], staff_id)
+            if os.path.exists(video_path): 
                 os.remove(video_path)
 
         session['message'] = 'Staff updated successfully.'
@@ -313,6 +332,7 @@ def update_staff():
         session['message'] = f'Error updating staff: {str(e)}'
         session['message_type'] = 'error'
         return redirect(url_for('main.staff'))
+
 
 #model train part
 import subprocess

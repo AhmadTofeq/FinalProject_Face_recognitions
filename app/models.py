@@ -56,3 +56,19 @@ class User(db.Model):
 
     def __repr__(self):
         return f'<User {self.username}>'
+
+class StaffDepartmentView(db.Model):
+    __tablename__ = 'staff_department_view'
+    
+    id_staff = db.Column(db.Integer, primary_key=True)
+    staff_name = db.Column(db.String(255))
+    phone = db.Column(db.String(20))
+    email = db.Column(db.String(255))
+    gender = db.Column(db.Enum('Male', 'Female', 'Other'))
+    name_department = db.Column(db.String(255))
+    name_faculty = db.Column(db.String(255))
+    added_by = db.Column(db.String(255))
+
+    def __repr__(self):
+        return f'<StaffDepartmentView {self.staff_name}>'
+
