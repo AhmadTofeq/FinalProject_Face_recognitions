@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from sqlalchemy.orm import joinedload
 from sqlalchemy import text  # Add this import
 from app import db
+import json
 from app.models import Faculty, Department, Staff, User
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -442,43 +443,133 @@ def presentation():
 
 @bp.route('/register_presentation', methods=['POST'])
 def register_presentation():
-    print(request.form)
-    # Retrieve form data
-    title_pres = request.form.get('title_pres')
-    date_time = request.form.get('date_time')
-    duration = request.form.get('duration')
-    hall = request.form.get('hall')
-    point_presenter = request.form.get('point_presenter')
-    point_attendance = request.form.get('point_attendance')
-    max_late = request.form.get('max_late')
-    faculty = request.form.get('faculty')
-    department = request.form.get('department')
-    presenters = request.form.getlist('presenter[]')  # Multiple values
-    # thire is how you get added by user
-    add_by_user_id = session['user_id']
-    # Debugging: Print form data to console (for testing purposes)
-    print(f"Title: {title_pres}")
-    print(f"Date & Time: {date_time}")
-    print(f"Duration: {duration}")
-    print(f"Hall: {hall}")
-    print(f"Point Presenter: {point_presenter}")
-    print(f"Point Attendance: {point_attendance}")
-    print(f"Max Late: {max_late}")
-    print(f"Faculty: {faculty}")
-    print(f"Department: {department}")
-    print(f"Presenters: {presenters}")
-    print(f"Added_by: {add_by_user_id}")
-    session['message'] = 'User registered successfully.'
-    session['message_type'] = 'success'
-    
+    list_ides=[int(i) for i in request.form.getlist('presenter[]')]
+    try:
+        db.session.execute(
+            text('''CALL add_presntaion(
+                 :title1,
+                 :date_time1,
+                 :duration1,
+                 :hall1,
+                 :point_presenter1,
+                 :point_attendance1,
+                 :max_late1,
+                 :id_dep1,
+                 :init_by1,
+                 :staff_ids)'''),
+            {
+                "title1": request.form.get('title_pres'),
+                "date_time1": request.form.get('date_time'),
+                "duration1": request.form.get('duration'),
+                "hall1": request.form.get('hall'),
+                "point_presenter1": request.form.get('point_presenter'),
+                "point_attendance1": request.form.get('point_attendance'),
+                "max_late1": request.form.get('max_late'),
+                "id_dep1": request.form.get('department'),
+                "init_by1": session['user_id'],
+                "staff_ids": json.dumps(list_ides)
+            }
+        )
+        db.session.commit()
+        # Debugging: Print form data to console (for testing purposes)
+        # print(f"Title: {title_pres}")
+        # print(f"Date & Time: {date_time}")
+        # print(f"Duration: {duration}")
+        # print(f"Hall: {hall}")
+        # print(f"Point Presenter: {point_presenter}")
+        # print(f"Point Attendance: {point_attendance}")
+        # print(f"Max Late: {max_late}")
+        # print(f"Faculty: {faculty}")
+        # print(f"Department: {department}")
+        # print(f"Presenters: {presenters}")
+        # print(f"Added_by: {add_by_user_id}")
+        session['message'] = 'Presentation registered successfully.'
+        session['message_type'] = 'success'
+    except Exception as e:
+        db.session.rollback()  # Roll back the transaction in case of an error
+        session['message'] = 'Presentation registered NOT successfull.'
+        session['message_type'] = 'NOT success'
     return redirect(url_for('main.presentation'))
+
 
 @bp.route('/update_presentation', methods=['POST'])
 def update_presentation():
-    # Logic to update an existing conference
-    pass
+    id_presntation=4
+    try:
+        db.session.execute(
+            text('''CALL Update_presntaion(
+                 :title1,
+                 :date_time1,
+                 :duration1,
+                 :hall1,
+                 :point_presenter1,
+                 :point_attendance1,
+                 :max_late1,
+                 :id_dep1,
+                 :id_presntaion1
+                 )'''),
+            {
+                "title1": request.form.get('title_pres'),
+                "date_time1": request.form.get('date_time'),
+                "duration1": request.form.get('duration'),
+                "hall1": request.form.get('hall'),
+                "point_presenter1": request.form.get('point_presenter'),
+                "point_attendance1": request.form.get('point_attendance'),
+                "max_late1": request.form.get('max_late'),
+                "id_dep1": request.form.get('department'),
+                "id_presntaion1":id_presntation
+            }
+        )
+        db.session.commit()
+        # Debugging: Print form data to console (for testing purposes)
+        # print(f"Title: {title_pres}")
+        # print(f"Date & Time: {date_time}")
+        # print(f"Duration: {duration}")
+        # print(f"Hall: {hall}")
+        # print(f"Point Presenter: {point_presenter}")
+        # print(f"Point Attendance: {point_attendance}")
+        # print(f"Max Late: {max_late}")
+        # print(f"Faculty: {faculty}")
+        # print(f"Department: {department}")
+        # print(f"Presenters: {presenters}")
+        # print(f"Added_by: {add_by_user_id}")
+        session['message'] = 'Presentation Update successfully.'
+        session['message_type'] = 'success'
+    except Exception as e:
+        db.session.rollback()  # Roll back the transaction in case of an error
+        session['message'] = 'Presentation Update NOT successfull.'
+        session['message_type'] = 'NOT success'
+    # return redirect(url_for('main.presentation'))
 
 @bp.route('/delete_presentation', methods=['POST'])
 def delete_presentation():
-    # Logic to delete a conference
-    pass
+    id_presntation = 4
+    try:
+        db.session.execute(
+            text('''CALL delet_presntaion(
+                     :id
+                     )'''),
+            {
+                "id":id_presntation
+            }
+        )
+        db.session.commit()
+        # Debugging: Print form data to console (for testing purposes)
+        # print(f"Title: {title_pres}")
+        # print(f"Date & Time: {date_time}")
+        # print(f"Duration: {duration}")
+        # print(f"Hall: {hall}")
+        # print(f"Point Presenter: {point_presenter}")
+        # print(f"Point Attendance: {point_attendance}")
+        # print(f"Max Late: {max_late}")
+        # print(f"Faculty: {faculty}")
+        # print(f"Department: {department}")
+        # print(f"Presenters: {presenters}")
+        # print(f"Added_by: {add_by_user_id}")
+        session['message'] = 'Presentation Delete successfully.'
+        session['message_type'] = 'success'
+    except Exception as e:
+        db.session.rollback()  # Roll back the transaction in case of an error
+        session['message'] = 'Presentation Delete NOT successfull.'
+        session['message_type'] = 'NOT success'
+    # return redirect(url_for('main.presentation'))
