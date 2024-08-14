@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/r-conferences_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/presentation_style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dialog.css') }}">
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <title>Soran-Face</title>
 
@@ -72,7 +73,7 @@
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="{{ url_for('main.r_conferences') }}" data-page="r-conferences">
+                        <a href="{{ url_for('main.presentation') }}" data-page="r-conferences">
                             <i class='bx bx-registered icon'></i>
                             <span class="text nav-text">R-Conferences</span>
                         </a>
@@ -140,70 +141,112 @@
                         <th>Attendance Points</th>
                         <th>Max Late Time</th>
                         <th>Presenter</th>
+                        <th>Added by</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for conference in conferences %}
+                    {% for presentation in presentations %}
                     <tr>
-                        <td>{{ conference.id_presentation }}</td>
-                        <td>{{ conference.title_pres }}</td>
-                        <td>{{ conference.date_time }}</td>
-                        <td>{{ conference.duration }}</td>
-                        <td>{{ conference.hall }}</td>
-                        <td>{{ conference.point_presenter }}</td>
-                        <td>{{ conference.point_attendance }}</td>
-                        <td>{{ conference.max_late }}</td>
+                        <td>{{ presentation.id_presentation }}</td>
+                        <td>{{ presentation.title_pres }}</td>
+                        <td>{{ presentation.date_time }}</td>
+                        <td>{{ presentation.duration }}</td>
+                        <td>{{ presentation.hall }}</td>
+                        <td>{{ presentation.point_presenter }}</td>
+                        <td>{{ presentation.point_attendance }}</td>
+                        <td>{{ presentation.max_late }}</td>
                         <td>
-                            <select name="presenter" id="presenter-{{ conference.id_presentation }}">
-                                {% for staff in staff_members %}
-                                <option value="{{ staff.id }}">{{ staff.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                        <td>
-                            <button class="update-btn" data-id="{{ conference.id_presentation }}">Update</button>
-                            <form action="{{ url_for('main.update_presentation') }}" method="post"
-                                class="conference-form hide" data-id="{{ conference.id_presentation }}">
-                                <input type="hidden" name="id_presentation" value="{{ conference.id_presentation }}">
-                                <label for="title_pres">Title:</label>
-                                <input type="text" id="title_pres" name="title_pres" value="{{ conference.title_pres }}" required>
-                                <label for="date_time">Date & Time:</label>
-                                <input type="datetime-local" id="date_time" name="date_time" value="{{ conference.date_time }}" required>
-                                <label for="duration">Duration:</label>
-                                <input type="text" id="duration" name="duration" value="{{ conference.duration }}" required>
-                                <label for="hall">Hall:</label>
-                                <input type="text" id="hall" name="hall" value="{{ conference.hall }}" required>
-                                <label for="point_presenter">Point Presenter:</label>
-                                <input type="number" id="point_presenter" name="point_presenter" value="{{ conference.point_presenter }}" required>
-                                <label for="point_attendance">Point Attendance:</label>
-                                <input type="number" id="point_attendance" name="point_attendance" value="{{ conference.point_attendance }}" required>
-                                <label for="max_late">Max Late:</label>
-                                <input type="number" id="max_late" name="max_late" value="{{ conference.max_late }}" required>
-                                <label for="presenter">Presenter:</label>
-                                <select id="presenter" name="presenter[]" multiple required>
+                            <div class="form-group">
+                                <select id="presenter" name="presenter[]" multiple required class="select2">
                                     {% for staff in staff_members %}
-                                    <option value="{{ staff.id }}" {% if staff.id in conference.presenters %}selected{% endif %}>{{ staff.name }}
+                                    <option value="{{ staff.id_staff }}" {% if staff.id_staff in presentation.presenters
+                                        %}selected{% endif %}>
+                                        {{ staff.staff_name }}
                                     </option>
                                     {% endfor %}
-                                </select>                               
-                                <button type="submit" name="update" class="btn-update">Update</button>
-                            </form>
+                                </select>
+                            </div>
+                        </td>
+                        <td>{{ presentation.added_by.name}}</td>
+                        <td>
+                            <button class="update-btn" data-id="{{ presentation.id_presentation }}">Update</button>
+                            <div class="register-form hide" data-id="{{ presentation.id_presentation }}">
+                                <form action="{{ url_for('main.update_presentation') }}" method="post" class="conference-form">
+                                    <input type="hidden" name="id_presentation" value="{{ presentation.id_presentation }}">
+            
+                                    <div class="form-group">
+                                        <label for="title_pres">Title:</label>
+                                        <input type="text" id="title_pres" name="title_pres" value="{{ presentation.title_pres }}"
+                                            required>
+                                    </div>
+            
+                                    <div class="form-group">
+                                        <label for="date_time">Date & Time:</label>
+                                        <input type="datetime-local" id="date_time" name="date_time"
+                                            value="{{ presentation.date_time }}" required>
+                                    </div>
+            
+                                    <div class="form-group">
+                                        <label for="duration">Duration:</label>
+                                        <input type="number" id="duration" name="duration" value="{{ presentation.duration }}"
+                                            required>
+                                    </div>
+            
+                                    <div class="form-group">
+                                        <label for="hall">Hall:</label>
+                                        <input type="text" id="hall" name="hall" value="{{ presentation.hall }}" required>
+                                    </div>
+            
+                                    <div class="form-group">
+                                        <label for="point_presenter">Point Presenter:</label>
+                                        <input type="number" id="point_presenter" name="point_presenter"
+                                            value="{{ presentation.point_presenter }}" required>
+                                    </div>
+            
+                                    <div class="form-group">
+                                        <label for="point_attendance">Point Attendance:</label>
+                                        <input type="number" id="point_attendance" name="point_attendance"
+                                            value="{{ presentation.point_attendance }}" required>
+                                    </div>
+            
+                                    <div class="form-group">
+                                        <label for="max_late">Max Late:</label>
+                                        <input type="number" id="max_late" name="max_late" value="{{ presentation.max_late }}"
+                                            required>
+                                    </div>
+            
+                                    <div class="form-group">
+                                        <label for="presenter">Presenter:</label>
+                                        <select id="presenter" name="presenter[]" multiple required class="select2">
+                                            {% for staff in staff_members %}
+                                            <option value="{{ staff.id_staff }}" {% if staff.id_staff in presentation.presenters
+                                                %}selected{% endif %}>
+                                                {{ staff.staff_name }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+            
+                                    <button type="submit" name="update" class="submit-btn">Update</button>
+                                </form>
+                            </div>
+            
                             <form action="{{ url_for('main.delete_presentation') }}" method="post">
-                                <input type="hidden" name="id_presentation" value="{{ conference.id_presentation }}">
+                                <input type="hidden" name="id_presentation" value="{{ presentation.id_presentation }}">
                                 <button type="submit" name="delete" class="btn-delete">Delete</button>
                             </form>
                         </td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="10">No conferences found.</td>
+                        <td colspan="11">No presentations found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
     
-            <!-- Register conference form -->
+            <!-- Register presentation  form -->
             <div class="register-container">
                 <button class="register-btn">
                     <i class='bx bx-plus'></i>
@@ -220,7 +263,7 @@
                         </div>
                         <div class="form-group">
                             <label for="duration">Duration:</label>
-                            <input type="text" id="duration" name="duration" required>
+                            <input type="number" id="duration" name="duration" required>
                         </div>
                         <div class="form-group">
                             <label for="hall">Hall:</label>
@@ -239,6 +282,26 @@
                             <input type="number" id="max_late" name="max_late" required>
                         </div>
                         <div class="form-group">
+                            <label for="faculty">Faculty:</label>
+                            <select id="faculty" name="faculty" required>
+                                <option value="" disabled selected>Select Faculty</option>
+                                {% for faculty in faculties %}
+                                <option value="{{ faculty.id_faculty }}">{{ faculty.name_faculty }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="department">Department:</label>
+                            <select id="department" name="department" required>
+                                <option value="" disabled selected>Select Department</option>
+                                {% for department in departments %}
+                                <option value="{{ department.id_department }}" data-faculty="{{ department.id_faculty }}">
+                                    {{ department.name_department }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="presenter">Presenter:</label>
                             <select id="presenter" name="presenter[]" multiple required class="select2">
                                 {% for staff in staff_members %}
@@ -250,12 +313,12 @@
                     </form>
                 </div>
             </div>
-        </div>
     </section>
     {% include 'dialog.html' %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-    <script src="../static/js/r-conferences_script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+    <script src="{{ url_for('static', filename='js/presentation_script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dialog.js') }}"></script>
 </body>
 

@@ -420,16 +420,58 @@ def handle_button_click():
 def test_camera():
     return render_template('test_camera.html')
 
-#registration conference part
-@bp.route('/r-conferences')
-def r_conferences():
+#registration presentation part
+@bp.route('/presentation')
+def presentation():
     staff_members = Staff.query.filter_by(state=True).all()
-    return render_template('r_conferences.html', staff_members=staff_members)
+    faculties = Faculty.query.all()
+    departments = Department.query.all()
+    
+
+    message = session.pop('message', None)
+    message_type = session.pop('message_type', None)
+    
+    return render_template('presentation.html', 
+                           staff_members=staff_members, 
+                           faculties=faculties, 
+                           departments=departments, 
+                           message=message, 
+                           message_type=message_type)
+
+
 
 @bp.route('/register_presentation', methods=['POST'])
 def register_presentation():
-    # Logic to register a new conference
-    pass
+    print(request.form)
+    # Retrieve form data
+    title_pres = request.form.get('title_pres')
+    date_time = request.form.get('date_time')
+    duration = request.form.get('duration')
+    hall = request.form.get('hall')
+    point_presenter = request.form.get('point_presenter')
+    point_attendance = request.form.get('point_attendance')
+    max_late = request.form.get('max_late')
+    faculty = request.form.get('faculty')
+    department = request.form.get('department')
+    presenters = request.form.getlist('presenter[]')  # Multiple values
+    # thire is how you get added by user
+    add_by_user_id = session['user_id']
+    # Debugging: Print form data to console (for testing purposes)
+    print(f"Title: {title_pres}")
+    print(f"Date & Time: {date_time}")
+    print(f"Duration: {duration}")
+    print(f"Hall: {hall}")
+    print(f"Point Presenter: {point_presenter}")
+    print(f"Point Attendance: {point_attendance}")
+    print(f"Max Late: {max_late}")
+    print(f"Faculty: {faculty}")
+    print(f"Department: {department}")
+    print(f"Presenters: {presenters}")
+    print(f"Added_by: {add_by_user_id}")
+    session['message'] = 'User registered successfully.'
+    session['message_type'] = 'success'
+    
+    return redirect(url_for('main.presentation'))
 
 @bp.route('/update_presentation', methods=['POST'])
 def update_presentation():

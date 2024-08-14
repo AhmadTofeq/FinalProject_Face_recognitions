@@ -116,10 +116,25 @@ document.addEventListener('DOMContentLoaded', function() {
         dialog.classList.remove('show'); // Hide the confirmation dialog
     });
 
-    $(document).ready(function () {
-            $('.select2').select2({
-                placeholder: "Select presenters",
-                allowClear: true
-            });
+   $(document).ready(function () {
+        $('.select2').select2({
+            placeholder: "Select presenters",
+            allowClear: true
         });
+    });
+
+    document.getElementById('faculty').addEventListener('change', function() {
+    const facultyId = this.value;
+    const departmentSelect = document.getElementById('department');
+    
+    // Reset the department select box
+    departmentSelect.value = "";
+    Array.from(departmentSelect.options).forEach(option => {
+        if (option.value && option.getAttribute('data-faculty') !== facultyId) {
+            option.style.display = 'none';
+        } else {
+            option.style.display = 'block';
+        }
+    });
+});
 });

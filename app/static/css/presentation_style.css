@@ -388,13 +388,18 @@ th {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 15px;
+    /* Reduced padding */
     background-color: var(--sidebar-color);
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     margin: 20px auto;
-    max-width: 600px;
+    max-width: 700px;
     width: 100%;
+    max-height: 83vh;
+    /* Set max height for the form */
+    overflow-y: auto;
+    /* Enable scroll for overflow content */
 }
 
 .hide {
@@ -403,30 +408,89 @@ th {
 
 .form-group {
     margin-bottom: 10px;
+    /* Reduced margin between form groups */
     width: 100%;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 1px;
+    margin-top: 0;
+    margin-bottom: 5px;
+    /* Added some space between label and input */
     font-weight: bold;
     color: var(--text-color);
+    font-size: medium;
 }
 
 .form-group input[type="text"],
 .form-group input[type="password"],
 .form-group input[type="number"],
+.form-group input[type="datetime-local"],
 .form-group select {
     width: 100%;
-    padding: 10px;
+    padding: 8px;
+    /* Reduced padding for inputs */
     border: 1px solid var(--toggle-color);
     border-radius: 4px;
     box-sizing: border-box;
-    height: 30px;
+    height: 35px;
+    /* Adjusted height */
+    margin-bottom: 5px;
+    /* Reduced margin */
 }
 
 .form-group select {
     appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><polygon points="0,0 10,0 5,5" fill="%23ccc"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 10px 10px;
+    padding-right: 30px;
+    cursor: pointer;
+}
+
+
+.register-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.register-btn {
+    background-color: var(--highlight-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.register-btn i {
+    font-size: 24px;
+}
+
+.register-form {
+    position: absolute;
+    bottom: 35px;
+    right: 0;
+    background-color: var(--sidebar-color);
+    padding: 15px;
+    /* Reduced padding */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    display: none;
+}
+
+.register-form.show {
+    display: block;
 }
 
 .btn-delete {
@@ -474,54 +538,12 @@ th {
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease;
-    height: 35px;
+    height: 45px;
     margin-top: 10px;
 }
 
 .submit-btn:hover {
     background-color: var(--highlight-hover-color);
-}
-
-.register-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-}
-
-.register-btn {
-    background-color: var(--highlight-color);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-    height: 40px;
-    width: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.register-btn i {
-    font-size: 24px;
-}
-
-.register-form {
-    position: absolute;
-    bottom: 35px;
-    right: 0;
-    background-color: var(--sidebar-color);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    display: none;
-}
-
-.register-form.show {
-    display: block;
 }
 
 .popup {
@@ -561,10 +583,11 @@ th {
 .user-form input[type="text"],
 .user-form input[type="password"],
 .user-form input[type="number"],
+.form-group input[type="datetime-local"],
 .user-form select {
     width: calc(100% - 20px);
     padding: 10px;
-    margin-bottom: 6px;
+    margin-bottom: 0px;
     border: 1px solid var(--toggle-color);
     border-radius: 4px;
     box-sizing: border-box;
@@ -696,49 +719,60 @@ th {
     display: block;
 }
 
-/*select 2 code*/
-/* Style for Select2 dropdown */
+/* Select2 container styles */
 .select2-container {
     width: 100% !important;
-    /* Ensure the dropdown takes full width */
+    font-family: inherit;
+    /* Match the font family of the page */
 }
 
+/* Select2 selection box styles */
 .select2-selection--multiple {
-    border: 1px solid #859cb4;
+    border: 1px solid var(--toggle-color);
     border-radius: 4px;
     padding: 5px;
     min-height: 38px;
     box-shadow: none;
     outline: none;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: 14px;
 }
 
+/* Rendered selection text styles */
 .select2-selection__rendered {
     line-height: 28px;
+    color: var(--text-color);
 }
 
+/* Styles for selected choices (tags) */
 .select2-selection__choice {
-    background-color: #007bff;
-    color: rgb(28, 78, 122);
-    border: 1px solid #007bff;
+    background-color: var(--highlight-color);
+    color: #1d7dae;
+    border: 1px solid var(--highlight-color);
     border-radius: 4px;
     padding: 3px 5px;
     margin: 2px;
+    font-size: 14px;
 }
 
+/* Styles for the remove button on selected choices */
 .select2-selection__choice__remove {
-    color: rgb(229, 56, 56);
+    color: #ff0000;
     margin-left: 5px;
 }
 
 .select2-selection__choice__remove:hover {
-    color: #ff0000;
+    color: #c90000;
 }
 
+/* Default styles for Select2 container */
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: var(--highlight-color);
+    border-color: var(--highlight-color);
 }
 
+/* Hover effect for the remove button */
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-    color: rgb(27, 15, 108);
+    color: #fff;
 }
