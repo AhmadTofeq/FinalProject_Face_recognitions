@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dialog.css') }}">
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <title>Soran-Face</title>
 
@@ -129,21 +129,15 @@
             </div>
             {% endif %}
     
-            <table>
+            <table class="register-table">
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Date & Time</th>
-                        <th>Duration</th>
-                        <th>Hall</th>
-                        <th>Presenter Points</th>
-                        <th>Attendance Points</th>
-                        <th>Max Late Time</th>
-                        <th>Presenter</th>
-                        <th>Added by</th>
-                        <th>Actions</th>
-                    </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Date & Time</th>
+                    <th>Presenter</th>
+                    <th>Actions</th>
+                </tr>
                 </thead>
                 <tbody>
                     {% for presentation in presentations %}
@@ -151,87 +145,92 @@
                         <td>{{ presentation.id_presentation }}</td>
                         <td>{{ presentation.title_pres }}</td>
                         <td>{{ presentation.date_time }}</td>
-                        <td>{{ presentation.duration }}</td>
-                        <td>{{ presentation.hall }}</td>
-                        <td>{{ presentation.point_presenter }}</td>
-                        <td>{{ presentation.point_attendance }}</td>
-                        <td>{{ presentation.max_late }}</td>
+                        <td>{{ presentation.presenters }}</td>
                         <td>
-                            <div class="form-group">
-                                <select id="presenter" name="presenter[]" multiple required class="select2">
-                                    {% for staff in staff_members %}
-                                    <option value="{{ staff.id_staff }}" {% if staff.id_staff in presentation.presenters
-                                        %}selected{% endif %}>
-                                        {{ staff.staff_name }}
-                                    </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </td>
-                        <td>{{ presentation.added_by.name}}</td>
-                        <td>
+                            <button class="preview-btn" data-id="{{ presentation.id_presentation }}">Preview</button>
                             <button class="update-btn" data-id="{{ presentation.id_presentation }}">Update</button>
-                            <div class="register-form hide" data-id="{{ presentation.id_presentation }}">
+                            <div class="conference-form-container hide" data-id="{{ presentation.id_presentation }}">
                                 <form action="{{ url_for('main.update_presentation') }}" method="post" class="conference-form">
                                     <input type="hidden" name="id_presentation" value="{{ presentation.id_presentation }}">
-            
+                
                                     <div class="form-group">
-                                        <label for="title_pres">Title:</label>
-                                        <input type="text" id="title_pres" name="title_pres" value="{{ presentation.title_pres }}"
-                                            required>
+                                        <label for="title_pres_{{ presentation.id_presentation }}">Title:</label>
+                                        <input type="text" id="title_pres_{{ presentation.id_presentation }}" name="title_pres"
+                                            value="{{ presentation.title_pres }}" required>
                                     </div>
-            
                                     <div class="form-group">
-                                        <label for="date_time">Date & Time:</label>
-                                        <input type="datetime-local" id="date_time" name="date_time"
+                                        <label for="date_time_{{ presentation.id_presentation }}">Date & Time:</label>
+                                        <input type="datetime-local" id="date_time_{{ presentation.id_presentation }}" name="date_time"
                                             value="{{ presentation.date_time }}" required>
                                     </div>
-            
                                     <div class="form-group">
-                                        <label for="duration">Duration:</label>
-                                        <input type="number" id="duration" name="duration" value="{{ presentation.duration }}"
-                                            required>
+                                        <label for="duration_{{ presentation.id_presentation }}">Duration:</label>
+                                        <input type="number" id="duration_{{ presentation.id_presentation }}" name="duration"
+                                            value="{{ presentation.duration }}" required>
                                     </div>
-            
                                     <div class="form-group">
-                                        <label for="hall">Hall:</label>
-                                        <input type="text" id="hall" name="hall" value="{{ presentation.hall }}" required>
+                                        <label for="hall_{{ presentation.id_presentation }}">Hall:</label>
+                                        <input type="text" id="hall_{{ presentation.id_presentation }}" name="hall"
+                                            value="{{ presentation.hall }}" required>
                                     </div>
-            
                                     <div class="form-group">
-                                        <label for="point_presenter">Point Presenter:</label>
-                                        <input type="number" id="point_presenter" name="point_presenter"
-                                            value="{{ presentation.point_presenter }}" required>
+                                        <label for="point_presenter_{{ presentation.id_presentation }}">Point Presenter:</label>
+                                        <input type="number" id="point_presenter_{{ presentation.id_presentation }}"
+                                            name="point_presenter" value="{{ presentation.point_presenter }}" required>
                                     </div>
-            
                                     <div class="form-group">
-                                        <label for="point_attendance">Point Attendance:</label>
-                                        <input type="number" id="point_attendance" name="point_attendance"
-                                            value="{{ presentation.point_attendance }}" required>
+                                        <label for="point_attendance_{{ presentation.id_presentation }}">Point Attendance:</label>
+                                        <input type="number" id="point_attendance_{{ presentation.id_presentation }}"
+                                            name="point_attendance" value="{{ presentation.point_attendance }}" required>
                                     </div>
-            
                                     <div class="form-group">
-                                        <label for="max_late">Max Late:</label>
-                                        <input type="number" id="max_late" name="max_late" value="{{ presentation.max_late }}"
-                                            required>
+                                        <label for="max_late_{{ presentation.id_presentation }}">Max Late:</label>
+                                        <input type="number" id="max_late_{{ presentation.id_presentation }}" name="max_late"
+                                            value="{{ presentation.max_late }}" required>
                                     </div>
-            
                                     <div class="form-group">
-                                        <label for="presenter">Presenter:</label>
-                                        <select id="presenter" name="presenter[]" multiple required class="select2">
-                                            {% for staff in staff_members %}
-                                            <option value="{{ staff.id_staff }}" {% if staff.id_staff in presentation.presenters
-                                                %}selected{% endif %}>
-                                                {{ staff.staff_name }}
+                                        <label for="faculty_{{ presentation.id_presentation }}">Faculty:</label>
+                                        <select id="faculty_{{ presentation.id_presentation }}" name="faculty" required>
+                                            <option value="" disabled>Select Faculty</option>
+                                            {% for faculty in faculties %}
+                                            <option value="{{ faculty.id_faculty }}" {% if faculty.id_faculty==presentation.faculty_id %}selected{% endif %}>
+                                                {{ faculty.name_faculty }}
                                             </option>
                                             {% endfor %}
                                         </select>
                                     </div>
-            
+                                    <div class="form-group">
+                                        <label for="department_{{ presentation.id_presentation }}">Department:</label>
+                                        <select id="department_{{ presentation.id_presentation }}" name="department" required>
+                                            <option value="" disabled>Select Department</option>
+                                            {% for department in departments %}
+                                            <option value="{{ department.id_department }}" data-faculty="{{ department.id_faculty }}" {% if
+                                                department.id_department==presentation.department_id %}selected{% endif %}>
+                                                {{ department.name_department }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                
                                     <button type="submit" name="update" class="submit-btn">Update</button>
                                 </form>
                             </div>
-            
+                            <div class="preview-box hide" data-id="{{ presentation.id_presentation }}">
+                                <div class="preview-content">
+                                    <h3>Presentation Details</h3>
+                                    <p><strong>ID:</strong> {{ presentation.id_presentation }}</p>
+                                    <p><strong>Title:</strong> {{ presentation.title_pres }}</p>
+                                    <p><strong>Date & Time:</strong> {{ presentation.date_time }}</p>
+                                    <p><strong>Duration:</strong> {{ presentation.duration }}</p>
+                                    <p><strong>Hall:</strong> {{ presentation.hall }}</p>
+                                    <p><strong>Presenter Points:</strong> {{ presentation.point_presenter }}</p>
+                                    <p><strong>Attendance Points:</strong> {{ presentation.point_attendance }}</p>
+                                    <p><strong>Max Late Time:</strong> {{ presentation.max_late }}</p>
+                                    <p><strong>Presenters:</strong> {{ presentation.presenters }}</p>
+                                    <p><strong>Added by:</strong> {{ presentation.added_by }}</p>
+                                    <button class="close-preview"></button>
+                                </div>
+                            </div>
                             <form action="{{ url_for('main.delete_presentation') }}" method="post">
                                 <input type="hidden" name="id_presentation" value="{{ presentation.id_presentation }}">
                                 <button type="submit" name="delete" class="btn-delete">Delete</button>
@@ -240,12 +239,11 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="11">No presentations found.</td>
+                        <td colspan="5">No presentations found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-    
             <!-- Register presentation  form -->
             <div class="register-container">
                 <button class="register-btn">
@@ -304,6 +302,7 @@
                         <div class="form-group">
                             <label for="presenter">Presenter:</label>
                             <select id="presenter" name="presenter[]" multiple required class="select2">
+                                <option></option> <!-- Placeholder -->
                                 {% for staff in staff_members %}
                                 <option value="{{ staff.id_staff }}">{{ staff.staff_name }}</option>
                                 {% endfor %}
@@ -314,10 +313,15 @@
                 </div>
             </div>
     </section>
+    <div id="deleteStaffDialog" class="dialog hide">
+        <div class="icon">&#10007;</div>
+        <div class="message">Are you sure?</div>
+        <div class="message">You will not be able to recover this Presentation record!</div>
+        <button class="cancel">Cancel</button>
+        <button class="delete">Deactivate!</button>
+    </div>
     {% include 'dialog.html' %}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/js/select2.min.js"></script>
     <script src="{{ url_for('static', filename='js/presentation_script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dialog.js') }}"></script>
 </body>

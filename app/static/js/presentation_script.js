@@ -88,8 +88,8 @@ document.addEventListener('DOMContentLoaded', function() {
     updateBtns.forEach(button => {
         button.addEventListener('click', function() {
             const id = this.getAttribute('data-id');
-            const form = document.querySelector(`.conference-form[data-id='${id}']`);
-            form.classList.toggle('hide');
+            const container = document.querySelector(`.conference-form-container[data-id='${id}']`);
+            container.classList.toggle('hide');
         });
     });
 
@@ -116,25 +116,82 @@ document.addEventListener('DOMContentLoaded', function() {
         dialog.classList.remove('show'); // Hide the confirmation dialog
     });
 
-   $(document).ready(function () {
-        $('.select2').select2({
+   $(document).ready(function() {
+        $('#presenter').select2({
             placeholder: "Select presenters",
-            allowClear: true
+            allowClear: true,
+            width: '100%',
+            matcher: function(params, data) {
+                if ($.trim(params.term) === '') {
+                    return data;
+                }
+                if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
+                    return data;
+                }
+                return null;
+            }
         });
     });
 
+
     document.getElementById('faculty').addEventListener('change', function() {
-    const facultyId = this.value;
-    const departmentSelect = document.getElementById('department');
-    
-    // Reset the department select box
-    departmentSelect.value = "";
-    Array.from(departmentSelect.options).forEach(option => {
-        if (option.value && option.getAttribute('data-faculty') !== facultyId) {
-            option.style.display = 'none';
-        } else {
-            option.style.display = 'block';
-        }
+        const facultyId = this.value;
+        const departmentSelect = document.getElementById('department');
+        
+        // Reset the department select box
+        departmentSelect.value = "";
+        Array.from(departmentSelect.options).forEach(option => {
+            if (option.value && option.getAttribute('data-faculty') !== facultyId) {
+                option.style.display = 'none';
+            } else {
+                option.style.display = 'block';
+            }
+        });
     });
-});
+   document.querySelectorAll('.update-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const presentationId = this.getAttribute('data-id');
+            const facultySelect = document.getElementById(`faculty_${presentationId}`);
+            const departmentSelect = document.getElementById(`department_${presentationId}`);
+
+            // Filter departments based on the selected faculty
+            facultySelect.addEventListener('change', function() {
+                const facultyId = this.value;
+
+                Array.from(departmentSelect.options).forEach(option => {
+                    if (option.value && option.getAttribute('data-faculty') !== facultyId) {
+                        option.style.display = 'none';
+                    } else {
+                        option.style.display = 'block';
+                    }
+                });
+
+                // Keep the current department selected if it matches the selected faculty
+                if (departmentSelect.querySelector('option[selected]')) {
+                    departmentSelect.value = departmentSelect.querySelector('option[selected]').value;
+                } else {
+                    departmentSelect.value = "";  // Reset the department selection if no match
+                }
+            });
+
+            // Trigger change event to filter departments based on the initially selected faculty
+            facultySelect.dispatchEvent(new Event('change'));
+        });
+    });
+    document.querySelectorAll('.preview-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const presentationId = this.getAttribute('data-id');
+            const previewBox = document.querySelector(`.preview-box[data-id="${presentationId}"]`);
+            previewBox.style.display = 'block';
+        });
+    });
+
+    document.querySelectorAll('.close-preview').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const previewBox = this.closest('.preview-box');
+            previewBox.style.display = 'none';
+        });
+    });
+
+
 });

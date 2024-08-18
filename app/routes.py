@@ -427,17 +427,26 @@ def presentation():
     staff_members = Staff.query.filter_by(state=True).all()
     faculties = Faculty.query.all()
     departments = Department.query.all()
-    
+
+    # Execute the query to fetch all presentations
+    result = db.session.execute(text("SELECT * FROM get_all_presentations"))
+    presentations = result.fetchall()
+
+    presentations = [
+        {
+            **dict(zip(result.keys(), presentation)),
+            # 'presenter_ids': presentation.presenter_ids or '',  # Removed presenter_ids
+            'presenters': presentation.presenters,  # Use the presenters directly from the view
+            'faculty_id': presentation.faculty_id,
+            'department_id': presentation.department_id
+        }
+        for presentation in presentations
+    ]
 
     message = session.pop('message', None)
     message_type = session.pop('message_type', None)
-    
-    return render_template('presentation.html', 
-                           staff_members=staff_members, 
-                           faculties=faculties, 
-                           departments=departments, 
-                           message=message, 
-                           message_type=message_type)
+
+    return render_template('presentation.html', presentations=presentations, faculties=faculties, departments=departments, staff_members=staff_members, message=message, message_type=message_type)
 
 
 
@@ -471,18 +480,6 @@ def register_presentation():
             }
         )
         db.session.commit()
-        # Debugging: Print form data to console (for testing purposes)
-        # print(f"Title: {title_pres}")
-        # print(f"Date & Time: {date_time}")
-        # print(f"Duration: {duration}")
-        # print(f"Hall: {hall}")
-        # print(f"Point Presenter: {point_presenter}")
-        # print(f"Point Attendance: {point_attendance}")
-        # print(f"Max Late: {max_late}")
-        # print(f"Faculty: {faculty}")
-        # print(f"Department: {department}")
-        # print(f"Presenters: {presenters}")
-        # print(f"Added_by: {add_by_user_id}")
         session['message'] = 'Presentation registered successfully.'
         session['message_type'] = 'success'
     except Exception as e:
@@ -494,10 +491,10 @@ def register_presentation():
 
 @bp.route('/update_presentation', methods=['POST'])
 def update_presentation():
-    id_presntation=4
+    id_presentation = request.form.get('id_presentation')
     try:
         db.session.execute(
-            text('''CALL Update_presntaion(
+            text('''CALL Update_presentation(
                  :title1,
                  :date_time1,
                  :duration1,
@@ -506,7 +503,7 @@ def update_presentation():
                  :point_attendance1,
                  :max_late1,
                  :id_dep1,
-                 :id_presntaion1
+                 :id_presentation1
                  )'''),
             {
                 "title1": request.form.get('title_pres'),
@@ -517,59 +514,42 @@ def update_presentation():
                 "point_attendance1": request.form.get('point_attendance'),
                 "max_late1": request.form.get('max_late'),
                 "id_dep1": request.form.get('department'),
-                "id_presntaion1":id_presntation
+                "id_presentation1": id_presentation 
             }
         )
         db.session.commit()
-        # Debugging: Print form data to console (for testing purposes)
-        # print(f"Title: {title_pres}")
-        # print(f"Date & Time: {date_time}")
-        # print(f"Duration: {duration}")
-        # print(f"Hall: {hall}")
-        # print(f"Point Presenter: {point_presenter}")
-        # print(f"Point Attendance: {point_attendance}")
-        # print(f"Max Late: {max_late}")
-        # print(f"Faculty: {faculty}")
-        # print(f"Department: {department}")
-        # print(f"Presenters: {presenters}")
-        # print(f"Added_by: {add_by_user_id}")
-        session['message'] = 'Presentation Update successfully.'
+        session['message'] = 'Presentation updated successfully.'
         session['message_type'] = 'success'
     except Exception as e:
-        db.session.rollback()  # Roll back the transaction in case of an error
-        session['message'] = 'Presentation Update NOT successfull.'
-        session['message_type'] = 'NOT success'
-    # return redirect(url_for('main.presentation'))
+        db.session.rollback()
+        session['message'] = 'Presentation update NOT successful.'
+        session['message_type'] = 'error'
+        print(f"Error updating presentation: {e}")  
+    return redirect(url_for('main.presentation'))  
 
 @bp.route('/delete_presentation', methods=['POST'])
 def delete_presentation():
-    id_presntation = 4
+    id_presentation = request.form.get('id_presentation')  
+
+    if not id_presentation:
+        session['message'] = 'Presentation ID is missing.'
+        session['message_type'] = 'error'
+        return redirect(url_for('main.presentation')) 
+
     try:
         db.session.execute(
             text('''CALL delet_presntaion(
                      :id
                      )'''),
-            {
-                "id":id_presntation
-            }
+            {"id": id_presentation}  # Pass the presentation ID to the stored procedure
         )
         db.session.commit()
-        # Debugging: Print form data to console (for testing purposes)
-        # print(f"Title: {title_pres}")
-        # print(f"Date & Time: {date_time}")
-        # print(f"Duration: {duration}")
-        # print(f"Hall: {hall}")
-        # print(f"Point Presenter: {point_presenter}")
-        # print(f"Point Attendance: {point_attendance}")
-        # print(f"Max Late: {max_late}")
-        # print(f"Faculty: {faculty}")
-        # print(f"Department: {department}")
-        # print(f"Presenters: {presenters}")
-        # print(f"Added_by: {add_by_user_id}")
-        session['message'] = 'Presentation Delete successfully.'
+        session['message'] = 'Presentation deleted successfully.'
         session['message_type'] = 'success'
     except Exception as e:
-        db.session.rollback()  # Roll back the transaction in case of an error
-        session['message'] = 'Presentation Delete NOT successfull.'
-        session['message_type'] = 'NOT success'
-    # return redirect(url_for('main.presentation'))
+        db.session.rollback()  
+        session['message'] = 'Presentation deletion NOT successful.'
+        session['message_type'] = 'error'
+        print(f"Error deleting presentation: {e}")  # Log the error for debugging
+
+    return redirect(url_for('main.presentation'))  
