@@ -5,7 +5,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const modeSwitch = body.querySelector(".toggle-switch");
     const modeText = document.querySelector(".mode-text");
     const userNameSpan = document.getElementById('user-name');
+    const checkbox = document.getElementById('timeFilterCheckbox');
+    const checkboxText = document.getElementById('checkboxText');
 
+    // Function to update the checkbox label text based on the checkbox state
+    function updateCheckboxText() {
+        if (checkbox.checked) {
+            checkboxText.textContent = 'Show Upcoming Conferences Only';
+        } else {
+            checkboxText.textContent = 'Show Past Conferences Only';
+        }
+    }
+
+    // Update text on page load
+    updateCheckboxText();
+
+    // Update text when the checkbox state changes
+    checkbox.addEventListener('change', updateCheckboxText);
     // Fetch user's name and update the span
     fetch('/get_user_info', {
         method: 'GET',

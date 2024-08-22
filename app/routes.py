@@ -68,11 +68,6 @@ def about_us():
 def home():
     return render_template('home.html')
 
-@bp.route('/conferences')
-def conferences():
-    return render_template('conferences.html')
-
-
 @bp.route('/users')
 def users():
     if 'role' not in session or session['role'] != 'admin':
@@ -435,7 +430,6 @@ def presentation():
     presentations = [
         {
             **dict(zip(result.keys(), presentation)),
-            # 'presenter_ids': presentation.presenter_ids or '',  # Removed presenter_ids
             'presenters': presentation.presenters,  # Use the presenters directly from the view
             'faculty_id': presentation.faculty_id,
             'department_id': presentation.department_id
@@ -553,3 +547,26 @@ def delete_presentation():
         print(f"Error deleting presentation: {e}")  # Log the error for debugging
 
     return redirect(url_for('main.presentation'))  
+
+#confrance page part
+@bp.route('/conferences', methods=['GET', 'POST'])
+def conferences():
+    search_query = request.form.get('search_query', '')  # Default to empty string if not provided
+    not_passed = request.form.get('not_passed', 'off') == 'on'  # Check if the checkbox is checked
+
+    # Execute the stored procedure with the search query and checkbox state
+    result = db.session.execute(
+        text("CALL SearchConferences(:search_query, :not_passed)"),
+        {"search_query": search_query, "not_passed": not_passed}
+    )
+    presentations = result.fetchall()
+
+    presentations = [
+        {
+            **dict(zip(result.keys(), presentation)),
+            'presenters': presentation.presenters,  # Use the presenters directly from the view
+        }
+        for presentation in presentations
+    ]
+
+    return render_template('conferences.html', presentations=presentations, search_query=search_query, not_passed=not_passed)

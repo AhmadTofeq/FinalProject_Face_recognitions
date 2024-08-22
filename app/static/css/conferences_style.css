@@ -44,7 +44,7 @@ body.dark {
     --sidebar-color: #242526;
     --primary-color: #3a3b3c;
     --primary-color-light: #3a3b3c;
-    --toggle-color: #fff;
+    --toggle-color: #72a7c0;
     --text-color: #ccc;
     --highlight-color: #4173a4;
     --highlight-hover-color: #326e91;
@@ -331,4 +331,139 @@ body.dark .home .text {
     font-weight: bold;
     background-color: var(--primary-color);
     font-size: 1rem;
+}
+body.dark tbody tr,
+body.dark tbody tr td,
+body.dark thead th {
+    color: white;
+}
+
+/* General Page Content Styling */
+.page-content {
+    text-align: center;
+    padding: 40px;
+}
+
+h2,
+p {
+    color: var(--text-color);
+}
+
+.below {
+    color: white !important;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+thead {
+    background-color: var(--highlight-color);
+    color: white;
+}
+
+thead th {
+    padding: 10px;
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--primary-color-light);
+}
+
+tbody tr:hover {
+    background-color: var(--toggle-color);
+}
+
+td,
+th {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--toggle-color);
+}
+/*content style*/
+.conference-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.conference-table th,
+.conference-table td {
+    border: none;
+    padding: 8px;
+}
+
+.conference-table th {
+    background-color: var(--highlight-color);
+    text-align: left;
+}
+
+/* Settings button */
+.settings-btn {
+    padding: 6px 10px;
+    background-color: var(--highlight-color);
+    /* Adjusted for consistency */
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: medium;
+}
+
+.settings-btn:hover {
+    background-color: var(--highlight-hover-color);
+    /* Adjusted for consistency */
+}
+/* Search and Checkbox Styles */
+form {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+/* Styles for the text input field */
+form input[type="text"] {
+    flex: 1;
+    padding: 8px 12px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+/* Styles for the checkbox and label */
+form label {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+form input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+/* Styles for the search button */
+form button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #0056b3;
 }
