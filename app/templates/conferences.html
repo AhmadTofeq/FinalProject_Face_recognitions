@@ -129,6 +129,7 @@
                 </label>
                 <button type="submit">Search</button>
             </form>
+    
             <!-- Conference Table -->
             <table class="conference-table">
                 <thead>
@@ -142,13 +143,20 @@
                 </thead>
                 <tbody>
                     {% for presentation in presentations %}
-                    <tr>
+                    <tr data-id="{{ presentation.id_presentation }}" data-title="{{ presentation.title_pres }}"
+                        data-datetime="{{ presentation.date_time }}" data-presenters="{{ presentation.presenters }}"
+                        data-duration="{{ presentation.duration }}" data-hall="{{ presentation.hall }}"
+                        data-point-presenter="{{ presentation.point_presenter }}"
+                        data-point-attendance="{{ presentation.point_attendance }}"
+                        data-max-late="{{ presentation.max_late }}" data-department="{{ presentation.department }}"
+                        data-faculty-id="{{ presentation.faculty_id }}"
+                        data-department-id="{{ presentation.department_id }}" data-added-by="{{ presentation.added_by }}">
                         <td>{{ presentation.id_presentation }}</td>
                         <td>{{ presentation.title_pres }}</td>
                         <td>{{ presentation.date_time }}</td>
                         <td>{{ presentation.presenters }}</td>
                         <td>
-                            <button class="settings-btn" data-id="{{ presentation.id_presentation }}">Setting</button>
+                            <button type="button" class="settings-btn">Setting</button>
                         </td>
                     </tr>
                     {% else %}
@@ -160,6 +168,42 @@
             </table>
         </div>
     </section>
+    
+    <div id="settingsModal" class="modal">
+        <button class="modal-close" id="closeModalBtn">&times;</button>
+        <div class="modal-header">
+            <h3 id="modalTitle"></h3>
+        </div>
+        <div class="modal-body">
+            <div class="modal-section">
+                <h4>Event Details</h4>
+                <p><strong>Date & Time:</strong> <span id="modalDatetime"></span></p>
+                <p><strong>Presenter(s):</strong> <span id="modalPresenters"></span></p>
+                <p><strong>Duration:</strong> <span id="modalDuration"></span></p>
+                <p><strong>Hall:</strong> <span id="modalHall"></span></p>
+            </div>
+            <div class="modal-section">
+                <h4>Points and Attendance</h4>
+                <p><strong>Presenter Points:</strong> <span id="modalPointPresenter"></span></p>
+                <p><strong>Attendance Points:</strong> <span id="modalPointAttendance"></span></p>
+                <p><strong>Max Late Time:</strong> <span id="modalMaxLate"></span></p>
+            </div>
+            <div class="modal-section">
+                <h4>Additional Information</h4>
+                <p><strong>Department:</strong> <span id="modalDepartment"></span></p>
+                <p><strong>Faculty ID:</strong> <span id="modalFacultyId"></span></p>
+                <p><strong>Department ID:</strong> <span id="modalDepartmentId"></span></p>
+                <p><strong>Added By:</strong> <span id="modalAddedBy"></span></p>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button id="startButton">Start</button>
+            <button id="testCameraButton">Test Camera</button>
+            <button id="exportButton">Export</button>
+        </div>
+    </div>
+    <div id="modalOverlay" class="modal-overlay"></div>
+
     {% include 'dialog.html' %}
     <script src="{{ url_for('static', filename='js/conferences_script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dialog.js') }}"></script>

@@ -8,6 +8,59 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkbox = document.getElementById('timeFilterCheckbox');
     const checkboxText = document.getElementById('checkboxText');
 
+
+    const settingsButtons = document.querySelectorAll('.settings-btn');
+    const modal = document.getElementById('settingsModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+    
+    // Modal elements
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDatetime = document.getElementById('modalDatetime');
+    const modalPresenters = document.getElementById('modalPresenters');
+    const modalDuration = document.getElementById('modalDuration');
+    const modalHall = document.getElementById('modalHall');
+    const modalPointPresenter = document.getElementById('modalPointPresenter');
+    const modalPointAttendance = document.getElementById('modalPointAttendance');
+    const modalMaxLate = document.getElementById('modalMaxLate');
+    const modalDepartment = document.getElementById('modalDepartment');
+    const modalFacultyId = document.getElementById('modalFacultyId');
+    const modalDepartmentId = document.getElementById('modalDepartmentId');
+    const modalAddedBy = document.getElementById('modalAddedBy');
+
+    settingsButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const row = this.closest('tr');
+
+            modalTitle.textContent = row.getAttribute('data-title');
+            modalDatetime.textContent = row.getAttribute('data-datetime');
+            modalPresenters.textContent = row.getAttribute('data-presenters');
+            modalDuration.textContent = row.getAttribute('data-duration');
+            modalHall.textContent = row.getAttribute('data-hall');
+            modalPointPresenter.textContent = row.getAttribute('data-point-presenter');
+            modalPointAttendance.textContent = row.getAttribute('data-point-attendance');
+            modalMaxLate.textContent = row.getAttribute('data-max-late');
+            modalDepartment.textContent = row.getAttribute('data-department');
+            modalFacultyId.textContent = row.getAttribute('data-faculty-id');
+            modalDepartmentId.textContent = row.getAttribute('data-department-id');
+            modalAddedBy.textContent = row.getAttribute('data-added-by');
+
+            modal.classList.add('active');
+            modalOverlay.classList.add('active');
+        });
+    });
+
+    // Close modal when clicking outside of it
+    modalOverlay.addEventListener('click', function() {
+        modal.classList.remove('active');
+        modalOverlay.classList.remove('active');
+    });
+    
+    document.getElementById('closeModalBtn').addEventListener('click', function() {
+    document.getElementById('settingsModal').classList.remove('active');
+    document.getElementById('modalOverlay').classList.remove('active');
+    });
+
+
     // Function to update the checkbox label text based on the checkbox state
     function updateCheckboxText() {
         if (checkbox.checked) {
