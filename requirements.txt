@@ -4,3 +4,5 @@ Flask-Migrate
 Flask-WTF
 python-dotenv
 PyMySQL
+scikit-learn
+tensorflow
