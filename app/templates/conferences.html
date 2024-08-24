@@ -147,10 +147,9 @@
                         data-datetime="{{ presentation.date_time }}" data-presenters="{{ presentation.presenters }}"
                         data-duration="{{ presentation.duration }}" data-hall="{{ presentation.hall }}"
                         data-point-presenter="{{ presentation.point_presenter }}"
-                        data-point-attendance="{{ presentation.point_attendance }}"
-                        data-max-late="{{ presentation.max_late }}" data-department="{{ presentation.department }}"
-                        data-faculty-id="{{ presentation.faculty_id }}"
-                        data-department-id="{{ presentation.department_id }}" data-added-by="{{ presentation.added_by }}">
+                        data-point-attendance="{{ presentation.point_attendance }}" data-max-late="{{ presentation.max_late }}"
+                        data-department="{{ presentation.department_name }}" data-faculty-id="{{ presentation.faculty_name }}"
+                        data-added-by="{{ presentation.added_by }}">
                         <td>{{ presentation.id_presentation }}</td>
                         <td>{{ presentation.title_pres }}</td>
                         <td>{{ presentation.date_time }}</td>
@@ -190,9 +189,8 @@
             </div>
             <div class="modal-section">
                 <h4>Additional Information</h4>
+                <p><strong>Faculty:</strong> <span id="modalFacultyId"></span></p>
                 <p><strong>Department:</strong> <span id="modalDepartment"></span></p>
-                <p><strong>Faculty ID:</strong> <span id="modalFacultyId"></span></p>
-                <p><strong>Department ID:</strong> <span id="modalDepartmentId"></span></p>
                 <p><strong>Added By:</strong> <span id="modalAddedBy"></span></p>
             </div>
         </div>

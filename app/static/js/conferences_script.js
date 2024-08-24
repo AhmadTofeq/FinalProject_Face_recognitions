@@ -40,8 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
             modalPointAttendance.textContent = row.getAttribute('data-point-attendance');
             modalMaxLate.textContent = row.getAttribute('data-max-late');
             modalDepartment.textContent = row.getAttribute('data-department');
-            modalFacultyId.textContent = row.getAttribute('data-faculty-id');
-            modalDepartmentId.textContent = row.getAttribute('data-department-id');
+            modalFacultyId.textContent = row.getAttribute('data-faculty-id');  // This is now the faculty name
             modalAddedBy.textContent = row.getAttribute('data-added-by');
 
             modal.classList.add('active');
@@ -49,11 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Close modal when clicking outside of it
-    modalOverlay.addEventListener('click', function() {
-        modal.classList.remove('active');
-        modalOverlay.classList.remove('active');
-    });
     
     document.getElementById('closeModalBtn').addEventListener('click', function() {
     document.getElementById('settingsModal').classList.remove('active');
