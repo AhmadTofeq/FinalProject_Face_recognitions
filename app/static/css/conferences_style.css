@@ -476,7 +476,7 @@ form button:hover {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
+    background-color:var(--sidebar-color);
     padding: 20px;
     border-radius: 10px;
     z-index: 2000;
@@ -506,7 +506,7 @@ form button:hover {
 
 /* Modal Header */
 .modal-header {
-    background-color: #f0f0f0;
+    background-color: #ac8123;
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
@@ -575,4 +575,21 @@ form button:hover {
 
 .modal-actions #exportButton:hover {
     background-color: #c82333;
+}
+.button-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    /* Example color */
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.button-link:hover {
+    background-color: #45a049;
+    /* Darker shade on hover */
 }

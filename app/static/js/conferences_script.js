@@ -58,9 +58,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to update the checkbox label text based on the checkbox state
     function updateCheckboxText() {
         if (checkbox.checked) {
-            checkboxText.textContent = 'Show Upcoming Conferences Only';
+            checkboxText.textContent = 'Show Upcoming presentation Only';
         } else {
-            checkboxText.textContent = 'Show Past Conferences Only';
+            checkboxText.textContent = 'Show Past presentation Only';
         }
     }
 
