@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify, current_app, Response
 from sqlalchemy.orm import joinedload
 from sqlalchemy import text  # Add this import
 from app import db
@@ -9,7 +9,6 @@ import os
 from werkzeug.utils import secure_filename
 from back_end_process.Pyhton_files.video_processing import StaffProcessor
 import logging
-
 bp = Blueprint('main', __name__)
 
 @bp.route('/')
@@ -587,3 +586,12 @@ def conferences():
         presentations_with_names.append(presentation_dict)
 
     return render_template('conferences.html', presentations=presentations_with_names, search_query=search_query, not_passed=not_passed)
+
+from back_end_process.Pyhton_files.main import second_test_camera
+@bp.route('/second_test_camera')
+def show_second_test_camera_page():
+    return render_template('second_test_camera.html')
+
+@bp.route('/second_test_camera_feed')
+def second_test_camera_feed():
+    return second_test_camera()

@@ -4,13 +4,14 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import cvzone
 from back_end_process.Pyhton_files.class_.ModelRecognitionAndDtection import ModelRecognitionAndDtection1 as mymodel
-from class_.Detection_face import FaceDetection
+#from class_.Detection_face import FaceDetection
 import cv2
 import time
 from back_end_process.Pyhton_files.class_.paths import paths1
 import warnings
 warnings.filterwarnings("ignore")
-
+import numpy as np
+from flask import Response
 model = mymodel(paths1.images_path)
 def myModel1(frame):
     threshold=0.8
@@ -149,12 +150,38 @@ def record_vedio():
 #     main()
 #     # record_vedio()
 
+def second_test_camera():
+    def gen_frames():  
+        cameras = []
+        for i in range(5):  # Attempt to open up to 5 cameras
+            cap = cv2.VideoCapture(i)
+            if cap.isOpened():
+                cameras.append((cap, i))  # Store the camera and its index
 
+        if not cameras:
+            return "Error: No cameras accessible"
 
+        while True:
+            frames = []
+            for cap, index in cameras:
+                success, frame = cap.read()
+                if success:
+                    # Put the camera index text on the frame
+                    cv2.putText(frame, f'Camera {index + 1}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+                    frames.append(frame)
 
+            if frames:
+                # Combine frames horizontally
+                combined_frame = np.hstack(frames)
+                ret, buffer = cv2.imencode('.jpg', combined_frame)
+                frame = buffer.tobytes()
 
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            else:
+                break  # No frames to show, so break the loop
 
+        for cap, _ in cameras:
+            cap.release()
 
-
-
-
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')

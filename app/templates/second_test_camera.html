@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Second Test Cameras</title>
+    <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #333;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        #cameraContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #cameraFeed {
+            border: 5px solid #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .close-btn:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Camera Feeds</h1>
+    <div id="cameraContainer">
+        <img src="{{ url_for('main.second_test_camera_feed') }}" alt="Camera Feeds" id="cameraFeed" />
+    </div>
+    <button class="close-btn" onclick="window.close()">Close</button>
+
+</body>
+
+</html>
