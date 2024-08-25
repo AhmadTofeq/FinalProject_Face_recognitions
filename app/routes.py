@@ -551,8 +551,8 @@ def delete_presentation():
 #confrance page part
 @bp.route('/conferences', methods=['GET', 'POST'])
 def conferences():
-    search_query = request.form.get('search_query', '')  # Default to empty string if not provided
-    not_passed = request.form.get('not_passed', 'off') == 'on'  # Check if the checkbox is checked
+    search_query = request.form.get('search_query', '')  
+    not_passed = request.form.get('not_passed', 'off') == 'on' 
 
     # Execute the stored procedure with the search query and checkbox state
     result = db.session.execute(
@@ -561,12 +561,29 @@ def conferences():
     )
     presentations = result.fetchall()
 
-    presentations = [
-        {
-            **dict(zip(result.keys(), presentation)),
-            'presenters': presentation.presenters,  # Use the presenters directly from the view
+    presentations_with_names = []
+    for presentation in presentations:
+        faculty = Faculty.query.get(presentation.faculty_id)
+        department = Department.query.get(presentation.department_id)
+        
+        # Create a dictionary for each presentation
+        presentation_dict = {
+            'id_presentation': presentation.id_presentation,
+            'title_pres': presentation.title_pres,
+            'date_time': presentation.date_time,
+            'presenters': presentation.presenters,
+            'duration': presentation.duration,
+            'hall': presentation.hall,
+            'point_presenter': presentation.point_presenter,
+            'point_attendance': presentation.point_attendance,
+            'max_late': presentation.max_late,
+            'department_id': presentation.department_id,
+            'faculty_id': presentation.faculty_id,
+            'added_by': presentation.added_by,
+            'faculty_name': faculty.name_faculty if faculty else 'N/A',
+            'department_name': department.name_department if department else 'N/A'
         }
-        for presentation in presentations
-    ]
+        
+        presentations_with_names.append(presentation_dict)
 
-    return render_template('conferences.html', presentations=presentations, search_query=search_query, not_passed=not_passed)
+    return render_template('conferences.html', presentations=presentations_with_names, search_query=search_query, not_passed=not_passed)
