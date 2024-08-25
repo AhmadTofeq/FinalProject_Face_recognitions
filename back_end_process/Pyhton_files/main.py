@@ -1,16 +1,21 @@
-
+from concurrent.futures import ThreadPoolExecutor
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import cvzone
-from Pyhton_files.class_.ModelRecognitionAndDtection import ModelRecognitionAndDtection1 as mymodel
+from back_end_process.Pyhton_files.class_.ModelRecognitionAndDtection import ModelRecognitionAndDtection1 as mymodel
 from class_.Detection_face import FaceDetection
 import cv2
 import time
-from Pyhton_files.class_.paths import paths1
+from back_end_process.Pyhton_files.class_.paths import paths1
+import warnings
+warnings.filterwarnings("ignore")
+
 model = mymodel(paths1.images_path)
 def myModel1(frame):
     threshold=0.8
     resoult = FaceDetection().face_detection(frame)
+
     for face, (x, y, w, h) in resoult:
         (final_naem, max_propablity) = model.face_recognition(face)
         if max_propablity < threshold:
@@ -24,24 +29,52 @@ def myModel1(frame):
 
         print("************************resoult************************ in ", final_naem)
     return frame
-def main():
-    # its to recognition
-    cap = cv2.VideoCapture(0)
-    # cap1 = cv2.VideoCapture(1)
-    while cap.isOpened():
-        ret, frame = cap.read()
-        # ret1, frame1 = cap1.read()
-        cam1=myModel1(frame)
-        # cam2=myModel1(frame1)
-        # cv2.imshow("Image", cv2.hconcat([cam1,cam2]))
-        cv2.imshow("Image", cam1)
+def process_frame(frame, func):
+    return func(frame)
 
-        if cv2.waitKey(1) & 0xFF == ord("t"):
-            cap.release()
-            break
-        if cv2.waitKey(1) & 0xFF == ord("q"):
-            cap.release()
-            break
+def main():
+    cap = cv2.VideoCapture(0)
+    # cap1 = cv2.VideoCapture(0)
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        while cap.isOpened() and cap.isOpened():
+            ret, frame = cap.read()
+            height, width, _ = frame.shape
+
+            # Define the rectangle to cover half of the camera view (left half)
+            top_left_x = 0
+            top_left_y = 0
+            bottom_right_x = width // 2  # Half the width
+            bottom_right_y = height
+
+            # Draw the rectangle
+            color = (0, 255, 0)  # Green color
+            thickness = 2  # Thickness of the rectangle
+            cv2.rectangle(frame, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), color, thickness)
+
+            # ret1, frame1 = cap.read()
+            # if not ret or not ret1:
+            #     print("Failed to grab frame")
+            #     continue
+            #
+            # if frame1 is None or frame1.size == 0:
+            #     print("Empty image, skipping cvtColor")
+            #     continue  # Skip the processing for this frame
+
+            future1 = executor.submit(process_frame, frame, myModel1)
+            # future2 = executor.submit(process_frame, frame1, myModel1)
+
+            cam1 = future1.result()
+            # cam2 = future2.result()
+
+            cv2.imshow("Image", cam1)
+
+            if cv2.waitKey(1) & 0xFF == ord("t"):
+                cap.release()
+                break
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                cap.release()
+                break
 
 def take_sample_image_to_all_vedious():
     for vedio in os.listdir(r"..\vedious"):
@@ -107,7 +140,7 @@ def record_vedio():
     cap.release()
     out.release()
     cv2.destroyAllWindows()
-#
+
 # if __name__ == "__main__":
 #
 #     # take_sample_image_to_all_vedious()
