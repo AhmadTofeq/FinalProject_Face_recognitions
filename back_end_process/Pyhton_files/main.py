@@ -9,15 +9,7 @@ from class_.Detection_face import FaceDetection
 import cv2
 import time
 from back_end_process.Pyhton_files.class_.paths import paths1
-<<<<<<< HEAD
 from flask import Response
-
-
-=======
-
-
-
->>>>>>> 0d3f42aee0cef940cae46093a8441a6829e34f79
 
 def take_sample_image_to_all_vedious():
     for vedio in os.listdir(r"..\vedious"):
