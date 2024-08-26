@@ -8,7 +8,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from werkzeug.utils import secure_filename
 from back_end_process.Pyhton_files.video_processing import StaffProcessor
+from back_end_process.Pyhton_files.main import second_test_camera
 import logging
+from datetime import datetime, timedelta
 bp = Blueprint('main', __name__)
 
 @bp.route('/')
@@ -547,6 +549,14 @@ def delete_presentation():
 
     return redirect(url_for('main.presentation'))  
 
+@bp.route('/second_test_camera')
+def show_second_test_camera_page():
+    return render_template('second_test_camera.html')
+
+@bp.route('/second_test_camera_feed')
+def second_test_camera_feed():
+    return second_test_camera()
+
 #confrance page part
 @bp.route('/conferences', methods=['GET', 'POST'])
 def conferences():
@@ -565,7 +575,6 @@ def conferences():
         faculty = Faculty.query.get(presentation.faculty_id)
         department = Department.query.get(presentation.department_id)
         
-        # Create a dictionary for each presentation
         presentation_dict = {
             'id_presentation': presentation.id_presentation,
             'title_pres': presentation.title_pres,
@@ -585,13 +594,44 @@ def conferences():
         
         presentations_with_names.append(presentation_dict)
 
-    return render_template('conferences.html', presentations=presentations_with_names, search_query=search_query, not_passed=not_passed)
+    # Retrieve and clear message from session
+    message = session.pop('message', None)
+    message_type = session.pop('message_type', None)
 
-from back_end_process.Pyhton_files.main import second_test_camera
-@bp.route('/second_test_camera')
-def show_second_test_camera_page():
-    return render_template('second_test_camera.html')
+    return render_template('conferences.html', presentations=presentations_with_names, 
+                           search_query=search_query, not_passed=not_passed, 
+                           message=message, message_type=message_type)
 
-@bp.route('/second_test_camera_feed')
-def second_test_camera_feed():
-    return second_test_camera()
+
+@bp.route('/start_conference/<int:id_presentation>', methods=['GET'])
+def start_conference(id_presentation):
+    # Fetch the presentation details
+    presentation = db.session.execute(
+        text("SELECT * FROM presentations WHERE id_presentation = :id_presentation"),
+        {"id_presentation": id_presentation}
+    ).fetchone()
+
+    if presentation is None:
+        session['message'] = 'Conference not found.'
+        session['message_type'] = 'error'
+        return redirect(url_for('main.conferences'))
+
+    # Check if presentation.date_time is already a datetime object
+    if isinstance(presentation.date_time, datetime):
+        presentation_datetime = presentation.date_time
+    else:
+        # Convert the date_time string to a datetime object if it's not already one
+        presentation_datetime = datetime.strptime(presentation.date_time, '%Y-%m-%d %H:%M:%S')
+
+    # Check if more than 1 day has passed
+    if datetime.now() > presentation_datetime + timedelta(days=1):
+        session['message'] = 'Sorry, this conference has expired.'
+        session['message_type'] = 'error'
+        return redirect(url_for('main.conferences'))
+
+    # If the conference has not expired, redirect to the conference settings page
+    return redirect(url_for('main.conferences_sitting', id_presentation=id_presentation))
+
+@bp.route('/conferences_sitting')
+def conferences_sitting():
+    return render_template('conferences_sitting.html')
