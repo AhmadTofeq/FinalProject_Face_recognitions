@@ -5,4 +5,7 @@
 app
 .vscode
 logs
+<<<<<<< HEAD
 /venv
+=======
+>>>>>>> 0d3f42aee0cef940cae46093a8441a6829e34f79
