@@ -1,4 +1,7 @@
 /vedious/
 /Colect_Data/all_images/
 .env
-/venv
+/Venv
+app
+.vscode
+logs
