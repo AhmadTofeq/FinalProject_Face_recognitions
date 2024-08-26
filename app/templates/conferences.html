@@ -125,7 +125,7 @@
                 <input type="text" name="search_query" placeholder="Search..." value="{{ search_query }}">
                 <label>
                     <input type="checkbox" id="timeFilterCheckbox" name="not_passed" {% if not_passed %}checked{% endif %}>
-                    <span id="checkboxText">Show Upcoming Conferences Only</span>
+                    <span id="checkboxText">Show Upcoming presentation Only</span>
                 </label>
                 <button type="submit">Search</button>
             </form>
@@ -196,7 +196,7 @@
         </div>
         <div class="modal-actions">
             <button id="startButton">Start</button>
-            <button id="testCameraButton">Test Camera</button>
+            <a href="{{ url_for('main.show_second_test_camera_page') }}" target="_blank" id="testCameraButton" class="button-link">Test Camera</a>
             <button id="exportButton">Export</button>
         </div>
     </div>

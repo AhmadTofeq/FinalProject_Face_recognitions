@@ -16,7 +16,7 @@
     --sidebar-color: #FFF;
     --primary-color: #695CFE;
     --primary-color-light: #F6F5FF;
-    --toggle-color: #72a7c0;
+    --toggle-color: #DDD;
     --text-color: #707070;
     --highlight-color: #4173a4;
     --highlight-hover-color: #326e91;
@@ -44,7 +44,7 @@ body.dark {
     --sidebar-color: #242526;
     --primary-color: #3a3b3c;
     --primary-color-light: #3a3b3c;
-    --toggle-color: #fff;
+    --toggle-color: #72a7c0;
     --text-color: #ccc;
     --highlight-color: #4173a4;
     --highlight-hover-color: #326e91;
