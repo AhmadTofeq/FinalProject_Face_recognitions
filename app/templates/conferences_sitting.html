@@ -117,6 +117,15 @@
     </nav>
     <section class="home">
         <div id="content">
+            <header class="conference-header">
+                <h1>{{ presentation.title_pres }}</h1>
+                <p><strong>Date:</strong> {{ presentation.date_time }}</p>
+                <p><strong>Presenters:</strong> {{ presentation.presenters }}</p>
+                <p><strong>Hall:</strong> {{ presentation.hall }}</p>
+                <p><strong>Max Late:</strong> {{ presentation.max_late }} minutes</p>
+                <p><strong>Current Time:</strong> {{ current_time.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            </header>
+        </div>
     </section>
     {% include 'dialog.html' %}
     <script src="../static/js/conferences_sitting_script.js"></script>

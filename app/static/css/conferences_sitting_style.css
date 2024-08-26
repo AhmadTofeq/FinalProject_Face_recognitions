@@ -332,3 +332,22 @@ body.dark .home .text {
     background-color: var(--primary-color);
     font-size: 1rem;
 }
+/*Body style*/
+.conference-header {
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.conference-header h1 {
+    margin-bottom: 10px;
+    font-size: 2em;
+    color: #333;
+}
+
+.conference-header p {
+    margin: 5px 0;
+    font-size: 1.2em;
+    color: #555;
+}

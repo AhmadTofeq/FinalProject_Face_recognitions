@@ -128,7 +128,7 @@
             <form method="POST" action="{{ url_for('main.conferences') }}">
                 <input type="text" name="search_query" placeholder="Search..." value="{{ search_query }}">
                 <label>
-                    <input type="checkbox" id="timeFilterCheckbox" name="not_passed" {% if not_passed %}checked{% endif %}>
+                    <input type="checkbox" id="timeFilterCheckbox" name="not_passed" {% if not_passed %}checked{% endif %} checked>
                     <span id="checkboxText">Show Upcoming presentation Only</span>
                 </label>
                 <button type="submit">Search</button>

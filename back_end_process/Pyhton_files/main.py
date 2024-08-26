@@ -5,7 +5,7 @@ from datetime import datetime
 # os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import cvzone
 from back_end_process.Pyhton_files.class_.ModelRecognitionAndDtection import ModelRecognitionAndDtection1 as mymodel
-#from class_.Detection_face import FaceDetection
+from back_end_process.Pyhton_files.class_.Detection_face import FaceDetection
 import cv2
 import time
 from back_end_process.Pyhton_files.class_.paths import paths1

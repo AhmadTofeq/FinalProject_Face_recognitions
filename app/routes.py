@@ -632,6 +632,18 @@ def start_conference(id_presentation):
     # If the conference has not expired, redirect to the conference settings page
     return redirect(url_for('main.conferences_sitting', id_presentation=id_presentation))
 
-@bp.route('/conferences_sitting')
-def conferences_sitting():
-    return render_template('conferences_sitting.html')
+@bp.route('/conferences_sitting/<int:id_presentation>')
+def conferences_sitting(id_presentation):
+    # Fetch the presentation details
+    presentation = db.session.execute(
+        text("SELECT * FROM presentations WHERE id_presentation = :id_presentation"),
+        {"id_presentation": id_presentation}
+    ).fetchone()
+
+    if presentation is None:
+        session['message'] = 'Conference not found.'
+        session['message_type'] = 'error'
+        return redirect(url_for('main.conferences'))
+
+    # Pass the presentation details to the template
+    return render_template('conferences_sitting.html', presentation=presentation, current_time=datetime.now())

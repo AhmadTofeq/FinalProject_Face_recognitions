@@ -5,7 +5,5 @@
 app
 .vscode
 logs
-<<<<<<< HEAD
 /venv
-=======
->>>>>>> 0d3f42aee0cef940cae46093a8441a6829e34f79
+/back_end_process/Pyhton_files/class_/paths.py
