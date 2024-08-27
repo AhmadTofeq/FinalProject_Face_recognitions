@@ -118,17 +118,73 @@
     <section class="home">
         <div id="content">
             <header class="conference-header">
-                <h1>{{ presentation.title_pres }}</h1>
-                <p><strong>Date:</strong> {{ presentation.date_time }}</p>
-                <p><strong>Presenters:</strong> {{ presentation.presenters }}</p>
-                <p><strong>Hall:</strong> {{ presentation.hall }}</p>
-                <p><strong>Max Late:</strong> {{ presentation.max_late }} minutes</p>
-                <p><strong>Current Time:</strong> {{ current_time.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                <div class="header-top">
+                    <h1>{{ presentation.title_pres }}</h1>
+                    <div class="header-actions">
+                        <span id="current-time"></span>
+                    </div>
+                </div>
+                <div class="header-bottom">
+                    <div class="col">
+                        <p><strong>Date:</strong> {{ presentation.date_time }}</p>
+                        <p><strong>Hall:</strong> {{ presentation.hall }}</p>
+                    </div>
+                    <div class="col">
+                        <p><strong>Presenters:</strong> {{ presentation.presenters }}</p>
+                        <p><strong>Max Late:</strong> {{ presentation.max_late }} minutes</p>
+                    </div>
+                </div>
             </header>
         </div>
+        <div id="live-content">
+            <!-- Live data from JSON will be displayed here -->
+            <table id="presentation-data" border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Date Time</th>
+                        <th>Case</th>
+                    </tr>
+                </thead>
+                <tbody id="data-body">
+                    <!-- Data rows will be injected here -->
+                </tbody>
+            </table>
+        </div>
+        </div>
     </section>
+    <script>
+        function fetchLiveData() {
+            const presentationId = {{ presentation.id_presentation }};
+
+            fetch(`/get_presentation_data/${presentationId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const dataBody = document.getElementById('data-body');
+                    dataBody.innerHTML = ''; // Clear existing data
+                    data.forEach(entry => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                                <td>${entry.id}</td>
+                                <td>${entry.name}</td>
+                                <td>${entry.dateTime}</td>
+                                <td>${entry.case}</td>
+                            `;
+                        dataBody.appendChild(row);
+                    });
+                })
+            .catch(error => console.error('Error fetching live data:', error));
+        }
+        // Fetch live data every second
+        setInterval(fetchLiveData, 1000);
+
+        // Initial fetch
+        fetchLiveData();
+    </script>
+
     {% include 'dialog.html' %}
-    <script src="../static/js/conferences_sitting_script.js"></script>
+    <script src="{{ url_for('static', filename='js/conferences_sitting_script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dialog.js') }}"></script>
 </body>
 

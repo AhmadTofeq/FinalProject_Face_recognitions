@@ -634,9 +634,9 @@ def start_conference(id_presentation):
 
 @bp.route('/conferences_sitting/<int:id_presentation>')
 def conferences_sitting(id_presentation):
-    # Fetch the presentation details
+    # Fetch the presentation details from the custom view
     presentation = db.session.execute(
-        text("SELECT * FROM presentations WHERE id_presentation = :id_presentation"),
+        text("SELECT * FROM get_all_presentations WHERE id_presentation = :id_presentation"),
         {"id_presentation": id_presentation}
     ).fetchone()
 

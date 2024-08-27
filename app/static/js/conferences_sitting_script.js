@@ -6,6 +6,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const modeText = document.querySelector(".mode-text");
     const userNameSpan = document.getElementById('user-name');
 
+
+     function updateTime() {
+        const now = new Date();
+        const formattedTime = now.getFullYear() + '-' + 
+                              String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                              String(now.getDate()).padStart(2, '0') + ' ' + 
+                              String(now.getHours()).padStart(2, '0') + ':' + 
+                              String(now.getMinutes()).padStart(2, '0') + ':' + 
+                              String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('current-time').textContent = formattedTime;
+    }
+
+    // Update the time immediately and every second
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    
     // Fetch user's name and update the span
     fetch('/get_user_info', {
         method: 'GET',
