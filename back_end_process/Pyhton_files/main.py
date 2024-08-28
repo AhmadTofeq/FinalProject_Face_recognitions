@@ -10,11 +10,11 @@ import cv2
 import time
 from back_end_process.Pyhton_files.class_.paths import paths1
 from flask import Response
-import numpy as np 
+import numpy as np
+model = mymodel(paths1.images_path)
 def take_sample_image_to_all_vedious():
-    for vedio in os.listdir(r"..\vedious"):
-
-        FaceDetection().take_a_sample_from_vidio(os.path.join(r"..\vedious", vedio),vedio,45)
+    for vedio in os.listdir(r"/vedious"):
+        FaceDetection().take_a_sample_from_vidio(os.path.join(r"/vedious", vedio), vedio, 45)
 
 
 
@@ -189,7 +189,7 @@ class start_Presntation:
             # cam1 = future1.result()
             # cam2 = future2.result()
             cam1 = self.model_detection_and_recognition(frame, id_presntation,"IN")
-            self.save_json(self.path)
+            # self.save_json(self.path)
             cv2.imshow("Presntation Start", cam1)
             key = cv2.waitKey(1) & 0xFF
             if key == 27:  # Esc key
@@ -206,7 +206,7 @@ if __name__ == "__main__":
 
     # take_sample_image_to_all_vedious()
     # model.embading_all_images_Using_face_net_to_all_images()
-    # model.classfication_images_using_SVM()
+     #model.classfication_images_using_SVM()
      start_Presntation("414").main(15)
     # record_vedio()
     #  test_camera()
