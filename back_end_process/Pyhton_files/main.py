@@ -104,16 +104,17 @@ class start_Presntation:
         with open(file_path, 'w') as file:
             json.dump(self.stafs, file, indent=4)
 
-    def create_entry(self,id_, name, date_time, case1):
+    def create_entry(self,id_staff,id_presnt, name,date_time, case1):
         entry = {
-            "id": id_,
+            "id_presnt": id_presnt,
+            "id_staff": id_staff,
             "name": name,
             "dateTime": str(date_time),
             "case": case1
         }
         self.stafs.append(entry)
 
-    def save_to_json(self,id_, name, date_time, case1, filename='presentations.json'):
+    def save_to_json(self):
         # Save the updated data back to the JSON file
         with open(self.path, 'w') as file:
             json.dump(self.stafs, file, indent=4)
@@ -129,10 +130,9 @@ class start_Presntation:
             else:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 4)
                 id, name = (final_naem.split("@")[0], final_naem.split("@")[1])
-                self.create_entry(id, name, date_time=datetime.now(), case1=case )
+                self.create_entry(id_resntation,id, name, date_time=datetime.now(), case1=case )
                 cvzone.putTextRect(frame, " {} IN ,Score : {}%".format(final_naem, round(max_propablity, 2) * 100),
                                    (x, y - 10), scale=1, thickness=1)
-
             print("************************resoult************************ in ", final_naem)
 
         return frame
@@ -154,37 +154,60 @@ class start_Presntation:
         cap.release()
         cv2.destroyAllWindows()
 
-    def main(self, id_presntation=15):
+    def main(self,id_presntation=15):
         cap = cv2.VideoCapture(0)
-        while cap.isOpened():
+        # cap1 = cv2.VideoCapture(0)
+
+        # with ThreadPoolExecutor(max_workers=1) as executor:
+        while cap.isOpened() and cap.isOpened():
             ret, frame = cap.read()
-            if not ret:
-                print("Failed to grab frame")
-                break
-            
-            # Process the frame and update the JSON data
-            cam1 = self.model_detection_and_recognition(frame, id_presntation, "IN")
-            
-            # Save the updated JSON file
-            self.save_json(self.path)
-            
-            cv2.imshow("Presentation Start", cam1)
+            height, width, _ = frame.shape
+
+            # # Define the rectangle to cover half of the camera view (left half)
+            # top_left_x = 0
+            # top_left_y = 0
+            # bottom_right_x = width // 2  # Half the width
+            # bottom_right_y = height
+
+            # Draw the rectangle
+            # color = (0, 255, 0)  # Green color
+            # thickness = 2  # Thickness of the rectangle
+            # cv2.rectangle(frame, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), color, thickness)
+
+            # ret1, frame1 = cap.read()
+            # if not ret or not ret1:
+            #     print("Failed to grab frame")
+            #     continue
+            #
+            # if frame1 is None or frame1.size == 0:
+            #     print("Empty image, skipping cvtColor")
+            #     continue  # Skip the processing for this frame
+
+            # future1 = executor.submit(process_frame, frame, myModel1)
+            # future2 = executor.submit(process_frame, frame1, myModel1)
+
+            # cam1 = future1.result()
+            # cam2 = future2.result()
+            cam1 = self.model_detection_and_recognition(frame, id_presntation,"IN")
+            # self.save_json(self.path)
+            cv2.imshow("Presntation Start", cam1)
             key = cv2.waitKey(1) & 0xFF
             if key == 27:  # Esc key
                 break
-            if cv2.getWindowProperty('Presentation Start', cv2.WND_PROP_VISIBLE) < 1:
+            if cv2.getWindowProperty('Presntation Start', cv2.WND_PROP_VISIBLE) < 1:
                 break
         cap.release()
         cv2.destroyAllWindows()
 
 
 
-if __name__ == "__main__":
+
+# if __name__ == "__main__":
 
     # take_sample_image_to_all_vedious()
     # model.embading_all_images_Using_face_net_to_all_images()
      #model.classfication_images_using_SVM()
-     start_Presntation("414").main(15)
+     # start_Presntation("414").main(15)
     # record_vedio()
     #  test_camera()
 
