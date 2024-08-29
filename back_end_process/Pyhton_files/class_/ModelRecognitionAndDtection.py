@@ -48,8 +48,7 @@ class ModelRecognitionAndDtection1:
     def embading_all_images_Using_face_net_to_one_persone(self):
         x_image = []
         y_lable = []
-        print(self.emmbeading_model["arr_0"].shape)
-        print(self.emmbeading_model["arr_1"].shape)
+
         for folders_image in os.listdir(self.path_data_images):
             x_image.append(self.get_embedding(
                 cv2.imread(os.path.join(self.path_data_images, folders_image))))

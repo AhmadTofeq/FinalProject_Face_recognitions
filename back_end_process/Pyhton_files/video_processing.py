@@ -1,8 +1,5 @@
-import cv2
 import os
-import time
 import numpy as np
-from flask import current_app
 from back_end_process.Pyhton_files.class_.Detection_face import FaceDetection as mymodel
 from back_end_process.Pyhton_files.class_.ModelRecognitionAndDtection import ModelRecognitionAndDtection1 as emmbeding
 from back_end_process.Pyhton_files.class_.paths import paths1
@@ -18,9 +15,10 @@ class StaffProcessor:
         emmbeding(paths1.images_path).classfication_images_using_SVM()
 
     def updated_staff(self, video, name, id_staff):
+        print("******************************************************")
         id_staff = str(id_staff)
         video_name = id_staff + "@" + name
-        
+        print(video)
         if not paths1.images_path:
             raise ValueError("The images path is not set.")
         
@@ -59,9 +57,14 @@ class StaffProcessor:
             emmbeding(paths1.images_path).classfication_images_using_SVM()
         else:
             # Handle case when a new video is provided
+            is_have_a_vedio=False
             for i in os.listdir(paths1.images_path):
                 if i.split("@")[0] == id_staff:
+                    is_have_a_vedio = True
                     shutil.rmtree(os.path.join(paths1.images_path, i))
+            if not is_have_a_vedio:
+                self.insert_staff(video, name, id_staff)
+                return
             with np.load(paths1.embading_model, mmap_mode='r+') as data:
                 arr_0 = data["arr_0"]
                 arr_1 = data["arr_1"].copy()
