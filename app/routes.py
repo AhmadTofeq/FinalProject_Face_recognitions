@@ -665,3 +665,26 @@ def get_presentation_data(id_presentation):
         return jsonify(data)
     else:
         return jsonify([])  # Return an empty list if the file doesn't exist
+
+# Global variable to hold the presenter instance
+presenter_instance = None
+presenter_thread = None
+@bp.route('/start_camera/<int:id_presentation>', methods=['GET'])
+def start_camera(id_presentation):
+    global presenter_instance, presenter_thread
+    if presenter_instance is None:
+        file_name = f"Presentation_{id_presentation}"
+        presenter_instance = start_Presntation(file_name)
+        presenter_thread = Thread(target=presenter_instance.main, args=(id_presentation,))
+        presenter_thread.start()
+    return jsonify({"status": "Camera and recognition started"}), 200
+
+@bp.route('/stop_camera', methods=['GET'])
+def stop_camera():
+    global presenter_instance, presenter_thread
+    if presenter_instance:
+        presenter_instance.stop_camera()
+        presenter_thread.join()  # Ensure the thread has completely stopped
+        presenter_instance = None
+        presenter_thread = None
+    return jsonify({"status": "Camera and recognition stopped"}), 200

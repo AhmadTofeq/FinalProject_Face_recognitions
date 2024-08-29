@@ -426,3 +426,146 @@ body.dark .home .text {
 .col:last-child {
     margin-right: 0;
 }
+/*content table style*/
+/* Container for the live content */
+#live-content {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin-top: 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 480px;
+    /* Set a fixed height */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    width: 100%;
+    /* Make the container take up the full width of its parent */
+}
+
+/* Table styling */
+#presentation-data {
+    width: 100%;
+    /* Make the table take up the full width of its container */
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    text-align: left;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Table header styling */
+#presentation-data th {
+    background-color: #4CAF50;
+    /* Dark green */
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 2px solid #ddd;
+    /* Add a bottom border */
+}
+
+/* Table data cells styling */
+#presentation-data td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Styling for 'IN' rows */
+#presentation-data tr.in-case {
+    background-color: #c6efce;
+    /* Lighter green */
+}
+
+/* Styling for 'OUT' rows */
+#presentation-data tr.out-case {
+    background-color: #f5c6cb;
+    /* Lighter red */
+}
+
+/* Add some hover effects */
+#presentation-data tr:hover {
+    background-color: #f0f0f0;
+    /* Light gray */
+    cursor: pointer;
+}
+
+/* Add some responsive design */
+@media only screen and (max-width: 600px) {
+    #presentation-data {
+        font-size: 14px;
+    }
+
+    #live-content {
+        padding: 10px;
+    }
+}
+
+/*the footer style*/
+.conference-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #333;
+    padding: 15px 20px;
+    text-align: center;
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.conference-footer button {
+    background-color: #4CAF50;
+    /* Default button color */
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.conference-footer button#stop-btn:disabled {
+    background-color: #d9534f;
+    /* Disabled stop button color */
+    cursor: not-allowed;
+}
+
+.conference-footer button.active {
+    background-color: #d9534f;
+    /* Red background when active */
+    cursor: not-allowed;
+}
+
+.conference-footer button:enabled:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+.conference-footer button#finish-btn {
+    background-color: #f0ad4e;
+    /* Finish button color */
+}
+
+.conference-footer button#finish-btn:hover {
+    background-color: #ec971f;
+}
+
+.conference-footer button:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.conference-footer button:active {
+    transform: translateY(2px);
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+}

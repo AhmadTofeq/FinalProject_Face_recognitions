@@ -138,7 +138,7 @@
         </div>
         <div id="live-content">
             <!-- Live data from JSON will be displayed here -->
-            <table id="presentation-data" border="1">
+            <table id="presentation-data">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -153,34 +153,85 @@
             </table>
         </div>
     </section>
+    <footer class="conference-footer"
+        style="position: fixed; bottom: 0; width: 100%; background-color: #f1f1f1; padding: 10px; text-align: center;">
+        <button id="start-btn">Start</button>
+        <button id="stop-btn" disabled>Stop</button>
+        <button id="finish-btn">Finish</button>
+    </footer>
     <script>
-        function fetchLiveData() {
-            const presentationId = {{ presentation.id_presentation }};  // Corrected line
-        // Rest of your JavaScript code
-        fetch(`/get_presentation_data/${presentationId}`)
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+
+    startBtn.addEventListener('click', function () {
+        const presentationId = {{ presentation.id_presentation }};  // Assuming this is being correctly populated server-side
+    fetch(`/start_camera/${presentationId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.status);
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+
+            // Add the active class to change the background color to red and cursor to not-allowed
+            startBtn.classList.add('active');
+        })
+        .catch(error => console.error('Error starting camera and recognition:', error));
+    });
+
+    stopBtn.addEventListener('click', function () {
+        fetch(`/stop_camera`)
             .then(response => response.json())
             .then(data => {
-                const dataBody = document.getElementById('data-body');
-                dataBody.innerHTML = ''; // Clear existing data
-                data.forEach(entry => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                            <td>${entry.id}</td>
-                            <td>${entry.name}</td>
-                            <td>${entry.dateTime}</td>
-                            <td>${entry.case}</td>
-                        `;
-                    dataBody.appendChild(row);
-                });
+                console.log(data.status);
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+
+                // Remove the active class to revert the start button back to default
+                startBtn.classList.remove('active');
             })
-            .catch(error => console.error('Error fetching live data:', error));
-        }
+            .catch(error => console.error('Error stopping camera and recognition:', error));
+    });
 
-        // Fetch live data every second
-        setInterval(fetchLiveData, 1000);
+    function fetchLiveData() {
+        const presentationId = {{ presentation.id_presentation }};  // Assuming this is being correctly populated server-side
+    fetch(`/get_presentation_data/${presentationId}`)
+        .then(response => response.json())
+        .then(data => {
+            const dataBody = document.getElementById('data-body');
+            const liveContent = document.getElementById('live-content');
 
-        // Initial fetch
-        fetchLiveData();
+            // Clear the previous data
+            while (dataBody.firstChild) {
+                dataBody.removeChild(dataBody.firstChild);
+            }
+
+            // Append new rows
+            data.forEach(entry => {
+                const row = document.createElement('tr');
+                row.className = entry.case === 'IN' ? 'in-case' : 'out-case';
+                row.innerHTML = `
+                    <td>${entry.id_staff}</td>
+                    <td>${entry.name}</td>
+                    <td>${entry.dateTime}</td>
+                    <td>${entry.case}</td>
+                `;
+                dataBody.appendChild(row);
+            });
+
+            // Scroll to the bottom after updating the data
+            liveContent.scrollTo({
+                top: liveContent.scrollHeight,
+                behavior: 'smooth'
+            });
+        })
+        .catch(error => console.error('Error fetching live data:', error));
+    }
+
+    // Fetch live data every second
+    setInterval(fetchLiveData, 1000);
+
+    // Initial fetch
+    fetchLiveData();
     </script>
 
     {% include 'dialog.html' %}

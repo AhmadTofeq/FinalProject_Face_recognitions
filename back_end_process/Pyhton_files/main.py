@@ -84,14 +84,14 @@ def record_vedio():
 
 
 class start_Presntation:
-    def __init__(self,foile_name):
-        self.path = os.path.join(paths1.json_files_path,
-                            (foile_name+".json"))
-        self.stafs=self.load_json(self.path)
+    def __init__(self, foile_name):
+        self.path = os.path.join(paths1.json_files_path, f"{foile_name}.json")
+        self.stafs = self.load_json(self.path)
         self.model = mymodel(paths1.images_path)
+        self.cap = None  # VideoCapture object to control the camera
+        self.running = False  # State to check if the process is running
 
-
-    def load_json(self,file_path):
+    def load_json(self, file_path):
         if os.path.exists(file_path):
             with open(file_path, 'r') as file:
                 data = json.load(file)
@@ -99,12 +99,11 @@ class start_Presntation:
             data = []
         return data
 
-    def save_json(self, file_path):
-        # Save the data back to the JSON file
-        with open(file_path, 'w') as file:
+    def save_json(self):
+        with open(self.path, 'w') as file:
             json.dump(self.stafs, file, indent=4)
 
-    def create_entry(self,id_staff,id_presnt, name,date_time, case1):
+    def create_entry(self, id_presnt, id_staff, name, date_time, case1):
         entry = {
             "id_presnt": id_presnt,
             "id_staff": id_staff,
@@ -118,24 +117,46 @@ class start_Presntation:
         # Save the updated data back to the JSON file
         with open(self.path, 'w') as file:
             json.dump(self.stafs, file, indent=4)
-    def model_detection_and_recognition(self, frame, id_resntation,case):
+    def model_detection_and_recognition(self, frame, id_presntation, case):
         threshold = 0.8
         resoult = FaceDetection().face_detection(frame)
         for face, (x, y, w, h) in resoult:
-            (final_naem, max_propablity) = self.model.face_recognition(face)
-            if max_propablity < threshold:
+            final_naem, max_probablity = self.model.face_recognition(face)
+            if max_probablity < threshold:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 4)
-                cvzone.putTextRect(frame, " UNkoun ,Score : {}%".format(max_propablity), (x, y - 10),
-                                   scale=1, thickness=1)
+                cvzone.putTextRect(frame, f"Unknown, Score: {max_probablity*100:.2f}%", (x, y - 10), scale=1, thickness=1)
             else:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 4)
-                id, name = (final_naem.split("@")[0], final_naem.split("@")[1])
-                self.create_entry(id_resntation,id, name, date_time=datetime.now(), case1=case )
-                cvzone.putTextRect(frame, " {} IN ,Score : {}%".format(final_naem, round(max_propablity, 2) * 100),
-                                   (x, y - 10), scale=1, thickness=1)
-            print("************************resoult************************ in ", final_naem)
-
+                id_staff, name = final_naem.split("@")
+                self.create_entry(id_presntation, id_staff, name, datetime.now(), case)
+                self.save_json()
+                cvzone.putTextRect(frame, f"{final_naem} IN, Score: {max_probablity*100:.2f}%", (x, y - 10), scale=1, thickness=1)
+            print("************************result************************ in ", final_naem)
         return frame
+
+    def start_camera(self):
+        if not self.cap:
+            self.cap = cv2.VideoCapture(0)
+        self.running = True
+        while self.running and self.cap.isOpened():
+            ret, frame = self.cap.read()
+            if not ret:
+                print("Failed to grab frame")
+                break
+
+            cam1 = self.model_detection_and_recognition(frame, self.id_presentation, "IN")
+            cv2.imshow("Presentation Start", cam1)
+            key = cv2.waitKey(1) & 0xFF
+            if key == 27:  # Esc key
+                self.stop_camera()
+                break
+
+    def stop_camera(self):
+        self.running = False
+        if self.cap:
+            self.cap.release()
+            self.cap = None
+        cv2.destroyAllWindows()
 
     def test_camera(self):
         cap = cv2.VideoCapture(0)
@@ -154,50 +175,9 @@ class start_Presntation:
         cap.release()
         cv2.destroyAllWindows()
 
-    def main(self,id_presntation=15):
-        cap = cv2.VideoCapture(0)
-        # cap1 = cv2.VideoCapture(0)
-
-        # with ThreadPoolExecutor(max_workers=1) as executor:
-        while cap.isOpened() and cap.isOpened():
-            ret, frame = cap.read()
-            height, width, _ = frame.shape
-
-            # # Define the rectangle to cover half of the camera view (left half)
-            # top_left_x = 0
-            # top_left_y = 0
-            # bottom_right_x = width // 2  # Half the width
-            # bottom_right_y = height
-
-            # Draw the rectangle
-            # color = (0, 255, 0)  # Green color
-            # thickness = 2  # Thickness of the rectangle
-            # cv2.rectangle(frame, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), color, thickness)
-
-            # ret1, frame1 = cap.read()
-            # if not ret or not ret1:
-            #     print("Failed to grab frame")
-            #     continue
-            #
-            # if frame1 is None or frame1.size == 0:
-            #     print("Empty image, skipping cvtColor")
-            #     continue  # Skip the processing for this frame
-
-            # future1 = executor.submit(process_frame, frame, myModel1)
-            # future2 = executor.submit(process_frame, frame1, myModel1)
-
-            # cam1 = future1.result()
-            # cam2 = future2.result()
-            cam1 = self.model_detection_and_recognition(frame, id_presntation,"IN")
-            # self.save_json(self.path)
-            cv2.imshow("Presntation Start", cam1)
-            key = cv2.waitKey(1) & 0xFF
-            if key == 27:  # Esc key
-                break
-            if cv2.getWindowProperty('Presntation Start', cv2.WND_PROP_VISIBLE) < 1:
-                break
-        cap.release()
-        cv2.destroyAllWindows()
+    def main(self, id_presntation):
+        self.id_presentation = id_presntation
+        self.start_camera()
 
 
 
