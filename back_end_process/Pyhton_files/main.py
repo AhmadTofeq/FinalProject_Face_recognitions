@@ -154,51 +154,28 @@ class start_Presntation:
         cap.release()
         cv2.destroyAllWindows()
 
-    def main(self,id_presntation=15):
+    def main(self, id_presntation=15):
         cap = cv2.VideoCapture(0)
-        # cap1 = cv2.VideoCapture(0)
-
-        # with ThreadPoolExecutor(max_workers=1) as executor:
-        while cap.isOpened() and cap.isOpened():
+        while cap.isOpened():
             ret, frame = cap.read()
-            height, width, _ = frame.shape
-
-            # # Define the rectangle to cover half of the camera view (left half)
-            # top_left_x = 0
-            # top_left_y = 0
-            # bottom_right_x = width // 2  # Half the width
-            # bottom_right_y = height
-
-            # Draw the rectangle
-            # color = (0, 255, 0)  # Green color
-            # thickness = 2  # Thickness of the rectangle
-            # cv2.rectangle(frame, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), color, thickness)
-
-            # ret1, frame1 = cap.read()
-            # if not ret or not ret1:
-            #     print("Failed to grab frame")
-            #     continue
-            #
-            # if frame1 is None or frame1.size == 0:
-            #     print("Empty image, skipping cvtColor")
-            #     continue  # Skip the processing for this frame
-
-            # future1 = executor.submit(process_frame, frame, myModel1)
-            # future2 = executor.submit(process_frame, frame1, myModel1)
-
-            # cam1 = future1.result()
-            # cam2 = future2.result()
-            cam1 = self.model_detection_and_recognition(frame, id_presntation,"IN")
-            # self.save_json(self.path)
-            cv2.imshow("Presntation Start", cam1)
+            if not ret:
+                print("Failed to grab frame")
+                break
+            
+            # Process the frame and update the JSON data
+            cam1 = self.model_detection_and_recognition(frame, id_presntation, "IN")
+            
+            # Save the updated JSON file
+            self.save_json(self.path)
+            
+            cv2.imshow("Presentation Start", cam1)
             key = cv2.waitKey(1) & 0xFF
             if key == 27:  # Esc key
                 break
-            if cv2.getWindowProperty('Presntation Start', cv2.WND_PROP_VISIBLE) < 1:
+            if cv2.getWindowProperty('Presentation Start', cv2.WND_PROP_VISIBLE) < 1:
                 break
         cap.release()
         cv2.destroyAllWindows()
-
 
 
 

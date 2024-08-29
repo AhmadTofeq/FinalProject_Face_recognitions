@@ -602,7 +602,9 @@ def conferences():
                            search_query=search_query, not_passed=not_passed, 
                            message=message, message_type=message_type)
 
-
+from back_end_process.Pyhton_files.main import start_Presntation
+from back_end_process.Pyhton_files.class_.paths import paths1
+from threading import Thread
 @bp.route('/start_conference/<int:id_presentation>', methods=['GET'])
 def start_conference(id_presentation):
     # Fetch the presentation details
@@ -616,20 +618,24 @@ def start_conference(id_presentation):
         session['message_type'] = 'error'
         return redirect(url_for('main.conferences'))
 
-    # Check if presentation.date_time is already a datetime object
+    # Check if the conference has expired
     if isinstance(presentation.date_time, datetime):
         presentation_datetime = presentation.date_time
     else:
-        # Convert the date_time string to a datetime object if it's not already one
         presentation_datetime = datetime.strptime(presentation.date_time, '%Y-%m-%d %H:%M:%S')
 
-    # Check if more than 1 day has passed
     if datetime.now() > presentation_datetime + timedelta(days=1):
         session['message'] = 'Sorry, this conference has expired.'
         session['message_type'] = 'error'
         return redirect(url_for('main.conferences'))
 
-    # If the conference has not expired, redirect to the conference settings page
+    # Start the presentation in a background thread
+    file_name = f"Presentation_{id_presentation}"
+    presenter = start_Presntation(file_name)
+    thread = Thread(target=presenter.main, args=(id_presentation,))
+    thread.start()
+
+    # Redirect to the conference sitting page
     return redirect(url_for('main.conferences_sitting', id_presentation=id_presentation))
 
 @bp.route('/conferences_sitting/<int:id_presentation>')
@@ -647,3 +653,15 @@ def conferences_sitting(id_presentation):
 
     # Pass the presentation details to the template
     return render_template('conferences_sitting.html', presentation=presentation, current_time=datetime.now())
+
+@bp.route('/get_presentation_data/<int:id_presentation>')
+def get_presentation_data(id_presentation):
+    file_name = f"Presentation_{id_presentation}.json"
+    file_path = os.path.join(paths1.json_files_path, file_name)
+
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+        return jsonify(data)
+    else:
+        return jsonify([])  # Return an empty list if the file doesn't exist
