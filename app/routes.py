@@ -604,6 +604,8 @@ def conferences():
 
 from back_end_process.Pyhton_files.main import start_Presntation
 from back_end_process.Pyhton_files.class_.paths import paths1
+from back_end_process.Pyhton_files.class_.atendance import atendance
+
 from threading import Thread
 @bp.route('/start_conference/<int:id_presentation>', methods=['GET'])
 def start_conference(id_presentation):
@@ -629,13 +631,16 @@ def start_conference(id_presentation):
         session['message_type'] = 'error'
         return redirect(url_for('main.conferences'))
 
-    # Start the presentation in a background thread
-    file_name = f"Presentation_{id_presentation}"
-    presenter = start_Presntation(file_name)
-    thread = Thread(target=presenter.main, args=(id_presentation,))
-    thread.start()
+    # Check if the seminar has been presented before by looking for the JSON file
+    file_name = f"Presentation_{id_presentation}.json"
+    file_path = os.path.join(paths1.json_files_path, file_name)
 
-    # Redirect to the conference sitting page
+    if os.path.exists(file_path):
+        session['message'] = 'This seminar has been presented before, Sorry.'
+        session['message_type'] = 'error'
+        return redirect(url_for('main.conferences'))
+
+    # If all checks pass, redirect to the conference sitting page
     return redirect(url_for('main.conferences_sitting', id_presentation=id_presentation))
 
 @bp.route('/conferences_sitting/<int:id_presentation>')
@@ -651,8 +656,17 @@ def conferences_sitting(id_presentation):
         session['message_type'] = 'error'
         return redirect(url_for('main.conferences'))
 
-    # Pass the presentation details to the template
-    return render_template('conferences_sitting.html', presentation=presentation, current_time=datetime.now())
+    # Retrieve and clear message from session
+    message = session.pop('message', None)
+    message_type = session.pop('message_type', None)
+
+    # Pass the presentation details and message to the template
+    return render_template('conferences_sitting.html', 
+                           presentation=presentation, 
+                           current_time=datetime.now(),
+                           message=message, 
+                           message_type=message_type)
+
 
 @bp.route('/get_presentation_data/<int:id_presentation>')
 def get_presentation_data(id_presentation):
@@ -688,3 +702,25 @@ def stop_camera():
         presenter_instance = None
         presenter_thread = None
     return jsonify({"status": "Camera and recognition stopped"}), 200
+@bp.route('/finish_conference/<int:id_presentation>', methods=['GET'])
+def finish_conference(id_presentation):
+    global presenter_instance, presenter_thread
+
+    if presenter_instance:
+        # Stop the camera and the recognition process
+        presenter_instance.stop_camera()
+        presenter_thread.join()
+        
+        # Send JSON data to the database
+        file_name = f"Presentation_{id_presentation}.json"
+        file_path = os.path.join(paths1.json_files_path, file_name)
+        atendance().send_json_to_db(file_path)
+
+        # Reset presenter instance and thread
+        presenter_instance = None
+        presenter_thread = None
+
+        # Return a success message
+        return jsonify({"status": "Conference finished and data saved successfully"}), 200
+
+    return jsonify({"status": "No active conference to finish"}), 400

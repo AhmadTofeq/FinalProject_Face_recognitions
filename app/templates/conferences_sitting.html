@@ -136,6 +136,11 @@
                 </div>
             </header>
         </div>
+        {% if message %}
+        <div class="popup {{ message_type }}">
+            <p class="below">{{ message }}</p>
+        </div>
+        {% endif %}
         <div id="live-content">
             <!-- Live data from JSON will be displayed here -->
             <table id="presentation-data">
@@ -162,22 +167,45 @@
     <script>
     const startBtn = document.getElementById('start-btn');
     const stopBtn = document.getElementById('stop-btn');
+    const finishBtn = document.getElementById('finish-btn');
 
-    startBtn.addEventListener('click', function () {
-        const presentationId = {{ presentation.id_presentation }};  // Assuming this is being correctly populated server-side
-    fetch(`/start_camera/${presentationId}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log(data.status);
-            startBtn.disabled = true;
-            stopBtn.disabled = false;
+        finishBtn.addEventListener('click', function () {
+            const presentationId = {{ presentation.id_presentation }};
+        // Stop the camera and recognition
+        fetch(`/stop_camera`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.status);
 
-            // Add the active class to change the background color to red and cursor to not-allowed
-            startBtn.classList.add('active');
-        })
-        .catch(error => console.error('Error starting camera and recognition:', error));
+                // After stopping the camera, send the JSON data to the database
+                fetch(`/finish_conference/${presentationId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.status);
+                        alert('Conference finished and data saved successfully.');
+
+                        // Disable all buttons after finishing the conference
+                        startBtn.disabled = true;
+                        stopBtn.disabled = true;
+                        finishBtn.disabled = true;
+                    })
+                    .catch(error => console.error('Error finishing conference:', error));
+            })
+            .catch(error => console.error('Error stopping camera and recognition:', error));
     });
 
+    startBtn.addEventListener('click', function () {
+        const presentationId = {{ presentation.id_presentation }};
+        fetch(`/start_camera/${presentationId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.status);
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                startBtn.classList.add('active');
+            })
+            .catch(error => console.error('Error starting camera and recognition:', error));
+    });
     stopBtn.addEventListener('click', function () {
         fetch(`/stop_camera`)
             .then(response => response.json())

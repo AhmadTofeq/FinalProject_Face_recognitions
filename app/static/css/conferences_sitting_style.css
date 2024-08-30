@@ -569,3 +569,21 @@ body.dark .home .text {
     transform: translateY(2px);
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
 }
+/*popup style*/
+.popup {
+    padding: 10px;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.popup.success {
+    background-color: green;
+    color: white;
+    font-size: large;
+}
+
+.popup.error {
+    background-color: #f44336;
+    color: white;
+    font-size: large;
+}
