@@ -106,7 +106,7 @@ class start_Presntation:
     def create_entry(self, id_presnt, id_staff, name, date_time, case1):
         entry = {
             "id_presnt": id_presnt,
-            "id_staff": id_staff,
+            "id_staff": int(id_staff),
             "name": name,
             "dateTime": str(date_time),
             "case": case1
