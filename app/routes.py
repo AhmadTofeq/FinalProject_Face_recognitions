@@ -707,20 +707,31 @@ def finish_conference(id_presentation):
     global presenter_instance, presenter_thread
 
     if presenter_instance:
-        # Stop the camera and the recognition process
-        presenter_instance.stop_camera()
-        presenter_thread.join()
-        
-        # Send JSON data to the database
-        file_name = f"Presentation_{id_presentation}.json"
-        file_path = os.path.join(paths1.json_files_path, file_name)
-        atendance().send_json_to_db(file_path)
+        try:
+            # Stop the camera and the recognition process
+            presenter_instance.stop_camera()
+            presenter_thread.join()
 
-        # Reset presenter instance and thread
-        presenter_instance = None
-        presenter_thread = None
+            # Send JSON data to the database
+            file_name = f"Presentation_{id_presentation}.json"
+            file_path = os.path.join(paths1.json_files_path, file_name)
+            atendance().send_json_to_db(file_path)
 
-        # Return a success message
-        return jsonify({"status": "Conference finished and data saved successfully"}), 200
+            # Reset presenter instance and thread
+            presenter_instance = None
+            presenter_thread = None
 
-    return jsonify({"status": "No active conference to finish"}), 400
+            # Store success message in session
+            session['message'] = "Conference finished and data saved successfully"
+            session['message_type'] = "success"
+
+        except Exception as e:
+            # Store error message in session
+            session['message'] = f"Error finishing conference: {str(e)}"
+            session['message_type'] = "error"
+    else:
+        session['message'] = "No active conference to finish"
+        session['message_type'] = "error"
+
+    # Redirect to the conference sitting page
+    return redirect(url_for('main.conferences_sitting', id_presentation=id_presentation))

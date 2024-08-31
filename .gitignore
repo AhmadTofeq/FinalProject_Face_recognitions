@@ -4,6 +4,5 @@
 /Venv
 app
 .vscode
-logs
 /venv
 /back_end_process/Pyhton_files/class_/paths.py
