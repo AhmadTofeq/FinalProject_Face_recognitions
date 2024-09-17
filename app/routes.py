@@ -3,7 +3,7 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy import text  # Add this import
 from app import db
 import json
-from app.models import Faculty, Department, Staff, User
+from app.models import Faculty, Department, Staff, User, ActivityType
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from werkzeug.utils import secure_filename
@@ -11,6 +11,11 @@ from back_end_process.Pyhton_files.video_processing import StaffProcessor
 from back_end_process.Pyhton_files.main import second_test_camera
 import logging
 from datetime import datetime, timedelta
+from back_end_process.Pyhton_files.main import start_Presntation
+from back_end_process.Pyhton_files.class_.paths import paths1
+from back_end_process.Pyhton_files.class_.atendance import atendance
+
+from threading import Thread
 bp = Blueprint('main', __name__)
 
 @bp.route('/')
@@ -423,6 +428,9 @@ def presentation():
     staff_members = Staff.query.filter_by(state=True).all()
     faculties = Faculty.query.all()
     departments = Department.query.all()
+    
+    # Fetch activity types
+    activity_types = ActivityType.query.all()
 
     # Execute the query to fetch all presentations
     result = db.session.execute(text("SELECT * FROM get_all_presentations"))
@@ -431,9 +439,10 @@ def presentation():
     presentations = [
         {
             **dict(zip(result.keys(), presentation)),
-            'presenters': presentation.presenters,  # Use the presenters directly from the view
+            'presenters': presentation.presenters,
             'faculty_id': presentation.faculty_id,
-            'department_id': presentation.department_id
+            'department_id': presentation.department_id,
+            'activity_type': presentation.activity_type  # Get the activity_type name
         }
         for presentation in presentations
     ]
@@ -441,13 +450,22 @@ def presentation():
     message = session.pop('message', None)
     message_type = session.pop('message_type', None)
 
-    return render_template('presentation.html', presentations=presentations, faculties=faculties, departments=departments, staff_members=staff_members, message=message, message_type=message_type)
-
+    return render_template(
+        'presentation.html', 
+        presentations=presentations, 
+        faculties=faculties, 
+        departments=departments, 
+        staff_members=staff_members, 
+        activity_types=activity_types,  # Pass activity types to the template
+        message=message, 
+        message_type=message_type
+    )
 
 
 @bp.route('/register_presentation', methods=['POST'])
 def register_presentation():
-    list_ides=[int(i) for i in request.form.getlist('presenter[]')]
+    list_ides = [int(i) for i in request.form.getlist('presenter[]')]
+    
     try:
         db.session.execute(
             text('''CALL add_presntaion(
@@ -460,7 +478,8 @@ def register_presentation():
                  :max_late1,
                  :id_dep1,
                  :init_by1,
-                 :staff_ids)'''),
+                 :staff_ids,
+                 :type_activity1)'''),  # Added :type_activity1 parameter
             {
                 "title1": request.form.get('title_pres'),
                 "date_time1": request.form.get('date_time'),
@@ -471,22 +490,25 @@ def register_presentation():
                 "max_late1": request.form.get('max_late'),
                 "id_dep1": request.form.get('department'),
                 "init_by1": session['user_id'],
-                "staff_ids": json.dumps(list_ides)
+                "staff_ids": json.dumps(list_ides),
+                "type_activity1": request.form.get('activity_type')  # Capture activity type
             }
         )
         db.session.commit()
-        session['message'] = 'Presentation registered successfully.'
+        session['message'] = 'Activities registered successfully.'
         session['message_type'] = 'success'
     except Exception as e:
         db.session.rollback()  # Roll back the transaction in case of an error
-        session['message'] = 'Presentation registered NOT successfull.'
-        session['message_type'] = 'NOT success'
+        session['message'] = 'Activities registration NOT successful.'
+        session['message_type'] = 'NOT successful'
+    
     return redirect(url_for('main.presentation'))
 
 
 @bp.route('/update_presentation', methods=['POST'])
 def update_presentation():
     id_presentation = request.form.get('id_presentation')
+    
     try:
         db.session.execute(
             text('''CALL Update_presentation(
@@ -498,8 +520,9 @@ def update_presentation():
                  :point_attendance1,
                  :max_late1,
                  :id_dep1,
-                 :id_presentation1
-                 )'''),
+                 :id_presentation1,
+                 :type_activity1
+                 )'''),  # Use the correct parameter for type_activity
             {
                 "title1": request.form.get('title_pres'),
                 "date_time1": request.form.get('date_time'),
@@ -509,18 +532,19 @@ def update_presentation():
                 "point_attendance1": request.form.get('point_attendance'),
                 "max_late1": request.form.get('max_late'),
                 "id_dep1": request.form.get('department'),
-                "id_presentation1": id_presentation 
+                "id_presentation1": id_presentation,
+                "type_activity1": request.form.get('activity_type')  # Ensure this matches the form field
             }
         )
         db.session.commit()
-        session['message'] = 'Presentation updated successfully.'
+        session['message'] = 'Activities updated successfully.'
         session['message_type'] = 'success'
     except Exception as e:
         db.session.rollback()
-        session['message'] = 'Presentation update NOT successful.'
+        session['message'] = 'Activities update NOT successful.'
         session['message_type'] = 'error'
         print(f"Error updating presentation: {e}")  
-    return redirect(url_for('main.presentation'))  
+    return redirect(url_for('main.presentation'))
 
 @bp.route('/delete_presentation', methods=['POST'])
 def delete_presentation():
@@ -539,13 +563,13 @@ def delete_presentation():
             {"id": id_presentation}  # Pass the presentation ID to the stored procedure
         )
         db.session.commit()
-        session['message'] = 'Presentation deleted successfully.'
+        session['message'] = 'Activities deleted successfully.'
         session['message_type'] = 'success'
     except Exception as e:
         db.session.rollback()  
-        session['message'] = 'Presentation deletion NOT successful.'
+        session['message'] = 'Activities deletion NOT successful.'
         session['message_type'] = 'error'
-        print(f"Error deleting presentation: {e}")  # Log the error for debugging
+        print(f"Error deleting Activities: {e}")  # Log the error for debugging
 
     return redirect(url_for('main.presentation'))  
 
@@ -585,11 +609,10 @@ def conferences():
             'point_presenter': presentation.point_presenter,
             'point_attendance': presentation.point_attendance,
             'max_late': presentation.max_late,
-            'department_id': presentation.department_id,
-            'faculty_id': presentation.faculty_id,
-            'added_by': presentation.added_by,
+            'department_name': department.name_department if department else 'N/A',
             'faculty_name': faculty.name_faculty if faculty else 'N/A',
-            'department_name': department.name_department if department else 'N/A'
+            'added_by': presentation.added_by,
+            'activity_type': presentation.activity_type  # Ensure activity_type is here
         }
         
         presentations_with_names.append(presentation_dict)
@@ -602,11 +625,8 @@ def conferences():
                            search_query=search_query, not_passed=not_passed, 
                            message=message, message_type=message_type)
 
-from back_end_process.Pyhton_files.main import start_Presntation
-from back_end_process.Pyhton_files.class_.paths import paths1
-from back_end_process.Pyhton_files.class_.atendance import atendance
 
-from threading import Thread
+
 @bp.route('/start_conference/<int:id_presentation>', methods=['GET'])
 def start_conference(id_presentation):
     # Fetch the presentation details
@@ -616,7 +636,7 @@ def start_conference(id_presentation):
     ).fetchone()
 
     if presentation is None:
-        session['message'] = 'Conference not found.'
+        session['message'] = 'Activiti not found.'
         session['message_type'] = 'error'
         return redirect(url_for('main.conferences'))
 
@@ -627,7 +647,7 @@ def start_conference(id_presentation):
         presentation_datetime = datetime.strptime(presentation.date_time, '%Y-%m-%d %H:%M:%S')
 
     if datetime.now() > presentation_datetime + timedelta(days=1):
-        session['message'] = 'Sorry, this conference has expired.'
+        session['message'] = 'Sorry, this Activiti has expired.'
         session['message_type'] = 'error'
         return redirect(url_for('main.conferences'))
 
@@ -636,7 +656,7 @@ def start_conference(id_presentation):
     file_path = os.path.join(paths1.json_files_path, file_name)
 
     if os.path.exists(file_path):
-        session['message'] = 'This seminar has been presented before, Sorry.'
+        session['message'] = 'This Activiti has been presented before, Sorry.'
         session['message_type'] = 'error'
         return redirect(url_for('main.conferences'))
 
@@ -652,7 +672,7 @@ def conferences_sitting(id_presentation):
     ).fetchone()
 
     if presentation is None:
-        session['message'] = 'Conference not found.'
+        session['message'] = 'Activiti not found.'
         session['message_type'] = 'error'
         return redirect(url_for('main.conferences'))
 
@@ -722,15 +742,15 @@ def finish_conference(id_presentation):
             presenter_thread = None
 
             # Store success message in session
-            session['message'] = "Conference finished and data saved successfully"
+            session['message'] = "Activiti finished and data saved successfully"
             session['message_type'] = "success"
 
         except Exception as e:
             # Store error message in session
-            session['message'] = f"Error finishing conference: {str(e)}"
+            session['message'] = f"Error finishing Activiti: {str(e)}"
             session['message_type'] = "error"
     else:
-        session['message'] = "No active conference to finish"
+        session['message'] = "No active Activiti to finish"
         session['message_type'] = "error"
 
     # Redirect to the conference sitting page

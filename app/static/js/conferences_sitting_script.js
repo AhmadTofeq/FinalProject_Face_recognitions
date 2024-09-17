@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const userNameSpan = document.getElementById('user-name');
 
 
-     function updateTime() {
+    function updateTime() {
         const now = new Date();
         const formattedTime = now.getFullYear() + '-' + 
                               String(now.getMonth() + 1).padStart(2, '0') + '-' + 
@@ -21,7 +21,31 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update the time immediately and every second
     updateTime();
     setInterval(updateTime, 1000);
+    
+    const finishBtn = document.getElementById('finish-btn');
+    const finishForm = document.getElementById('finish-form');
+    const dialog = document.getElementById('DialogFinish');
+    const overlay = document.getElementById('dialogOverlay');
+    const cancelBtn = document.querySelector('.cancel');
+    const confirmBtn = document.querySelector('.delete');
 
+    // Show the dialog when the finish button is clicked
+    finishBtn.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent form submission
+        dialog.classList.add('show'); // Show dialog
+        overlay.classList.add('show'); // Show overlay
+    });
+
+    // Hide the dialog if the cancel button is clicked
+    cancelBtn.addEventListener('click', function () {
+        dialog.classList.remove('show');
+        overlay.classList.remove('show');
+    });
+
+    // Submit the form when the delete (confirm) button is clicked
+    confirmBtn.addEventListener('click', function () {
+        finishForm.submit(); // Submit the form programmatically
+    });
     
     // Fetch user's name and update the span
     fetch('/get_user_info', {

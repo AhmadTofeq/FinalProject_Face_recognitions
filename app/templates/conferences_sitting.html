@@ -66,13 +66,13 @@
                     <li class="nav-link">
                         <a href="{{ url_for('main.conferences') }}" data-page="conferences">
                             <i class='bx bx-chalkboard icon'></i>
-                            <span class="text nav-text">Conferences</span>
+                            <span class="text nav-text">Activities</span>
                         </a>
                     </li>
                     <li class="nav-link">
                         <a href="{{ url_for('main.presentation') }}" data-page="r-conferences">
                             <i class='bx bx-registered icon'></i>
-                            <span class="text nav-text">R-Conferences</span>
+                            <span class="text nav-text">R-Activities</span>
                         </a>
                     </li>
                     <li class="nav-link">
@@ -133,6 +133,7 @@
                     <div class="col">
                         <p><strong>Date:</strong> {{ presentation.date_time }}</p>
                         <p><strong>Hall:</strong> {{ presentation.hall }}</p>
+                        <p><strong>Activity Type:</strong> {{ presentation.activity_type }}</p>
                     </div>
                     <div class="col">
                         <p><strong>Presenters:</strong> {{ presentation.presenters }}</p>
@@ -163,10 +164,20 @@
         <button id="start-btn">Start</button>
         <button id="stop-btn" disabled>Stop</button>
         <!-- The form submits the request to finish the conference -->
-        <form action="{{ url_for('main.finish_conference', id_presentation=presentation.id_presentation) }}" method="get">
-            <button type="submit" id="finish-btn">Finish</button>
+        <form id="finish-form" action="{{ url_for('main.finish_conference', id_presentation=presentation.id_presentation) }}" method="get">
+            <button type="button" id="finish-btn">Finish</button> <!-- Change type to button to prevent default form submit -->
         </form>
     </footer>
+    <div id="DialogFinish" class="dialog">
+        <div class="icon">&#33;</div>
+        <div class="message">Are you sure?</div>
+        <div class="message">Make sure the process isn't stopped.</div>
+        <div class="message">You will not be able to restart this Activity again.</div>
+        <button class="cancel">Cancel</button>
+        <button class="delete">Finish Conference!</button>
+    </div>
+    <!-- Modal overlay -->
+    <div id="dialogOverlay" class="modal-overlay"></div>
     <script>
         const startBtn = document.getElementById('start-btn');
         const stopBtn = document.getElementById('stop-btn');
