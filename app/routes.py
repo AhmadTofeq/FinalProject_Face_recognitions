@@ -755,3 +755,80 @@ def finish_conference(id_presentation):
 
     # Redirect to the conference sitting page
     return redirect(url_for('main.conferences_sitting', id_presentation=id_presentation))
+
+
+@bp.route('/export_attendance_data/<int:id_presentation>')
+def exportattendancedata(id_presentation):
+    # Fetch presentation details
+    presentation = db.session.execute(
+        text("SELECT * FROM presentations WHERE id_presentation = :id_presentation"),
+        {"id_presentation": id_presentation}
+    ).fetchone()
+
+    if presentation is None:
+        session['message'] = 'Presentation not found.'
+        session['message_type'] = 'error'
+        return redirect(url_for('main.conferences'))
+
+    # Fetch active staff members (state=True)
+    staff_members = Staff.query.filter_by(state=True).all()
+
+    # Pass the presentation details and staff members to the template
+    return render_template('exportattendancedata.html', presentation=presentation, staff_members=staff_members)
+
+@bp.route('/add_attendance', methods=['POST'])
+def add_attendance():
+    staff_input = request.form['staff']
+    time_in = request.form['time_in']
+    time_out = request.form['time_out']
+    id_presentation = request.form['id_presentation']
+
+    # Query the staff member by ID
+    staff = Staff.query.filter_by(id_staff=staff_input, state=True).first()
+
+    if staff is None:
+        session['message'] = 'Staff member not found.'
+        session['message_type'] = 'error'
+        return redirect(url_for('attendance.exportattendancedata', id_presentation=id_presentation))
+
+    try:
+        # Debug: print the values being passed
+        print(f"Inserting IN record: {time_in}, {staff.id_staff}, {id_presentation}, 'IN'")
+        print(f"Inserting OUT record: {time_out}, {staff.id_staff}, {id_presentation}, 'OUT'")
+
+        # Add IN record
+        db.session.execute(
+            text("""
+                CALL insert_attendance(:date_time_atendance, :id_staff, :id_presntation, :case_atendance)
+            """),
+            {
+                "date_time_atendance": time_in,
+                "id_staff": staff.id_staff,
+                "id_presntation": id_presentation,
+                "case_atendance": "IN"
+            }
+        )
+
+        # Add OUT record
+        db.session.execute(
+            text("""
+                CALL insert_attendance(:date_time_atendance, :id_staff, :id_presntation, :case_atendance)
+            """),
+            {
+                "date_time_atendance": time_out,
+                "id_staff": staff.id_staff,
+                "id_presntation": id_presentation,
+                "case_atendance": "OUT"
+            }
+        )
+
+        db.session.commit()
+        session['message'] = 'Attendance added successfully!'
+        session['message_type'] = 'success'
+        
+    except Exception as e:
+        db.session.rollback()
+        session['message'] = f'Error adding attendance: {str(e)}'
+        session['message_type'] = 'error'
+
+    return redirect(url_for('main.exportattendancedata', id_presentation=id_presentation))

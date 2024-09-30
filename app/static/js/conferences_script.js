@@ -82,8 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show the export button if the presentation has passed
                 exportButton.style.display = 'inline-block';
                 exportButton.onclick = function() {
-                    // Implement export functionality here
-                    alert('Export functionality is not yet implemented.');
+                    exportButton.href = `/export_attendance_data/${presentationId}`;
                 };
             } else {
                 // Hide the export button if the presentation is upcoming
