@@ -1,4 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
+import copy
 import os
 import json
 from datetime import datetime
@@ -15,12 +16,6 @@ model = mymodel(paths1.images_path)
 def take_sample_image_to_all_vedious():
     for vedio in os.listdir(r"/vedious"):
         FaceDetection().take_a_sample_from_vidio(os.path.join(r"/vedious", vedio), vedio, 45)
-
-
-
-
-
-
 def record_vedio():
     # Ask for the video file name and path
     video_name = input("Enter the name of the video file (without extension): ") + ".mp4"
@@ -80,8 +75,6 @@ def record_vedio():
     cap.release()
     out.release()
     cv2.destroyAllWindows()
-
-
 class start_Presntation:
     def __init__(self, foile_name):
         self.path = os.path.join(paths1.json_files_path, f"{foile_name}.json")
@@ -89,6 +82,7 @@ class start_Presntation:
         self.model = mymodel(paths1.images_path)
         self.cap = None  # VideoCapture object to control the camera
         self.running = False  # State to check if the process is running
+        self.dec_atendas_info=[ ]
 
     def load_json(self, file_path):
         if os.path.exists(file_path):
@@ -97,10 +91,43 @@ class start_Presntation:
         else:
             data = []
         return data
-
     def save_json(self):
+        clean_data = []
+        for staf in self.stafs:
+            id_staff = int(staf['id_staff'])
+            # Find the matching item in dec_atendas_info or set it to a default 'NEW' case
+            found_item = {}
+            for item in self.dec_atendas_info:
+                id_staff = int(staf['id_staff'])
+                if item['id_staff'] == id_staff:
+                    found_item = item
+                    break
+            else:
+                if len(found_item) == 0:
+                    found_item = {"id_staff": "", "case": "NEW"}
+            # Check the case of the found item and determine actions
+            if staf["case"] == "IN" and found_item["case"] == "OUT":
+                # Update case from 'OUT' to 'IN' and append to clean_data
+                clean_data.append(staf)
+                for i,item in enumerate(self.dec_atendas_info):
+                    if item['id_staff'] == id_staff:
+                        self.dec_atendas_info[i]['case'] = "IN"
+                        print(i, item)
+                        break
+            elif staf["case"] == "OUT" and found_item["case"] == "IN":
+                # Update case from 'IN' to 'OUT' and append to clean_data
+                clean_data.append(staf)
+                for i,item in enumerate(self.dec_atendas_info):
+                    if item['id_staff'] == id_staff:
+                        self.dec_atendas_info[i]['case'] = "OUT"
+                        break
+            elif found_item["case"] == "NEW":
+                # Handle new staff entries, set their case and append to both lists
+                clean_data.append(staf)
+                self.dec_atendas_info.append(staf.copy())
+        # Save the clean_data to the specified path as JSON
         with open(self.path, 'w') as file:
-            json.dump(self.stafs, file, indent=4)
+            json.dump(clean_data, file, indent=4)
 
     def create_entry(self, id_presnt, id_staff, name, date_time, case1):
         entry = {
@@ -112,10 +139,11 @@ class start_Presntation:
         }
         self.stafs.append(entry)
 
-    def save_to_json(self):
-        # Save the updated data back to the JSON file
-        with open(self.path, 'w') as file:
-            json.dump(self.stafs, file, indent=4)
+
+    # def save_to_json(self):
+    #     # Save the updated data back to the JSON file
+    #     with open(self.path, 'w') as file:
+    #         json.dump(self.stafs, file, indent=4)
     def model_detection_and_recognition(self, frame, id_presntation, case):
         threshold = 0.8
         resoult = FaceDetection().face_detection(frame)
@@ -181,17 +209,17 @@ class start_Presntation:
 
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
     # take_sample_image_to_all_vedious()
     # model.embading_all_images_Using_face_net_to_all_images()
      #model.classfication_images_using_SVM()
-     # start_Presntation("414").main(15)
+    start_Presntation("414").main(15)
     # record_vedio()
     #  test_camera()
 
 def second_test_camera():
-    def gen_frames():  
+    def gen_frames():
         cameras = []
         for i in range(5):  # Attempt to open up to 5 cameras
             cap = cv2.VideoCapture(i)
@@ -225,3 +253,5 @@ def second_test_camera():
             cap.release()
 
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+# if __name__=="__main__":
+#     start_Presntation("araz").create_entry(12,34,"mohammade","1234","IN")
