@@ -66,13 +66,13 @@
                     <li class="nav-link">
                         <a href="{{ url_for('main.conferences') }}" data-page="conferences">
                             <i class='bx bx-chalkboard icon'></i>
-                            <span class="text nav-text">Conferences</span>
+                            <span class="text nav-text">Activities</span>
                         </a>
                     </li>
                     <li class="nav-link">
                         <a href="{{ url_for('main.presentation') }}" data-page="r-conferences">
                             <i class='bx bx-registered icon'></i>
-                            <span class="text nav-text">R-Conferences</span>
+                            <span class="text nav-text">R-Activities</span>
                         </a>
                     </li>
                     <li class="nav-link">
@@ -117,8 +117,8 @@
     </nav>
     <section class="home">
         <div class="page-content">
-            <h2>Conferences</h2>
-            <p>List of all conferences</p>
+            <h2>Activities</h2>
+            <p>List of all Activities</p>
             {% if message %}
             <div class="popup {{ message_type }}">
                 <p class="below">{{ message }}</p>
@@ -142,6 +142,7 @@
                         <th>Title</th>
                         <th>Date & Time</th>
                         <th>Presenter(s)</th>
+                        <th>Activity Type</th> <!-- New Column -->
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -153,18 +154,20 @@
                         data-point-presenter="{{ presentation.point_presenter }}"
                         data-point-attendance="{{ presentation.point_attendance }}" data-max-late="{{ presentation.max_late }}"
                         data-department="{{ presentation.department_name }}" data-faculty-id="{{ presentation.faculty_name }}"
-                        data-added-by="{{ presentation.added_by }}">
+                        data-added-by="{{ presentation.added_by }}" data-activity-type="{{ presentation.activity_type }}"> <!-- New data attribute -->
+            
                         <td>{{ presentation.id_presentation }}</td>
                         <td>{{ presentation.title_pres }}</td>
                         <td>{{ presentation.date_time }}</td>
                         <td>{{ presentation.presenters }}</td>
+                        <td>{{ presentation.activity_type }}</td> <!-- New Column -->
                         <td>
                             <button type="button" class="settings-btn">Setting</button>
                         </td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5">No conferences found.</td>
+                        <td colspan="6">No Activities found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -184,6 +187,7 @@
                 <p><strong>Presenter(s):</strong> <span id="modalPresenters"></span></p>
                 <p><strong>Duration:</strong> <span id="modalDuration"></span></p>
                 <p><strong>Hall:</strong> <span id="modalHall"></span></p>
+                <p><strong>Activity Type:</strong> <span id="modalActivityType"></span></p> <!-- New field -->
             </div>
             <div class="modal-section">
                 <h4>Points and Attendance</h4>
@@ -199,10 +203,9 @@
             </div>
         </div>
         <div class="modal-actions">
-            <!-- Start Button in Modal Actions -->
             <a href="#" id="startButton">Start</a>
             <a href="{{ url_for('main.show_second_test_camera_page') }}" target="_blank" id="testCameraButton">Test Camera</a>
-            <button id="exportButton">Export</button>
+            <a href="#" id="exportButton">Export</a> <!-- Update this button -->
         </div>
     </div>
     <div id="modalOverlay" class="modal-overlay"></div>

@@ -72,3 +72,10 @@ class StaffDepartmentView(db.Model):
     def __repr__(self):
         return f'<StaffDepartmentView {self.staff_name}>'
 
+class ActivityType(db.Model):
+    __tablename__ = 'activity_types'
+    id_activity_type = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(75), nullable=False)
+
+    def __repr__(self):
+        return f'<ActivityType {self.name}>'

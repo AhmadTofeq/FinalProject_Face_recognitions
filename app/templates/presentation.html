@@ -69,13 +69,13 @@
                     <li class="nav-link">
                         <a href="{{ url_for('main.conferences') }}" data-page="conferences">
                             <i class='bx bx-chalkboard icon'></i>
-                            <span class="text nav-text">Conferences</span>
+                            <span class="text nav-text">Activities</span>
                         </a>
                     </li>
                     <li class="nav-link">
                         <a href="{{ url_for('main.presentation') }}" data-page="r-conferences">
                             <i class='bx bx-registered icon'></i>
-                            <span class="text nav-text">R-Conferences</span>
+                            <span class="text nav-text">R-Activities</span>
                         </a>
                     </li>
                     <li class="nav-link">
@@ -120,8 +120,8 @@
     </nav>
     <section class="home">
         <div class="page-content">
-            <h2>Conference Registration</h2>
-            <p>Manage conference registrations below.</p>
+            <h2>Activities Registration</h2>
+            <p>Manage Activities registrations below.</p>
     
             {% if message %}
             <div class="popup {{ message_type }}">
@@ -136,6 +136,7 @@
                     <th>Title</th>
                     <th>Date & Time</th>
                     <th>Presenter</th>
+                    <th>Activity Type</th> <!-- Add column for activity type -->
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -146,6 +147,7 @@
                         <td>{{ presentation.title_pres }}</td>
                         <td>{{ presentation.date_time }}</td>
                         <td>{{ presentation.presenters }}</td>
+                        <td>{{ presentation.activity_type }}</td> <!-- Display activity type name -->
                         <td>
                             <button class="preview-btn" data-id="{{ presentation.id_presentation }}">Preview</button>
                             <button class="update-btn" data-id="{{ presentation.id_presentation }}">Update</button>
@@ -211,7 +213,15 @@
                                             {% endfor %}
                                         </select>
                                     </div>
-                
+                                    <div class="form-group">
+                                        <label for="activity_type">Activity Type:</label>
+                                        <select id="activity_type" name="activity_type" required>
+                                            <option value="" disabled selected>Select Activity Type</option>
+                                            {% for activity_type in activity_types %}
+                                            <option value="{{ activity_type.id_activity_type }}">{{ activity_type.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
                                     <button type="submit" name="update" class="submit-btn">Update</button>
                                 </form>
                             </div>
@@ -227,6 +237,7 @@
                                     <p><strong>Attendance Points:</strong> {{ presentation.point_attendance }}</p>
                                     <p><strong>Max Late Time:</strong> {{ presentation.max_late }}</p>
                                     <p><strong>Presenters:</strong> {{ presentation.presenters }}</p>
+                                    <p><strong>Activity Type:</strong> {{ presentation.activity_type }}</p>
                                     <p><strong>Added by:</strong> {{ presentation.added_by }}</p>
                                     <button class="close-preview"></button>
                                 </div>
@@ -239,7 +250,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5">No presentations found.</td>
+                        <td colspan="5">No Activities found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -300,6 +311,15 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="activity_type">Activity Type:</label>
+                            <select id="activity_type" name="activity_type" required>
+                                <option value="" disabled selected>Select Activity Type</option>
+                                {% for activity_type in activity_types %}
+                                <option value="{{ activity_type.id_activity_type }}">{{ activity_type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="presenter">Presenter:</label>
                             <select id="presenter" name="presenter[]" multiple required class="select2">
                                 <option></option> <!-- Placeholder -->
@@ -312,6 +332,7 @@
                     </form>
                 </div>
             </div>
+        </div>
     </section>
     <div id="deleteStaffDialog" class="dialog hide">
         <div class="icon">&#10007;</div>

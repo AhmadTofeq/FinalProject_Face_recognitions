@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const exportButton = document.getElementById('exportButton');
     const startButton = document.getElementById('startButton');
     const closeModalBtn = document.getElementById('closeModalBtn');
-
+    const modalActivityType = document.getElementById('modalActivityType');
     // Function to format date and time
     function formatDateTime(datetimeStr) {
         const options = { 
@@ -56,7 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const pointAttendance = row.getAttribute('data-point-attendance');
             const maxLate = row.getAttribute('data-max-late');
             const department = row.getAttribute('data-department');
-            const facultyName = row.getAttribute('data-faculty-name');
+            const facultyName = row.getAttribute('data-faculty-id');
+            const activityType = row.getAttribute('data-activity-type'); // New line
             const addedBy = row.getAttribute('data-added-by');
 
             // Populate modal with retrieved data
@@ -70,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
             modalMaxLate.textContent = maxLate ? `${maxLate} minutes` : 'N/A';
             modalDepartment.textContent = department || 'N/A';
             modalFacultyId.textContent = facultyName || 'N/A';
+            modalActivityType.textContent = activityType || 'N/A';
             modalAddedBy.textContent = addedBy || 'N/A';
 
             // Check if the presentation date has passed
@@ -80,8 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show the export button if the presentation has passed
                 exportButton.style.display = 'inline-block';
                 exportButton.onclick = function() {
-                    // Implement export functionality here
-                    alert('Export functionality is not yet implemented.');
+                    exportButton.href = `/export_attendance_data/${presentationId}`;
                 };
             } else {
                 // Hide the export button if the presentation is upcoming

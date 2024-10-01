@@ -66,13 +66,13 @@
                     <li class="nav-link">
                         <a href="{{ url_for('main.conferences') }}" data-page="conferences">
                             <i class='bx bx-chalkboard icon'></i>
-                            <span class="text nav-text">Conferences</span>
+                            <span class="text nav-text">Activities</span>
                         </a>
                     </li>
                     <li class="nav-link">
                         <a href="{{ url_for('main.presentation') }}" data-page="r-conferences">
                             <i class='bx bx-registered icon'></i>
-                            <span class="text nav-text">R-Conferences</span>
+                            <span class="text nav-text">R-Activities</span>
                         </a>
                     </li>
                     <li class="nav-link">
@@ -116,6 +116,11 @@
         </div>
     </nav>
     <section class="home">
+        {% if message %}
+        <div class="popup {{ message_type }}">
+            <p class="below">{{ message }}</p>
+        </div>
+        {% endif %}
         <div id="content">
             <header class="conference-header">
                 <div class="header-top">
@@ -128,6 +133,7 @@
                     <div class="col">
                         <p><strong>Date:</strong> {{ presentation.date_time }}</p>
                         <p><strong>Hall:</strong> {{ presentation.hall }}</p>
+                        <p><strong>Activity Type:</strong> {{ presentation.activity_type }}</p>
                     </div>
                     <div class="col">
                         <p><strong>Presenters:</strong> {{ presentation.presenters }}</p>
@@ -136,11 +142,6 @@
                 </div>
             </header>
         </div>
-        {% if message %}
-        <div class="popup {{ message_type }}">
-            <p class="below">{{ message }}</p>
-        </div>
-        {% endif %}
         <div id="live-content">
             <!-- Live data from JSON will be displayed here -->
             <table id="presentation-data">
@@ -162,40 +163,27 @@
         style="position: fixed; bottom: 0; width: 100%; background-color: #f1f1f1; padding: 10px; text-align: center;">
         <button id="start-btn">Start</button>
         <button id="stop-btn" disabled>Stop</button>
-        <button id="finish-btn">Finish</button>
+        <!-- The form submits the request to finish the conference -->
+        <form id="finish-form" action="{{ url_for('main.finish_conference', id_presentation=presentation.id_presentation) }}" method="get">
+            <button type="button" id="finish-btn">Finish</button> <!-- Change type to button to prevent default form submit -->
+        </form>
     </footer>
+    <div id="DialogFinish" class="dialog">
+        <div class="icon">&#33;</div>
+        <div class="message">Are you sure?</div>
+        <div class="message">Make sure the process isn't stopped.</div>
+        <div class="message">You will not be able to restart this Activity again.</div>
+        <button class="cancel">Cancel</button>
+        <button class="delete">Finish Conference!</button>
+    </div>
+    <!-- Modal overlay -->
+    <div id="dialogOverlay" class="modal-overlay"></div>
     <script>
-    const startBtn = document.getElementById('start-btn');
-    const stopBtn = document.getElementById('stop-btn');
-    const finishBtn = document.getElementById('finish-btn');
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
 
-        finishBtn.addEventListener('click', function () {
+        startBtn.addEventListener('click', function () {
             const presentationId = {{ presentation.id_presentation }};
-        // Stop the camera and recognition
-        fetch(`/stop_camera`)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data.status);
-
-                // After stopping the camera, send the JSON data to the database
-                fetch(`/finish_conference/${presentationId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data.status);
-                        alert('Conference finished and data saved successfully.');
-
-                        // Disable all buttons after finishing the conference
-                        startBtn.disabled = true;
-                        stopBtn.disabled = true;
-                        finishBtn.disabled = true;
-                    })
-                    .catch(error => console.error('Error finishing conference:', error));
-            })
-            .catch(error => console.error('Error stopping camera and recognition:', error));
-    });
-
-    startBtn.addEventListener('click', function () {
-        const presentationId = {{ presentation.id_presentation }};
         fetch(`/start_camera/${presentationId}`)
             .then(response => response.json())
             .then(data => {
@@ -205,61 +193,61 @@
                 startBtn.classList.add('active');
             })
             .catch(error => console.error('Error starting camera and recognition:', error));
-    });
-    stopBtn.addEventListener('click', function () {
-        fetch(`/stop_camera`)
+        });
+        stopBtn.addEventListener('click', function () {
+            fetch(`/stop_camera`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.status);
+                    startBtn.disabled = false;
+                    stopBtn.disabled = true;
+
+                    // Remove the active class to revert the start button back to default
+                    startBtn.classList.remove('active');
+                })
+                .catch(error => console.error('Error stopping camera and recognition:', error));
+        });
+
+        function fetchLiveData() {
+            const presentationId = {{ presentation.id_presentation }};
+        fetch(`/get_presentation_data/${presentationId}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data.status);
-                startBtn.disabled = false;
-                stopBtn.disabled = true;
+                const dataBody = document.getElementById('data-body');
+                const liveContent = document.getElementById('live-content');
 
-                // Remove the active class to revert the start button back to default
-                startBtn.classList.remove('active');
+                // Clear the previous data
+                while (dataBody.firstChild) {
+                    dataBody.removeChild(dataBody.firstChild);
+                }
+
+                // Append new rows
+                data.forEach(entry => {
+                    const row = document.createElement('tr');
+                    row.className = entry.case === 'IN' ? 'in-case' : 'out-case';
+                    row.innerHTML = `
+                            <td>${entry.id_staff}</td>
+                            <td>${entry.name}</td>
+                            <td>${entry.dateTime}</td>
+                            <td>${entry.case}</td>
+                        `;
+                    dataBody.appendChild(row);
+                });
+
+                // Scroll to the bottom after updating the data
+                liveContent.scrollTo({
+                    top: liveContent.scrollHeight,
+                    behavior: 'smooth'
+                });
             })
-            .catch(error => console.error('Error stopping camera and recognition:', error));
-    });
+            .catch(error => console.error('Error fetching live data:', error));
+        }
 
-    function fetchLiveData() {
-        const presentationId = {{ presentation.id_presentation }};  // Assuming this is being correctly populated server-side
-    fetch(`/get_presentation_data/${presentationId}`)
-        .then(response => response.json())
-        .then(data => {
-            const dataBody = document.getElementById('data-body');
-            const liveContent = document.getElementById('live-content');
+        // Fetch live data every second
+        setInterval(fetchLiveData, 1000);
 
-            // Clear the previous data
-            while (dataBody.firstChild) {
-                dataBody.removeChild(dataBody.firstChild);
-            }
-
-            // Append new rows
-            data.forEach(entry => {
-                const row = document.createElement('tr');
-                row.className = entry.case === 'IN' ? 'in-case' : 'out-case';
-                row.innerHTML = `
-                    <td>${entry.id_staff}</td>
-                    <td>${entry.name}</td>
-                    <td>${entry.dateTime}</td>
-                    <td>${entry.case}</td>
-                `;
-                dataBody.appendChild(row);
-            });
-
-            // Scroll to the bottom after updating the data
-            liveContent.scrollTo({
-                top: liveContent.scrollHeight,
-                behavior: 'smooth'
-            });
-        })
-        .catch(error => console.error('Error fetching live data:', error));
-    }
-
-    // Fetch live data every second
-    setInterval(fetchLiveData, 1000);
-
-    // Initial fetch
-    fetchLiveData();
+        // Initial fetch
+        fetchLiveData();
     </script>
 
     {% include 'dialog.html' %}

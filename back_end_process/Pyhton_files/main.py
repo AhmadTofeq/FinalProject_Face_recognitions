@@ -21,7 +21,6 @@ def take_sample_image_to_all_vedious():
 
 
 
-
 def record_vedio():
     # Ask for the video file name and path
     video_name = input("Enter the name of the video file (without extension): ") + ".mp4"

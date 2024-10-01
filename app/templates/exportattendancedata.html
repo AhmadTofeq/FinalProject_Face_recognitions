@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/exportattendancedata_style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dialog.css') }}">
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <title>Soran-Face</title>
@@ -116,11 +116,84 @@
         </div>
     </nav>
     <section class="home">
-        <div id="content"></div>
+        {% if message %}
+        <div class="popup {{ message_type }}">
+            <p class="below">{{ message }}</p>
+        </div>
+        {% endif %}
+    
+        <div id="content">
+            <header class="conference-header">
+                <div class="header-top">
+                    <h1>{{ presentation.title_pres }}</h1>
+                </div>
+                <button id="newButton" class="new-btn">NEW</button>
+            </header>            
+            <div id="formModal" class="modal">
+                <div class="modal-content">
+                    <!--<span class="close">&times;</span>-->
+                    <form method="POST" action="{{ url_for('main.add_attendance') }}">
+                        <label for="staff">Select Staff Member:</label>
+                        <select id="staff" name="staff" class="searchable-select" required>
+                            <option value="" disabled selected>Select or search staff</option>
+                            {% for staff in staff_members %}
+                            <option value="{{ staff.id_staff }}">{{ staff.id_staff }} - {{ staff.staff_name }}</option>
+                            {% endfor %}
+                        </select>
+    
+                        <label for="time_in">IN Time:</label>
+                        <input type="datetime-local" id="time_in" name="time_in" required>
+    
+                        <label for="time_out">OUT Time:</label>
+                        <input type="datetime-local" id="time_out" name="time_out" required>
+    
+                        <input type="hidden" name="id_presentation" value="{{ presentation.id_presentation }}">
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </section>
+    
+    <!-- Load jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Include Select2 JS and CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script>
+        $(document).ready(function () {
+            // Initialize Select2 on the select element
+            $('#staff').select2({
+                placeholder: "Search for staff by name or ID",
+                allowClear: true
+            });
+
+            // Modal functionality
+            var modal = document.getElementById("formModal");
+            var btn = document.getElementById("newButton");
+            var span = document.getElementsByClassName("close")[0];
+
+            btn.onclick = function () {
+                modal.style.display = "block";
+            }
+
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        });
+    </script>
+    
     {% include 'dialog.html' %}
+    <script src="{{ url_for('static', filename='js/exportattendancedata_script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dialog.js') }}"></script>
-    <script src="../static/js/home_script.js"></script>
 </body>
 
 </html>

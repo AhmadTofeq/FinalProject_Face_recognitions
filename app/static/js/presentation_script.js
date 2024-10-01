@@ -178,6 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
             facultySelect.dispatchEvent(new Event('change'));
         });
     });
+    // Show the preview box when 'Preview' button is clicked
     document.querySelectorAll('.preview-btn').forEach(function(button) {
         button.addEventListener('click', function() {
             const presentationId = this.getAttribute('data-id');
@@ -186,6 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Hide the preview box when 'Close' button is clicked
     document.querySelectorAll('.close-preview').forEach(function(button) {
         button.addEventListener('click', function() {
             const previewBox = this.closest('.preview-box');
