@@ -91,7 +91,7 @@ class start_Presntation:
         else:
             data = []
         return data
-    def save_json(self):
+    def data_preproccesing(self):
         clean_data = []
         for staf in self.stafs:
             id_staff = int(staf['id_staff'])
@@ -137,6 +137,8 @@ class start_Presntation:
             "dateTime": str(date_time),
             "case": case1
         }
+        with open(self.path, 'w') as file:
+            json.dump(self.stafs, file, indent=4)
         self.stafs.append(entry)
 
 
@@ -156,7 +158,6 @@ class start_Presntation:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 4)
                 id_staff, name = final_naem.split("@")
                 self.create_entry(id_presntation, id_staff, name, datetime.now(), case)
-                self.save_json()
                 cvzone.putTextRect(frame, f"{final_naem} IN, Score: {max_probablity*100:.2f}%", (x, y - 10), scale=1, thickness=1)
             print("************************result************************ in ", final_naem)
         return frame
@@ -175,8 +176,11 @@ class start_Presntation:
             cv2.imshow("Presentation Start", cam1)
             key = cv2.waitKey(1) & 0xFF
             if key == 27:  # Esc key
+                self.cap.release()
                 self.stop_camera()
                 break
+        else:
+            self.data_preproccesing()
 
     def stop_camera(self):
         self.running = False
@@ -209,14 +213,14 @@ class start_Presntation:
 
 
 
-if __name__ == "__main__":
-
-    # take_sample_image_to_all_vedious()
-    # model.embading_all_images_Using_face_net_to_all_images()
-     #model.classfication_images_using_SVM()
-    start_Presntation("414").main(15)
-    # record_vedio()
-    #  test_camera()
+# if __name__ == "__main__":
+#
+#     # take_sample_image_to_all_vedious()
+#     # model.embading_all_images_Using_face_net_to_all_images()
+#      #model.classfication_images_using_SVM()
+#     start_Presntation("414").main(15)
+#     # record_vedio()
+#     #  test_camera()
 
 def second_test_camera():
     def gen_frames():
