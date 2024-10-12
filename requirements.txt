@@ -6,3 +6,4 @@ python-dotenv
 PyMySQL
 scikit-learn
 tensorflow
+openpyxl

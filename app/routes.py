@@ -759,6 +759,7 @@ def finish_conference(id_presentation):
 
 @bp.route('/export_attendance_data/<int:id_presentation>')
 def exportattendancedata(id_presentation):
+    
     # Fetch presentation details
     presentation = db.session.execute(
         text("SELECT * FROM presentations WHERE id_presentation = :id_presentation"),
@@ -772,16 +773,18 @@ def exportattendancedata(id_presentation):
 
     # Fetch active staff members (state=True)
     staff_members = Staff.query.filter_by(state=True).all()
-
+    message = session.pop('message', None)  # Retrieve and remove the message from the session
+    message_type = session.pop('message_type', None)  # Retrieve and remove the type
     # Pass the presentation details and staff members to the template
-    return render_template('exportattendancedata.html', presentation=presentation, staff_members=staff_members)
+    return render_template('exportattendancedata.html', message=message, message_type=message_type, presentation=presentation, staff_members=staff_members)
 
+from datetime import datetime
 @bp.route('/add_attendance', methods=['POST'])
 def add_attendance():
     staff_input = request.form['staff']
-    time_in = request.form['time_in']
-    time_out = request.form['time_out']
-    id_presentation = request.form['id_presentation']
+    time_in = datetime.strptime(request.form['time_in'], '%Y-%m-%dT%H:%M').strftime('%Y-%m-%d %H:%M:%S')
+    time_out = datetime.strptime(request.form['time_out'], '%Y-%m-%dT%H:%M').strftime('%Y-%m-%d %H:%M:%S')
+    id_presentation = int(request.form['id_presentation'])
 
     # Query the staff member by ID
     staff = Staff.query.filter_by(id_staff=staff_input, state=True).first()
@@ -796,7 +799,7 @@ def add_attendance():
         print(f"Inserting IN record: {time_in}, {staff.id_staff}, {id_presentation}, 'IN'")
         print(f"Inserting OUT record: {time_out}, {staff.id_staff}, {id_presentation}, 'OUT'")
 
-        # Add IN record
+        # Inserting attendance with the typo preserved in the stored procedure call
         db.session.execute(
             text("""
                 CALL insert_attendance(:date_time_atendance, :id_staff, :id_presntation, :case_atendance)
@@ -804,7 +807,7 @@ def add_attendance():
             {
                 "date_time_atendance": time_in,
                 "id_staff": staff.id_staff,
-                "id_presntation": id_presentation,
+                "id_presntation": id_presentation,  # Pass id_presentation here, mapped to id_presntation in the table
                 "case_atendance": "IN"
             }
         )
@@ -817,7 +820,7 @@ def add_attendance():
             {
                 "date_time_atendance": time_out,
                 "id_staff": staff.id_staff,
-                "id_presntation": id_presentation,
+                "id_presntation": id_presentation,  # Same handling for OUT record
                 "case_atendance": "OUT"
             }
         )
